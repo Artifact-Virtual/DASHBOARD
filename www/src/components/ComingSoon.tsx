@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import "../../styles/ComingSoonBreathing.css";
 
 const ComingSoon = () => {
   const [showContent, setShowContent] = useState(false);
@@ -159,7 +160,6 @@ const ComingSoon = () => {
           </div>
         </div>
 // Add breathing and particle animation keyframes
-import "../../styles/ComingSoonBreathing.css";
       </div>
     </section>
   );

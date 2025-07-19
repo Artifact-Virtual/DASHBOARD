@@ -11,6 +11,7 @@ export default defineConfig({
   },
   server: {
     port: 8080,
-    host: true
+    host: true,
+    allowedHosts: ['www.artifactvirtual.com', 'localhost', '127.0.0.1']
   }
 })
