@@ -63,7 +63,9 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.177.0",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "@google/genai": "^0.7.0",
+    "react-aria": "^3.25.0"
   },
   "engines": {
     "node": ">=20.11.0",
