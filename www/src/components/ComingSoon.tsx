@@ -11,8 +11,13 @@ const ComingSoon = () => {
     seconds: 0
   });
 
-  // Target launch date: 60 days from now
-  const launchDate = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000);
+  // Target launch date: 60 days from now (fixed reference point)
+  const [launchDate] = useState(() => {
+    // Set a fixed launch date 60 days from first render
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000);
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => setShowContent(true), 500);
@@ -31,17 +36,16 @@ const ComingSoon = () => {
       const now = new Date().getTime();
       const target = launchDate.getTime();
       const difference = target - now;
-
       if (difference > 0) {
         const days = Math.floor(difference / (1000 * 60 * 60 * 24));
         const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
         setTimeLeft({ days, hours, minutes, seconds });
+      } else {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       }
     };
-
     calculateTimeLeft();
     const interval = setInterval(calculateTimeLeft, 1000);
     return () => clearInterval(interval);
@@ -95,8 +99,7 @@ const ComingSoon = () => {
           
           <div className="text-center mb-8">
             <span className="text-lg font-light text-gray-400 tracking-wider">
-              something extraordinary is being built
-              <span className={`inline-block w-2 h-5 ml-1 bg-white transition-opacity duration-100 ${showCursor ? 'opacity-100' : 'opacity-0'}`} />
+              something extraordinary
             </span>
           </div>
 
@@ -123,33 +126,23 @@ const ComingSoon = () => {
           </div>
         </div>
 
-        {/* Progress bar */}
+        {/* Progress bar - blend with background for seamless look */}
         <div className="w-full max-w-2xl mx-auto mb-12">
           <div className="relative h-px mb-6">
-            <div className="absolute inset-0 bg-gray-800" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-800 to-transparent" />
             <div 
-              className="absolute left-0 top-0 h-full bg-white transition-all duration-1000 ease-out"
+              className="absolute left-0 top-0 h-full bg-gradient-to-r from-white/0 via-white/80 to-white/0 transition-all duration-1000 ease-out"
               style={{ 
-                width: `${Math.min(85, (new Date().getTime() - new Date('2025-01-01').getTime()) / (launchDate.getTime() - new Date('2025-01-01').getTime()) * 100)}%`
+                width: `${Math.min(85, (60 - timeLeft.days) / 60 * 100)}%`
               }}
             />
           </div>
-          
           <div className="text-xs tracking-widest font-mono text-gray-500 text-center">
             DEVELOPMENT IN PROGRESS
           </div>
         </div>
 
-        {/* Additional messaging */}
-        <div className="text-center">
-          <p className="text-sm text-gray-500 tracking-wider max-w-md mx-auto leading-relaxed">
-            Advanced Research Operating System and Multi-Agent Infrastructure
-            <br />
-            <span className="text-xs text-gray-600 mt-2 inline-block">
-              Pushing the boundaries of what's possible
-            </span>
-          </p>
-        </div>
+        {/* Additional messaging intentionally removed for minimalism */}
 
         {/* Subtle call-to-action */}
         <div className="mt-16">
