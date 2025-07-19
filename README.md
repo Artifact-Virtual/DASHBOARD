@@ -1,5 +1,21 @@
+## ARTIFACT VIRTUAL DASHBOARD
 
-# Artifact Virtual Dashboard
+<p align="center">
+  <img src="https://img.shields.io/badge/React-18.2.0-61DAFB?logo=react&logoColor=white" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-5.4.5-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite-5.2.10-646CFF?logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/TailwindCSS-3.4.1-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Node.js-20.x-339933?logo=node.js&logoColor=white" alt="Node.js" />
+      <img src="https://img.shields.io/badge/Systemd-252-0078D6?logo=linux&logoColor=white" alt="Systemd" />
+  <img src="https://img.shields.io/badge/Linux-Ubuntu-FF8800?logo=ubuntu&logoColor=white" alt="Linux" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Build-Passing-brightgreen?logo=githubactions&logoColor=white" alt="Build Status" />
+  <img src="https://img.shields.io/badge/Network-Cloudflare-orange?logo=cloudflare&logoColor=white" alt="Network" />
+  <img src="https://img.shields.io/badge/Nginx-1.24.0-009639?logo=nginx&logoColor=white" alt="Nginx" />
+  <img src="https://img.shields.io/badge/Status-Live-brightgreen?logo=vercel&logoColor=white" alt="Status" />
+</p>
 
 Welcome to the main dashboard for Artifact Virtual—a foundation designed to evolve and expand as new systems and capabilities are introduced and interconnected. This project is more than a landing page: it is the central hub for Artifact Virtual’s growing ecosystem, built to support future integrations, research, and advanced features.
 
