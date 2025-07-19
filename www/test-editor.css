@@ -1,0 +1,6 @@
+/* Test CSS file for live editor demonstration - UPDATED! */
+.test-class {
+    color: #3b82f6;
+    font-size: 18px; /* Changed from 16px */
+    font-weight: bold; /* Added bold */
+}

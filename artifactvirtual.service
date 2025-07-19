@@ -1,0 +1,28 @@
+[Unit]
+Description=ArtifactVirtual.com Landing Page
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=adam
+Group=adam
+WorkingDirectory=/home/adam/cert-nginx
+ExecStart=/home/adam/cert-nginx/start-systemd.sh
+ExecStop=/home/adam/cert-nginx/stop-systemd.sh
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+TimeoutStartSec=60
+
+# Environment variables
+Environment=NODE_ENV=production
+Environment=HOME=/home/adam
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
