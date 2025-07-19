@@ -1,7 +1,6 @@
 # Node modules
 node_modules/
-www/node_modules/
-cert-nginx/www/node_modules/
+**/node_modules/
 
 # Build output
 dist/
@@ -28,7 +27,7 @@ ssl/certs/
 # PID and temp files
 *.pid
 /tmp/
-/av-app/temp/os
+/temp/
 
 # Vite cache
 .vite/
