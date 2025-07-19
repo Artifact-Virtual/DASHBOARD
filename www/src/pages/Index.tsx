@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Footer from '../components/Footer';
 import HeroSection from '../components/HeroSection';
+import ComingSoon from '../components/ComingSoon';
 import FloatingSidebar from '../components/FloatingSidebar';
-import SystemMap3D from '../components/SystemMap3D';
-import SystemArchitectureDiagram from '../components/SystemArchitectureDiagram';
-import PatternLines from '../components/PatternLines';
-import ResearchCapabilities from '../components/ResearchCapabilities';
-import TechnicalSpecs from '../components/TechnicalSpecs';
 import LoadingScreen from '../components/LoadingScreen';
-import Test from '../components/Test';
 
 function getSystemTheme() {
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
@@ -61,25 +55,9 @@ const Index = () => {
           <HeroSection />
         </div>
         
-        {/* System diagrams */}
-        <div className="space-y-8 sm:space-y-16 px-4 sm:px-6 lg:px-8">
-          <div>
-            <SystemMap3D />
-          </div>
-          <div>
-            <SystemArchitectureDiagram />
-          </div>
-        </div>
-        
-        {/* Research content */}
-        <div>
-          <ResearchCapabilities />
-        </div>
-        <div>
-          <TechnicalSpecs />
-        </div>
-        <div>
-          <Footer />
+        {/* Coming Soon Section */}
+        <div id="coming-soon">
+          <ComingSoon />
         </div>
       </div>
     </div>
