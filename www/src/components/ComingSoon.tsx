@@ -159,7 +159,7 @@ const ComingSoon = () => {
             <div className="w-2 h-2 bg-white rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
           </div>
         </div>
-// Add breathing and particle animation keyframes
+
       </div>
     </section>
   );
