@@ -1,0 +1,57 @@
+# Node modules
+node_modules/
+www/node_modules/
+cert-nginx/www/node_modules/
+
+# Build output
+dist/
+www/dist/
+
+# Logs
+*.log
+logs/
+www/*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.*
+
+# SSL certificates and private keys
+ssl/certs/
+*.key
+*.crt
+
+# PID and temp files
+*.pid
+/tmp/
+
+# Vite cache
+.vite/
+www/.vite/
+
+# Systemd and service artifacts
+*.service
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+
+# Misc
+www/public/
+
+# Ignore backup and temp files
+*~
+*.bak
+*.tmp
+
+# Ignore test output
+coverage/
+
+# Ignore Python virtual environments
+.venv/
+venv/

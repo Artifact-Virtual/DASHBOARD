@@ -1,6 +1,11 @@
-# ArtifactVirtual.com Landing Page
 
-Professional React-based landing page hosted locally and served globally through Cloudflare Tunnel.
+# Artifact Virtual Dashboard
+
+Welcome to the main dashboard for Artifact Virtual—a foundation designed to evolve and expand as new systems and capabilities are introduced and interconnected. This project is more than a landing page: it is the central hub for Artifact Virtual’s growing ecosystem, built to support future integrations, research, and advanced features.
+
+Currently, the dashboard is accessible worldwide via a secure Cloudflare tunnel. The long-term vision is to transition to a  production-grade deployment using SSL certificates and direct hosting on port 80, ensuring robust, secure, and seamless access. ISP limitations are being aggressively addressed to enable this transition.
+
+Whether you’re contributing, deploying, or exploring, this repository is the starting point for Artifact Virtual’s journey toward a unified, extensible platform.
 
 ## Service Management & Resilience
 
