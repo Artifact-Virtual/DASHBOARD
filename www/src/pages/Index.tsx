@@ -18,7 +18,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-y-auto">
+    <div className="min-h-screen bg-black text-white relative overflow-y-auto font-precision">
       {/* Main content */}
       <div className="relative z-10">
         <div id="hero">
@@ -26,7 +26,7 @@ const Index = () => {
         </div>
 
         {/* Full-screen, responsive welcome section */}
-        <section className="w-full min-h-screen flex items-center justify-center">
+        <section className="w-full min-h-screen flex items-center justify-center font-precision">
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-center text-white select-none">
             WELCOME TO ARC:0
           </h1>

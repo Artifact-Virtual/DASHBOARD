@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Home, Map, Atom, Shield, Brain, MessageSquare, Github, ExternalLink, BookOpen, FileText, Cpu } from 'lucide-react';
+import { Home, Map, Atom, Shield, Brain, Coins, Github, ExternalLink, BookOpen, FileText, Cpu } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 interface NavItem {
@@ -83,11 +83,12 @@ const FloatingSidebar = () => {
     { id: 'blog', icon: BookOpen, label: 'Blog', route: '/blog' },
     { id: 'research', icon: FileText, label: 'Research', route: '/research' },
     { id: 'api', icon: Cpu, label: 'API', route: '/api' },
-    { id: 'systemmap', icon: Map, label: 'System Map', href: '#systemmap' },
+    // { id: 'systemmap', icon: Map, label: 'System Map', href: '#systemmap' },
     { id: 'quantum', icon: Atom, label: 'Quantum Engine', href: '#quantum' },
     { id: 'arc', icon: Shield, label: 'The Arc', href: '#arc' },
     { id: 'adam', icon: Brain, label: 'ADAM Protocol', href: '#adam' },
-    { id: 'contact', icon: MessageSquare, label: 'Contact', href: '#contact' },
+    { id: 'systemmap', icon: Map, label: 'System Map', route: '/systemmap' },
+    { id: 'arcx', icon: Coins, label: 'ARCx Token', action: () => window.open('https://artifact-virtual.github.io/arcx_token/', '_blank') },
     { 
       id: 'github', 
       icon: Github, 

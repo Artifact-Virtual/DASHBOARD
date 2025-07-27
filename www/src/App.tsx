@@ -12,6 +12,7 @@ import Research from "./pages/Research";
 import ResearchPost from "./pages/ResearchPost";
 import API from "./pages/API";
 import NotFound from "./pages/NotFound";
+import SystemMap from "./pages/SystemMap";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/research" element={<Research />} />
             <Route path="/research/:slug" element={<ResearchPost />} />
             <Route path="/api" element={<API />} />
+            <Route path="/systemmap" element={<SystemMap />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
