@@ -25,13 +25,12 @@ const Index = () => {
           <HeroSection />
         </div>
 
-        {/* Add more sections here as needed */}
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h2 className="text-4xl font-light mb-4">Welcome to Artifact Virtual</h2>
-            <p className="text-xl text-gray-400">Navigate horizontally with scroll wheel + shift or arrow keys</p>
-          </div>
-        </div>
+        {/* Full-screen, responsive welcome section */}
+        <section className="w-full min-h-screen flex items-center justify-center">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-center text-white select-none">
+            WELCOME TO ARC:0
+          </h1>
+        </section>
       </div>
     </div>
   );
