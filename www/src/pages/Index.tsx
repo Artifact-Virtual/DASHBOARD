@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import HeroSection from '../components/HeroSection';
 
-import FloatingSidebar from '../components/FloatingSidebar';
-
 function getSystemTheme() {
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
     return 'light';
@@ -20,17 +18,20 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-x-hidden">
-      {/* Floating Sidebar Navigation */}
-      <FloatingSidebar />
-
+    <div className="min-h-screen bg-black text-white relative overflow-y-auto">
       {/* Main content */}
       <div className="relative z-10">
         <div id="hero">
           <HeroSection />
         </div>
 
-        {/* Main page restored: no OS iframe, just hero and sidebar */}
+        {/* Add more sections here as needed */}
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-4xl font-light mb-4">Welcome to Artifact Virtual</h2>
+            <p className="text-xl text-gray-400">Navigate horizontally with scroll wheel + shift or arrow keys</p>
+          </div>
+        </div>
       </div>
     </div>
   );

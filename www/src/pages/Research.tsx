@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Brain, GitBranch, Lock, Network, Atom, Zap, Layers } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import PatternLines from '../components/PatternLines';
@@ -315,17 +316,15 @@ const researchArticles = {
 
 const Research = () => {
   const [selectedCategory, setSelectedCategory] = useState('constitutional-intelligence');
-  const [selectedArticle, setSelectedArticle] = useState(null);
+  const navigate = useNavigate();
 
   const currentArticles = researchArticles[selectedCategory] || [];
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden font-precision">
       <PatternLines />
-      
       <div className="relative z-10">
         <Navigation />
-        
         {/* Hero Section */}
         <section className="relative pt-32 pb-20 px-8">
           <div className="max-w-7xl mx-auto text-center">
@@ -343,7 +342,6 @@ const Research = () => {
             </div>
           </div>
         </section>
-
         {/* Category Selection */}
         <section className="relative py-16 px-8">
           <div className="max-w-7xl mx-auto">
@@ -373,7 +371,6 @@ const Research = () => {
                 </div>
               ))}
             </div>
-
             {/* Selected Category Articles */}
             <div className="border-t border-white/10 pt-16">
               <div className="flex items-center gap-4 mb-12">
@@ -396,13 +393,12 @@ const Research = () => {
                   </p>
                 </div>
               </div>
-
               <div className="grid lg:grid-cols-2 gap-8">
                 {currentArticles.map((article) => (
                   <div
                     key={article.id}
                     className="group p-8 border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all duration-300 cursor-pointer"
-                    onClick={() => setSelectedArticle(article)}
+                    onClick={() => navigate(`/research/${article.id}`)}
                   >
                     <div className="mb-6">
                       <h3 className="text-xl font-light text-white mb-3 group-hover:text-white transition-colors">
@@ -439,7 +435,6 @@ const Research = () => {
             </div>
           </div>
         </section>
-        
         <Footer />
       </div>
     </div>

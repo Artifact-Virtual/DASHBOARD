@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import PatternLines from '../components/PatternLines';
 import Footer from '../components/Footer';
@@ -16,6 +16,7 @@ interface BlogPost {
 const Blog = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // This would typically fetch from your markdown files
@@ -36,7 +37,6 @@ const Blog = () => {
         content: "# Design Principles\n\nGreat design starts with understanding..."
       }
     ];
-    
     setPosts(samplePosts);
     setLoading(false);
   }, []);
@@ -75,9 +75,9 @@ const Blog = () => {
           <div className="space-y-12">
             {posts.map((post) => (
               <article key={post.slug} className="border-b border-white/10 pb-12 last:border-b-0">
-                <Link 
-                  to={`/blog/${post.slug}`}
-                  className="group block hover:bg-white/[0.02] transition-all duration-300 p-6 -m-6 rounded"
+                <div
+                  className="group block hover:bg-white/[0.02] transition-all duration-300 p-6 -m-6 rounded cursor-pointer"
+                  onClick={() => navigate(`/blog/${post.slug}`)}
                 >
                   <time className="text-white/50 font-light tracking-wide text-sm uppercase">
                     {new Date(post.date).toLocaleDateString('en-US', { 
@@ -86,20 +86,17 @@ const Blog = () => {
                       day: 'numeric' 
                     })}
                   </time>
-                  
                   <h2 className="text-3xl md:text-4xl font-thin tracking-wide mt-4 mb-4 group-hover:text-white/90 transition-colors">
                     {post.title}
                   </h2>
-                  
                   <p className="text-white/70 font-light tracking-wide leading-relaxed">
                     {post.excerpt}
                   </p>
-                  
                   <div className="mt-6 flex items-center space-x-2 text-white/60 group-hover:text-white/80 transition-colors">
                     <span className="font-light tracking-wide text-sm">READ MORE</span>
                     <div className="w-0 group-hover:w-8 h-px bg-white/60 transition-all duration-300" />
                   </div>
-                </Link>
+                </div>
               </article>
             ))}
           </div>

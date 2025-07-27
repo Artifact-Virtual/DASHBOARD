@@ -186,6 +186,12 @@ const getStatusColor = (status: string) => {
 };
 
 const API = () => {
+  // Banner for navigation testing
+  return (
+    <div className="w-full bg-purple-700 text-white text-center py-2 text-xl font-bold z-50 sticky top-0">API Page</div>
+  );
+
+  // ...existing code...
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState('');
 
