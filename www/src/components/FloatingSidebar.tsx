@@ -26,26 +26,55 @@ const FloatingSidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [glitch, setGlitch] = useState(false);
   const [theme, setTheme] = useState(getSystemTheme());
-  const [isVisible, setIsVisible] = useState(true); // sidebar starts visible
+  const [isVisible, setIsVisible] = useState(true); // sidebar always visible
   const [isMobile, setIsMobile] = useState(false);
   const [open, setOpen] = useState(false);
   const [hideTimer, setHideTimer] = useState<NodeJS.Timeout | null>(null);
 
-  // Auto-hide after 10 seconds
+  // Sidebar should always be visible at hero section, then revert to auto-hide after
+  const [isHovering, setIsHovering] = useState(false);
   useEffect(() => {
     if (isMobile) return;
-    if (!isVisible) return;
-    if (hideTimer) clearTimeout(hideTimer);
-    const timer = setTimeout(() => setIsVisible(false), 3000);
-    setHideTimer(timer);
-    return () => clearTimeout(timer);
-  }, [isVisible, isMobile]);
+    const handleScroll = () => {
+      const hero = document.getElementById('hero');
+      if (!hero) return;
+      const heroRect = hero.getBoundingClientRect();
+      // If hero is in view (top of hero is above top of viewport but not fully out of view)
+      if (heroRect.bottom > 0 && heroRect.top < window.innerHeight) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isMobile]);
 
-  // Show sidebar when mouse is near left edge
+  // After hero, enable auto-hide after 3s, pause when hovered, and show on mouse near left edge
+  useEffect(() => {
+    if (isMobile) return;
+    const hero = document.getElementById('hero');
+    if (!hero) return;
+    const heroRect = hero.getBoundingClientRect();
+    const heroInView = heroRect.bottom > 0 && heroRect.top < window.innerHeight;
+    if (heroInView) return; // skip auto-hide if hero is in view
+    let timer: NodeJS.Timeout | null = null;
+    if (!isVisible || isHovering) return;
+    timer = setTimeout(() => setIsVisible(false), 3000);
+    return () => { if (timer) clearTimeout(timer); };
+  }, [isVisible, isMobile, isHovering]);
+
   useEffect(() => {
     if (isMobile) return;
     const handleMouseMove = (e: MouseEvent) => {
-      if (e.clientX < 40) {
+      const hero = document.getElementById('hero');
+      let heroInView = false;
+      if (hero) {
+        const heroRect = hero.getBoundingClientRect();
+        heroInView = heroRect.bottom > 0 && heroRect.top < window.innerHeight;
+      }
+      if (!heroInView && e.clientX < 40) {
         setIsVisible(true);
       }
     };
@@ -53,13 +82,15 @@ const FloatingSidebar = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [isMobile]);
 
+  // Remove mouse-move show logic; sidebar is always visible
+
   // Always update active item on route change
   useEffect(() => {
     const path = location.pathname;
     if (path === '/') setActiveItem('home');
     else if (path === '/blog' || path.startsWith('/blog/')) setActiveItem('blog');
     else if (path === '/research' || path.startsWith('/research/')) setActiveItem('research');
-    else if (path === '/api') setActiveItem('api');
+    // removed API page selection
     else setActiveItem('');
   }, [location.pathname]);
 
@@ -82,25 +113,19 @@ const FloatingSidebar = () => {
     { id: 'home', icon: Home, label: 'Home', route: '/' },
     { id: 'blog', icon: BookOpen, label: 'Blog', route: '/blog' },
     { id: 'research', icon: FileText, label: 'Research', route: '/research' },
-    { id: 'api', icon: Cpu, label: 'API', route: '/api' },
+    // removed API sidebar item
     // { id: 'systemmap', icon: Map, label: 'System Map', href: '#systemmap' },
-    { id: 'quantum', icon: Atom, label: 'Quantum Engine', href: '#quantum' },
-    { id: 'arc', icon: Shield, label: 'The Arc', href: '#arc' },
-    { id: 'adam', icon: Brain, label: 'ADAM Protocol', href: '#adam' },
-    { id: 'systemmap', icon: Map, label: 'System Map', route: '/systemmap' },
+    // Removed The Arc, ADAM Protocol, and System Map sidebar items
     { id: 'arcx', icon: Coins, label: 'ARCx Token', action: () => window.open('https://artifact-virtual.github.io/arcx_token/', '_blank') },
+    { id: 'dashboard', icon: Cpu, label: 'Dashboard', route: '/dashboard' },
+    { id: 'quantum', icon: Atom, label: 'Quantum Engine', href: '#quantum' },
     { 
       id: 'github', 
       icon: Github, 
       label: 'GitHub', 
       action: () => window.open('https://github.com/amuzetnoM/artifactvirtual', '_blank')
     },
-    { 
-      id: 'dashboard', 
-      icon: ExternalLink, 
-      label: 'Dashboard', 
-      action: () => window.open('http://localhost:3002', '_blank')
-    },
+    { id: 'dashboard', icon: ExternalLink, label: 'Dashboard', route: '/dashboard' },
   ];
 
   const handleItemClick = (item: NavItem) => {
@@ -127,17 +152,27 @@ const FloatingSidebar = () => {
   if (isMobile) {
     return (
       <>
-        <button
-          className="floating-sidebar-toggle"
-          aria-label="Open sidebar"
-          onClick={() => setOpen((v) => !v)}
-          style={{ position: 'fixed', top: 16, left: 16, zIndex: 1000 }}
-        >
-          <span style={{ fontSize: 24 }}>☰</span>
-        </button>
+        {!open && (
+          <button
+            className="floating-sidebar-toggle"
+            aria-label="Open sidebar"
+            onClick={() => setOpen((v) => !v)}
+            style={{ position: 'fixed', top: 16, left: 16, zIndex: 1000 }}
+          >
+            <span style={{ fontSize: 24 }}>☰</span>
+          </button>
+        )}
         {open && (
           <nav className={`fixed left-0 top-0 z-50 flex flex-col items-center space-y-8 ${theme === 'light' ? 'bg-white/90 border-black/20' : 'bg-black/90 border-white/10'} rounded-none py-6 px-2 shadow-2xl border backdrop-blur-sm transition-all duration-500 w-56 h-full`}>
-            <div className="mb-8 text-center">
+            <button
+              className="floating-sidebar-toggle"
+              aria-label="Close sidebar"
+              onClick={() => setOpen(false)}
+              style={{ position: 'absolute', top: 16, left: 16, zIndex: 1001 }}
+            >
+              <span style={{ fontSize: 24 }}>☰</span>
+            </button>
+            <div className="mb-8 text-center mt-8">
               <div className="w-12 h-12 mx-auto flex items-center justify-center">
                 <img 
                   src={logoSrc} 
@@ -185,6 +220,8 @@ const FloatingSidebar = () => {
         ${isVisible ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-10 pointer-events-none'}`
       }
       style={{ boxShadow: theme === 'light' ? '0 8px 32px 0 rgba(0,0,0,0.10)' : '0 8px 32px 0 rgba(255,255,255,0.08)' }}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
     >
       <div className="mb-10 text-center">
         <div className="w-14 h-14 mx-auto flex items-center justify-center">

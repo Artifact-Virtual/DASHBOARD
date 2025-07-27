@@ -16,7 +16,7 @@ const HorizontalScrollLayout: React.FC<HorizontalScrollLayoutProps> = ({ childre
     { path: '/', name: 'Home' },
     { path: '/blog', name: 'Blog' },
     { path: '/research', name: 'Research' },
-    { path: '/api', name: 'API' }
+    // removed API nav entry
   ];
 
   useEffect(() => {

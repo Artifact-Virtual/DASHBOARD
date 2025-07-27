@@ -10,7 +10,7 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Research from "./pages/Research";
 import ResearchPost from "./pages/ResearchPost";
-import API from "./pages/API";
+import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import SystemMap from "./pages/SystemMap";
 
@@ -33,7 +33,8 @@ const App = () => (
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/research" element={<Research />} />
             <Route path="/research/:slug" element={<ResearchPost />} />
-            <Route path="/api" element={<API />} />
+            {/* <Route path="/api" element={<API />} /> */}
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/systemmap" element={<SystemMap />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
