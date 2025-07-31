@@ -132,7 +132,7 @@ fi
 
 # Step 6: Start Live Stream processor in background
 echo "📡 Starting live stream processor..."
-python3 -m streamlit run live_stream_simple.py --server.port 8502 --server.address 0.0.0.0 &
+python3 -m streamlit run live_stream.py --server.port 8502 --server.address 0.0.0.0 &
 STREAM_PID=$!
 sleep 3
 
