@@ -46,8 +46,8 @@ class LiveContextLoop:
     def step(self):
         self.step_num += 1
 
-        # Advance ARC, ADAM, FUEL
-        arc_state = self.arc.step() if hasattr(self.arc, 'step') else {}
+        # Advance ARC, ADAM, FUEL with proper parameters
+        arc_state = self.arc.step(self.adam, None, None, None) if hasattr(self.arc, 'step') else {}
         adam_state = self.adam.step() if hasattr(self.adam, 'step') else {}
         fuel_state = self.fuel.step() if hasattr(self.fuel, 'step') else {}
 
