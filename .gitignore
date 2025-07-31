@@ -5,8 +5,8 @@ node_modules/
 # Build output
 dist/
 www/dist/
-/simulation_data/*
-/simulation_data/latest.json
+simulation_data/*
+simulation_data/latest.json
 
 # Logs
 *.log
