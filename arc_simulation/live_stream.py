@@ -2,7 +2,8 @@ import streamlit as st
 import sys
 sys.path.append('.')
 
-from arc_network.network import ArcNetwork
+import json
+import os
 import time
 import pandas as pd
 import plotly.express as px
@@ -17,6 +18,39 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Function to read simulation data from demon
+def read_simulation_data():
+    """Read the latest simulation data from demon process"""
+    try:
+        if os.path.exists('simulation_data/latest.json'):
+            with open('simulation_data/latest.json', 'r') as f:
+                data = json.load(f)
+            return data
+        else:
+            return None
+    except Exception as e:
+        st.error(f"Error reading simulation data: {e}")
+        return None
+
+# Function to control demon simulation
+def control_simulation(action):
+    """Send control commands to the demon process"""
+    try:
+        control_data = {"action": action, "timestamp": time.time()}
+        if os.path.exists('simulation_data/control.json'):
+            with open('simulation_data/control.json', 'r') as f:
+                existing = json.load(f)
+            existing.update(control_data)
+        else:
+            existing = control_data
+        
+        with open('simulation_data/control.json', 'w') as f:
+            json.dump(existing, f)
+        return True
+    except Exception as e:
+        st.error(f"Error controlling simulation: {e}")
+        return False
 
 # Custom CSS for better visuals
 st.markdown("""
@@ -61,56 +95,103 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize session state with enhanced tracking
-if 'network' not in st.session_state:
-    st.session_state.network = ArcNetwork(n_arcs=5, n_agents=15)
-    st.session_state.step_count = 0
-    st.session_state.running = False
+# Initialize session state for live streaming from demon data
+if 'history' not in st.session_state:
     st.session_state.history = []
-    st.session_state.subnet_bridge_threshold = 500  # FUEL tokens to bridge
-    st.session_state.analytics_data = {
-        'block_creation_rate': [],
-        'agent_performance': [],
-        'fuel_flows': [],
-        'network_health': []
-    }
+if 'running' not in st.session_state:
+    st.session_state.running = False
+if 'last_step' not in st.session_state:
+    st.session_state.last_step = 0
 
-# Professional Header
+# Professional Header with auto-refresh
 st.markdown("""
 <div class="main-header">
     <h1>🔴 ARTIFACT VIRTUAL MULTI-ARC PROFESSIONAL ANALYTICS STREAM</h1>
-    <p>Real-time blockchain simulation with advanced analytics and FUEL token economics</p>
+    <p>Real-time blockchain simulation with live demon data feed</p>
 </div>
 """, unsafe_allow_html=True)
+
+# Auto-refresh functionality
+if auto_refresh and st.session_state.running:
+    time.sleep(stream_speed)
+    st.rerun()
+
+# Get current simulation data
+current_data = read_simulation_data()
+
+if current_data is None:
+    st.error("🚨 No simulation data available. Make sure the demon is running!")
+    st.stop()
+
+# Check if we have new data
+if current_data['step'] != st.session_state.last_step:
+    st.session_state.last_step = current_data['step']
+    if len(st.session_state.history) > 100:  # Keep only last 100 steps
+        st.session_state.history = st.session_state.history[-100:]
+    st.session_state.history.append(current_data)
+
+# Live status indicator
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    if current_data.get('crisis_mode', False):
+        st.error("🚨 CRISIS MODE")
+    else:
+        st.success("✅ NORMAL")
+
+with col2:
+    st.metric("Live Step", current_data['step'])
+
+with col3:
+    st.metric("Era", current_data['era'])
+
+with col4:
+    if st.session_state.running:
+        st.markdown('<div class="live-indicator">🔴 LIVE</div>', unsafe_allow_html=True)
+    else:
+        st.info("⏸️ PAUSED")
 
 # Enhanced Control Panel
 with st.sidebar:
     st.header("🎛️ Professional Controls")
     
+    # Read current simulation data
+    sim_data = read_simulation_data()
+    
     # Main controls
     col1, col2 = st.columns(2)
     with col1:
         if st.button("▶️ Start", type="primary", use_container_width=True):
+            if control_simulation("start"):
+                st.success("Simulation started!")
             st.session_state.running = True
     with col2:
         if st.button("⏸️ Pause", use_container_width=True):
+            if control_simulation("pause"):
+                st.success("Simulation paused!")
             st.session_state.running = False
     
     if st.button("🔄 Reset Network", use_container_width=True):
-        st.session_state.network = ArcNetwork(n_arcs=5, n_agents=15)
-        st.session_state.step_count = 0
+        if control_simulation("reset"):
+            st.success("Simulation reset!")
         st.session_state.running = False
-        st.session_state.history = []
-        st.session_state.analytics_data = {
-            'block_creation_rate': [],
-            'agent_performance': [],
-            'fuel_flows': [],
-            'network_health': []
-        }
     
     # Stream settings
     st.subheader("⚙️ Stream Settings")
     stream_speed = st.slider("Update Interval (sec)", 0.1, 3.0, 0.8, 0.1)
+    auto_refresh = st.checkbox("Auto-refresh Dashboard", True)
+    
+    # Display current simulation status
+    if sim_data:
+        st.subheader("📊 Simulation Status")
+        st.metric("Current Step", sim_data.get('step', 0))
+        st.metric("Era", sim_data.get('era', 0))
+        
+        if sim_data.get('crisis_mode', False):
+            st.error("🚨 CRISIS MODE ACTIVE")
+        else:
+            st.success("✅ Normal Operation")
+    else:
+        st.warning("⚠️ No simulation data available")
     
     # FUEL Economics Settings
     st.subheader("⚡ FUEL Economics")

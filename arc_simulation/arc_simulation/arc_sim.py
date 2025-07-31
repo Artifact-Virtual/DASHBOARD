@@ -25,8 +25,8 @@ class ArcSimulator:
             "content": data["content"]
         }
         self.blocks.append(block)
-        # Randomly, issue a dispute/challenge to another ARC
-        if valid and random.random() < 0.1:
+        # Randomly, issue a dispute/challenge to another ARC (only if agent_registry and message_bus available)
+        if valid and random.random() < 0.1 and agent_registry and message_bus:
             arc_counts = agent_registry.arc_counts()
             available_arcs = [a for a in range(len(arc_counts)) if a != self.arc_id]
             if available_arcs:
@@ -37,13 +37,14 @@ class ArcSimulator:
                     "target_arc": target_arc,
                     "target_block": idx
                 })
-        # Respond to incoming disputes
-        for evt in message_bus.get_events_for_arc(self.arc_id):
-            if evt["type"] == "block_challenge" and evt["target_block"] < len(self.blocks):
-                self.blocks[evt["target_block"]]["disputed"] = True
-                self.disputed_blocks.add(evt["target_block"])
+        # Respond to incoming disputes (only if message_bus is available)
+        if message_bus:
+            for evt in message_bus.get_events_for_arc(self.arc_id):
+                if evt["type"] == "block_challenge" and evt["target_block"] < len(self.blocks):
+                    self.blocks[evt["target_block"]]["disputed"] = True
+                    self.disputed_blocks.add(evt["target_block"])
         # Allow ADAM to evolve rules if disputes mount
-        if len(self.disputed_blocks) > 2:
+        if len(self.disputed_blocks) > 2 and adam:
             adam.trigger_council("dispute crisis")
             self.disputed_blocks.clear()
         self.history.append(block)

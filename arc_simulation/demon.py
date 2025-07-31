@@ -94,7 +94,7 @@ def main() -> None:
     # Start additional services
     services = {
         "landing_page": {
-            "command": ["npm", "run", "dev"],
+            "command": ["bash", "-c", "cd ../www && npm run dev"],
             "log_path": "/tmp/landing_page.log",
             "process": None
         }
