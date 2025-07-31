@@ -111,13 +111,44 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Auto-refresh functionality
-if auto_refresh and st.session_state.running:
-    time.sleep(stream_speed)
-    st.rerun()
+        st.markdown("""
+        <div class="main-header">
+            <h1>🔴 ARTIFACT VIRTUAL MULTI-ARC PROFESSIONAL ANALYTICS STREAM</h1>
+            <p>Real-time blockchain simulation with live demon data feed</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-# Get current simulation data
-current_data = read_simulation_data()
+        # Sidebar controls and settings
+        with st.sidebar:
+            st.header("🎛️ Professional Controls")
+            sim_data = read_simulation_data()
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("▶️ Start", type="primary", use_container_width=True):
+                    if control_simulation("start"):
+                        st.success("Simulation started!")
+                    st.session_state.running = True
+            with col2:
+                if st.button("⏸️ Pause", use_container_width=True):
+                    if control_simulation("pause"):
+                        st.success("Simulation paused!")
+                    st.session_state.running = False
+            if st.button("🔄 Reset Network", use_container_width=True):
+                if control_simulation("reset"):
+                    st.success("Simulation reset!")
+                st.session_state.running = False
+            st.subheader("⚙️ Stream Settings")
+            stream_speed = st.slider("Update Interval (sec)", 0.1, 3.0, 0.8, 0.1)
+            auto_refresh = st.checkbox("Auto-refresh Dashboard", True)
+            # ...existing sidebar code...
+
+        # Auto-refresh logic (must be after sidebar so variables are set)
+        if 'auto_refresh' in locals() and auto_refresh and st.session_state.running:
+            time.sleep(stream_speed)
+            st.experimental_rerun()
+
+        # Get current simulation data
+        current_data = read_simulation_data()
 
 if current_data is None:
     st.error("🚨 No simulation data available. Make sure the demon is running!")
