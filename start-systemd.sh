@@ -130,6 +130,34 @@ start_tunnel() {
     fi
 }
 
+# Function to start Arc Simulation service
+start_arc_simulation() {
+    echo "\u2699 Starting Arc Simulation service..."
+
+    # Check if demon.py exists
+    if [ ! -f "$SCRIPT_DIR/arc_simulation/demon.py" ]; then
+        echo "\u274c demon.py not found in $SCRIPT_DIR/arc_simulation"
+        exit 1
+    fi
+
+    # Start Arc Simulation in background and save PID
+    python3 "$SCRIPT_DIR/arc_simulation/demon.py" > /tmp/arc_simulation.log 2>&1 &
+    ARC_SIM_PID=$!
+    echo "$ARC_SIM_PID" > "$PID_DIR/arc_simulation.pid"
+    echo "\u2705 Arc Simulation started (PID: $ARC_SIM_PID)"
+
+    # Wait a moment and check if it's running
+    sleep 3
+    if kill -0 "$ARC_SIM_PID" 2>/dev/null; then
+        echo "\u2705 Arc Simulation is running"
+        echo "\ud83d\udcdd Arc Simulation logs: /tmp/arc_simulation.log"
+    else
+        echo "\u274c Arc Simulation failed to start! Check logs:"
+        cat /tmp/arc_simulation.log
+        exit 1
+    fi
+}
+
 # Function to show status
 show_status() {
     echo ""
@@ -149,6 +177,12 @@ show_status() {
         echo "❌ Cloudflare Tunnel: Not running"
     fi
     
+    if [ -f "$PID_DIR/arc_simulation.pid" ] && kill -0 "$(cat "$PID_DIR/arc_simulation.pid")" 2>/dev/null; then
+        echo "✅ Arc Simulation Service: Running (PID: $(cat "$PID_DIR/arc_simulation.pid"))"
+    else
+        echo "❌ Arc Simulation Service: Not running"
+    fi
+    
     # Port check
     if netstat -tlnp 2>/dev/null | grep -q ":8080.*LISTEN"; then
         echo "✅ Port 8080: Listening"
@@ -163,6 +197,7 @@ show_status() {
     echo "📝 Logs:"
     echo "   Vite dev server: /var/log/vite.log"
     echo "   Tunnel logs: /var/log/cloudflared.log"
+    echo "   Arc Simulation: /tmp/arc_simulation.log"
 }
 
 # Main execution
@@ -170,12 +205,13 @@ main() {
     kill_port_8080
     start_vite
     start_tunnel
+    start_arc_simulation
     show_status
-    echo "🎉 All services started successfully!"
-    echo "💡 Service is running in systemd mode"
+    echo "\ud83c\udf89 All services started successfully!"
+    echo "\ud83d\udca1 Service is running in systemd mode"
     # Prevent multiple instances: check if already running
     if pgrep -f "start-systemd.sh" | grep -v "$$" >/dev/null; then
-        echo "❌ Another instance of start-systemd.sh is already running. Exiting."
+        echo "\u274c Another instance of start-systemd.sh is already running. Exiting."
         exit 1
     fi
     # Keep the script running (systemd will manage it)
