@@ -18,6 +18,7 @@ cleanup() {
     pkill -f "python headless_daemon.py" 2>/dev/null || true
     pkill -f "python demon.py" 2>/dev/null || true
     pkill -f "npm start" 2>/dev/null || true
+    pkill -f "serve -s build" 2>/dev/null || true
     pkill -f "streamlit run" 2>/dev/null || true
     
     # Kill any processes using ports
@@ -48,6 +49,7 @@ pkill -f ".venv/bin/python headless_daemon.py" 2>/dev/null || true
 pkill -f "python headless_daemon.py" 2>/dev/null || true
 pkill -f "python demon.py" 2>/dev/null || true
 pkill -f "npm start" 2>/dev/null || true
+pkill -f "serve -s build" 2>/dev/null || true
 
 # Kill any processes using our ports
 echo "🧹 Freeing up ports 8000 and 3000..."
@@ -90,6 +92,7 @@ mkdir -p simulation_data
 echo "✅ Data directory ready"
 
 # Kill any processes using ports 8000 and 3000
+echo "🧹 Cleaning up ports 8000 and 3000..."
 fuser -k 8000/tcp 2>/dev/null || true
 fuser -k 3000/tcp 2>/dev/null || true
 
@@ -135,7 +138,7 @@ else
     exit 1
 fi
 
-# Step 7: Install and start React frontend (if not already done)
+# Step 7: Install and build React frontend
 echo "⚛️  Setting up React Dashboard..."
 if [ ! -d "react-dashboard/node_modules" ]; then
     echo "📦 Installing React dependencies..."
@@ -145,9 +148,13 @@ if [ ! -d "react-dashboard/node_modules" ]; then
     echo "✅ React dependencies installed"
 fi
 
-echo "🚀 Starting Dashboard..."
+echo "� Building React app for production..."
 cd react-dashboard
-npm start &
+npm run build
+echo "✅ React app built successfully"
+
+echo "🚀 Starting Dashboard with serve..."
+serve -s build -l 3000 &
 REACT_PID=$!
 cd ..
 sleep 5
