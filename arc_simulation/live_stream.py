@@ -17,7 +17,7 @@ from adam_simulation.adam_sim import AdamAgent
 # Page config
 st.set_page_config(
     page_title="AV Multi-ARC Professional Stream",
-    page_icon="🔴",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="expanded"
 )
