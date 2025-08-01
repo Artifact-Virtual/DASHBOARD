@@ -12,6 +12,7 @@ cleanup() {
     echo "🛑 Shutting down system..."
     
     # Kill background processes
+    pkill -f ".venv/bin/python headless_daemon.py" 2>/dev/null || true
     pkill -f "python headless_daemon.py" 2>/dev/null || true
     pkill -f "python demon.py" 2>/dev/null || true
     pkill -f "streamlit run" 2>/dev/null || true
@@ -47,6 +48,7 @@ echo "✅ Data directory ready"
 
 # Step 3: Kill any existing processes
 echo "🧹 Cleaning up existing processes..."
+pkill -f ".venv/bin/python headless_daemon.py" 2>/dev/null || true
 pkill -f "python headless_daemon.py" 2>/dev/null || true
 pkill -f "python demon.py" 2>/dev/null || true
 pkill -f "streamlit run" 2>/dev/null || true
@@ -55,7 +57,7 @@ echo "✅ Cleanup complete"
 
 # Step 4: Start the headless background data generator
 echo "⚙️  Starting headless Multi-ARC data generator..."
-python headless_daemon.py &
+.venv/bin/python headless_daemon.py &
 HEADLESS_PID=$!
 sleep 3
 
@@ -93,4 +95,4 @@ echo "Press Ctrl+C to stop the entire system"
 echo "========================================================================="
 
 # Start Advanced Live Stream (this will block until user interrupts)
-streamlit run live_stream.py --server.port 8501 --server.address 0.0.0.0
+.venv/bin/streamlit run live_stream.py --server.port 8501 --server.address 0.0.0.0
