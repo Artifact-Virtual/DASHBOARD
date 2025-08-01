@@ -80,10 +80,15 @@ class LiveContextLoop:
         
         print("✅ Advanced Multi-ARC Constitutional Intelligence Network initialized!")
         
-    def add_arc(self, arc_id):
+    def add_arc(self, arc_id=None):
         """Dynamically add a new ARC to the network with automatic validator assignment"""
+        if arc_id is None:
+            # Auto-generate next available ARC ID
+            existing_ids = list(self.arcs.keys()) if self.arcs else []
+            arc_id = max(existing_ids, default=-1) + 1
+            
         if arc_id in self.arcs:
-            return False
+            return arc_id  # Already exists, return the ID
         
         print(f"🆕 Adding ARC-{arc_id} to network...")
         
@@ -102,12 +107,19 @@ class LiveContextLoop:
             "total_arcs": len(self.arcs)
         })
         
-        return True
+        return arc_id
     
-    def remove_arc(self, arc_id):
+    def remove_arc(self, arc_id=None):
         """Dynamically remove an ARC from the network (minimum 1 ARC required)"""
-        if arc_id not in self.arcs or len(self.arcs) <= 1:
-            return False  # Can't remove if only one left
+        if len(self.arcs) <= 1:
+            return None  # Can't remove if only one left
+        
+        if arc_id is None:
+            # Remove the highest ID ARC
+            arc_id = max(self.arcs.keys())
+            
+        if arc_id not in self.arcs:
+            return None  # ARC doesn't exist
         
         print(f"🗑️ Removing ARC-{arc_id} from network...")
         
@@ -125,7 +137,7 @@ class LiveContextLoop:
             "total_arcs": len(self.arcs)
         })
         
-        return True
+        return arc_id
     
     def _setup_circular_validation(self):
         """Setup circular validation network where each ARC validates others in sequence"""
@@ -161,6 +173,9 @@ class LiveContextLoop:
         self.step_count += 1
         step_events = []
         self.crisis_indicators = []
+        
+        # Update active crises
+        self._update_active_crises()
         
         # === FUEL Economic Foundation Layer ===
         fuel_stats = self.fuel_sim.get_stats()
@@ -416,6 +431,179 @@ class LiveContextLoop:
         if arc_failure_counts:
             return max(arc_failure_counts.keys(), key=lambda k: arc_failure_counts[k])
         return None
+    
+    def inject_crisis(self, crisis_type, severity, duration):
+        """Inject various types of crises into the system for testing resilience"""
+        if not hasattr(self, 'active_crises'):
+            self.active_crises = []
+        
+        crisis = {
+            "type": crisis_type,
+            "severity": severity,
+            "duration": duration,
+            "step_injected": self.step_count,
+            "remaining_duration": duration,
+            "effects": {}
+        }
+        
+        # Apply immediate crisis effects based on type
+        if crisis_type == "Economic Collapse":
+            # Drastically reduce FUEL supply and increase stress
+            for agent in self.fuel_sim.agents:
+                if agent.alive:
+                    agent.fuel *= (1 - severity * 0.8)
+            crisis["effects"]["fuel_reduction"] = severity * 0.8
+            
+        elif crisis_type == "Network Attack":
+            # Force mass validation failures and block disputes
+            self.crisis_mode = True
+            for arc_id in self.arcs:
+                if hasattr(self.arcs[arc_id], 'force_validation_failure'):
+                    self.arcs[arc_id].force_validation_failure = True
+            crisis["effects"]["validation_chaos"] = True
+            
+        elif crisis_type == "Data Corruption":
+            # Corrupt random blocks and force re-validation
+            for arc_id in self.arcs:
+                if self.arcs[arc_id].blocks and random.random() < severity:
+                    # Corrupt latest block
+                    block = self.arcs[arc_id].blocks[-1]
+                    block["corrupted"] = True
+                    block["integrity"] = 1 - severity
+            crisis["effects"]["data_integrity"] = 1 - severity
+            
+        elif crisis_type == "Byzantine Failure":
+            # Make some validators act maliciously
+            byzantine_count = int(len(self.arcs) * severity)
+            byzantine_arcs = random.sample(list(self.arcs.keys()), min(byzantine_count, len(self.arcs)))
+            for arc_id in byzantine_arcs:
+                if hasattr(self.arcs[arc_id], 'byzantine_mode'):
+                    self.arcs[arc_id].byzantine_mode = True
+                if hasattr(self.adams[arc_id], 'malicious'):
+                    self.adams[arc_id].malicious = True
+            crisis["effects"]["byzantine_nodes"] = byzantine_arcs
+            
+        elif crisis_type == "Liquidity Crisis":
+            # Drain liquidity from FUEL subnets
+            for subnet_id in range(len(self.arcs)):
+                if hasattr(self.fuel_sim, 'subnets') and subnet_id < len(self.fuel_sim.subnets):
+                    subnet = self.fuel_sim.subnets[subnet_id]
+                    subnet['liquidity'] *= (1 - severity * 0.9)
+                    subnet['bridge_status'] = 'critical'
+            crisis["effects"]["liquidity_drain"] = severity * 0.9
+            
+        elif crisis_type == "Validator Outage":
+            # Take validators offline
+            outage_count = int(len(self.arcs) * severity)
+            offline_arcs = random.sample(list(self.arcs.keys()), min(outage_count, len(self.arcs)))
+            for arc_id in offline_arcs:
+                if hasattr(self.arcs[arc_id], 'offline'):
+                    self.arcs[arc_id].offline = True
+            crisis["effects"]["offline_validators"] = offline_arcs
+            
+        elif crisis_type == "Bridge Exploit":
+            # Exploit cross-chain bridges
+            if hasattr(self.fuel_sim, 'subnets'):
+                for subnet in self.fuel_sim.subnets:
+                    if random.random() < severity:
+                        exploit_amount = subnet.get('liquidity', 0) * severity * 0.5
+                        subnet['liquidity'] -= exploit_amount
+                        subnet['exploit_detected'] = True
+            crisis["effects"]["bridge_exploits"] = True
+            
+        elif crisis_type == "Governance Attack":
+            # Attack governance mechanisms
+            for arc_id in self.arcs:
+                if hasattr(self.adams[arc_id], 'under_attack'):
+                    self.adams[arc_id].under_attack = True
+                if hasattr(self.adams[arc_id], 'trust_level'):
+                    self.adams[arc_id].trust_level *= (1 - severity * 0.6)
+            crisis["effects"]["governance_compromise"] = severity * 0.6
+            
+        elif crisis_type == "Oracle Manipulation":
+            # Manipulate price feeds and data
+            manipulation_factor = 1 + (random.random() - 0.5) * severity * 2
+            for arc_id in self.arcs:
+                if hasattr(self.arcs[arc_id], 'oracle_manipulation'):
+                    self.arcs[arc_id].oracle_manipulation = manipulation_factor
+            crisis["effects"]["price_manipulation"] = manipulation_factor
+            
+        elif crisis_type == "Flash Loan Attack":
+            # Simulate flash loan attack affecting liquidity
+            if hasattr(self.fuel_sim, 'subnets'):
+                target_subnet = random.choice(self.fuel_sim.subnets)
+                flash_amount = target_subnet.get('liquidity', 0) * severity
+                target_subnet['liquidity'] -= flash_amount
+                target_subnet['flash_attack'] = True
+            crisis["effects"]["flash_loan_attack"] = True
+        
+        self.active_crises.append(crisis)
+        
+        # Log the crisis injection
+        self.governance_events.append({
+            "step": self.step_count,
+            "event": "crisis_injected",
+            "crisis_type": crisis_type,
+            "severity": severity,
+            "duration": duration
+        })
+        
+        print(f"💥 Crisis injected: {crisis_type} (Severity: {severity:.1f}, Duration: {duration} steps)")
+    
+    def _update_active_crises(self):
+        """Update and resolve active crises"""
+        if not hasattr(self, 'active_crises'):
+            return
+        
+        active_crises = []
+        for crisis in self.active_crises:
+            crisis["remaining_duration"] -= 1
+            
+            if crisis["remaining_duration"] > 0:
+                active_crises.append(crisis)
+            else:
+                # Crisis ended - restore systems
+                self._resolve_crisis(crisis)
+        
+        self.active_crises = active_crises
+    
+    def _resolve_crisis(self, crisis):
+        """Resolve crisis effects when duration expires"""
+        crisis_type = crisis["type"]
+        
+        if crisis_type == "Network Attack":
+            for arc_id in self.arcs:
+                if hasattr(self.arcs[arc_id], 'force_validation_failure'):
+                    self.arcs[arc_id].force_validation_failure = False
+                    
+        elif crisis_type == "Byzantine Failure":
+            for arc_id in crisis["effects"].get("byzantine_nodes", []):
+                if arc_id in self.arcs:
+                    if hasattr(self.arcs[arc_id], 'byzantine_mode'):
+                        self.arcs[arc_id].byzantine_mode = False
+                    if hasattr(self.adams[arc_id], 'malicious'):
+                        self.adams[arc_id].malicious = False
+                    
+        elif crisis_type == "Validator Outage":
+            for arc_id in crisis["effects"].get("offline_validators", []):
+                if arc_id in self.arcs:
+                    if hasattr(self.arcs[arc_id], 'offline'):
+                        self.arcs[arc_id].offline = False
+                    
+        elif crisis_type == "Governance Attack":
+            for arc_id in self.arcs:
+                if hasattr(self.adams[arc_id], 'under_attack'):
+                    self.adams[arc_id].under_attack = False
+                if hasattr(self.adams[arc_id], 'trust_level'):
+                    self.adams[arc_id].trust_level = min(1.0, self.adams[arc_id].trust_level * 1.2)
+        
+        self.governance_events.append({
+            "step": self.step_count,
+            "event": "crisis_resolved",
+            "crisis_type": crisis_type
+        })
+        
+        print(f"✅ Crisis resolved: {crisis_type}")
         
     def get_current_state(self):
         """Generate comprehensive multi-ARC network state for dashboard"""

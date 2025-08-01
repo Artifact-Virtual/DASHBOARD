@@ -46,9 +46,25 @@ st.markdown("""
         padding: 1rem;
         border-radius: 10px;
         margin: 0.2rem;
+        min-height: 300px;
+    }
+    .chart-container {
+        height: 400px;
+        margin-bottom: 1rem;
+    }
+    .stable-container {
+        min-height: 500px;
+        margin-bottom: 1rem;
     }
     .live-indicator {
         animation: pulse 2s infinite;
+        background: #ff4444;
+        color: white;
+        padding: 0.5rem;
+        border-radius: 5px;
+        text-align: center;
+        font-weight: bold;
+    }
     }
     @keyframes pulse {
         0% { opacity: 1; }
@@ -65,17 +81,19 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize session state with enhanced LiveContextLoop tracking
+# Initialize session state for stable performance and cached charts
 if 'live_context_loop' not in st.session_state:
-    # Create sophisticated multi-ARC network with circular validation
     fuel_sim = FuelSimulator(n_agents=8)
     st.session_state.live_context_loop = LiveContextLoop(
         ArcSimulator, AdamAgent, fuel_sim, initial_arc_count=3
     )
-    st.session_state.step_count = 0
+if 'running' not in st.session_state:
     st.session_state.running = False
+if 'step_count' not in st.session_state:
+    st.session_state.step_count = 0
+if 'history' not in st.session_state:
     st.session_state.history = []
-    st.session_state.subnet_bridge_threshold = 500  # FUEL tokens to bridge
+if 'analytics_data' not in st.session_state:
     st.session_state.analytics_data = {
         'block_creation_rate': [],
         'agent_performance': [],
@@ -84,6 +102,332 @@ if 'live_context_loop' not in st.session_state:
         'validation_network': [],
         'circular_validation_events': []
     }
+if 'subnet_bridge_threshold' not in st.session_state:
+    st.session_state.subnet_bridge_threshold = 500
+
+# Chart cache for stable rendering
+if 'chart_cache' not in st.session_state:
+    st.session_state.chart_cache = {}
+if 'last_update_step' not in st.session_state:
+    st.session_state.last_update_step = 0
+
+# Utility functions for stable rendering
+@st.cache_data(ttl=1)
+def create_cached_chart(chart_type, data, chart_config):
+    """Create cached charts to reduce rendering overhead"""
+    if chart_type == "bar":
+        return px.bar(data, **chart_config)
+    elif chart_type == "line":
+        return px.line(data, **chart_config)
+    elif chart_type == "scatter":
+        return px.scatter(data, **chart_config)
+    elif chart_type == "pie":
+        return px.pie(data, **chart_config)
+    elif chart_type == "histogram":
+        return px.histogram(data, **chart_config)
+    elif chart_type == "line_polar":
+        return px.line_polar(data, **chart_config)
+    return None
+
+def should_update_chart(chart_id, current_step):
+    """Determine if chart should be updated to prevent unnecessary renders"""
+    last_update = st.session_state.chart_cache.get(f"{chart_id}_last_update", 0)
+    return current_step > last_update
+
+def update_chart_cache(chart_id, current_step):
+    """Mark chart as updated"""
+    st.session_state.chart_cache[f"{chart_id}_last_update"] = current_step
+
+# Report Generation Functions
+def generate_comprehensive_report(history, current_state, report_type):
+    """Generate extremely detailed professional reports with extensive visualizations"""
+    
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                color: white; padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
+        <h1 style="margin: 0; text-align: center;">📊 COMPREHENSIVE SYSTEM ANALYSIS REPORT</h1>
+        <h2 style="margin: 0.5rem 0 0 0; text-align: center; opacity: 0.9;">Advanced Multi-ARC Constitutional Intelligence Network</h2>
+        <p style="margin: 0.5rem 0 0 0; text-align: center; opacity: 0.8;">
+            Generated: {pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")} | Steps: {len(history)} | Type: {report_type}
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Executive Summary
+    st.header("📋 Executive Summary")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric("Total Simulation Steps", len(history))
+    
+    with col2:
+        avg_health = np.mean([h.get('economic_health', 1.0) for h in history[-20:]])
+        st.metric("Avg Economic Health", f"{avg_health:.1%}")
+    
+    with col3:
+        total_arcs = len(current_state.get('validators', []))
+        st.metric("Active ARCs", total_arcs)
+    
+    with col4:
+        total_events = len(current_state.get('system_events', []))
+        st.metric("System Events", total_events)
+    
+    # Detailed Analysis Tabs
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "🏗️ System Architecture",
+        "📈 Performance Analytics", 
+        "💰 Economic Analysis",
+        "🔒 Security & Governance",
+        "📊 Comparative Overlay Analysis"
+    ])
+    
+    with tab1:
+        generate_architecture_analysis(history, current_state)
+    
+    with tab2:
+        generate_performance_analysis(history, current_state)
+    
+    with tab3:
+        generate_economic_analysis(history, current_state)
+    
+    with tab4:
+        generate_security_analysis(history, current_state)
+    
+    with tab5:
+        generate_comparative_overlay_analysis(history, current_state)
+
+def generate_architecture_analysis(history, current_state):
+    """Generate detailed system architecture analysis"""
+    st.subheader("🏗️ System Architecture Analysis")
+    
+    # Network evolution data
+    network_data = []
+    for i, h in enumerate(history):
+        validators = h.get('validators', [])
+        forecasters = h.get('forecasters', [])
+        operators = h.get('operators', [])
+        
+        network_data.append({
+            'Step': i,
+            'Validators': len(validators),
+            'Forecasters': len(forecasters),
+            'Operators': len(operators),
+            'Total_Agents': len(validators) + len(forecasters) + len(operators),
+            'Economic_Health': h.get('economic_health', 1.0) * 100
+        })
+    
+    if network_data:
+        network_df = pd.DataFrame(network_data)
+        
+        # Network evolution chart
+        fig = make_subplots(
+            rows=2, cols=2,
+            subplot_titles=('Agent Population Trends', 'Network Complexity', 
+                          'Health vs Population', 'Current Distribution'),
+            specs=[[{"secondary_y": True}, {"type": "scatter"}],
+                   [{"type": "scatter"}, {"type": "pie"}]]
+        )
+        
+        # Population trends
+        fig.add_trace(
+            go.Scatter(x=network_df['Step'], y=network_df['Validators'], 
+                      name="Validators", line=dict(color='blue')),
+            row=1, col=1
+        )
+        fig.add_trace(
+            go.Scatter(x=network_df['Step'], y=network_df['Forecasters'], 
+                      name="Forecasters", line=dict(color='green')),
+            row=1, col=1
+        )
+        fig.add_trace(
+            go.Scatter(x=network_df['Step'], y=network_df['Operators'], 
+                      name="Operators", line=dict(color='red')),
+            row=1, col=1
+        )
+        
+        fig.update_layout(height=600, title_text="🏗️ Network Architecture Evolution")
+        st.plotly_chart(fig, use_container_width=True)
+
+def generate_performance_analysis(history, current_state):
+    """Generate detailed performance analysis"""
+    st.subheader("📈 Performance Analytics Deep Dive")
+    
+    # Performance data extraction
+    perf_data = []
+    for i, h in enumerate(history):
+        validators = h.get('validators', [])
+        forecasters = h.get('forecasters', [])
+        operators = h.get('operators', [])
+        
+        avg_val_score = np.mean([v.get('score', 0) for v in validators]) if validators else 0
+        avg_fore_accuracy = np.mean([f.get('accuracy', 0) for f in forecasters]) if forecasters else 0
+        avg_op_efficiency = np.mean([o.get('efficiency', 0) for o in operators]) if operators else 0
+        
+        perf_data.append({
+            'Step': i,
+            'Validator_Score': avg_val_score,
+            'Forecaster_Accuracy': avg_fore_accuracy,
+            'Operator_Efficiency': avg_op_efficiency,
+            'Overall_Performance': (avg_val_score + avg_fore_accuracy + avg_op_efficiency) / 3
+        })
+    
+    if perf_data:
+        perf_df = pd.DataFrame(perf_data)
+        
+        # Performance trends
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=perf_df['Step'], y=perf_df['Validator_Score'],
+                               name="Validator Score", line=dict(color='blue', width=3)))
+        fig.add_trace(go.Scatter(x=perf_df['Step'], y=perf_df['Forecaster_Accuracy'],
+                               name="Forecaster Accuracy", line=dict(color='green', width=3)))
+        fig.add_trace(go.Scatter(x=perf_df['Step'], y=perf_df['Operator_Efficiency'],
+                               name="Operator Efficiency", line=dict(color='red', width=3)))
+        
+        fig.update_layout(title="📈 Agent Performance Evolution", height=400)
+        st.plotly_chart(fig, use_container_width=True)
+
+def generate_economic_analysis(history, current_state):
+    """Generate detailed economic analysis"""
+    st.subheader("💰 Economic Analysis Deep Dive")
+    
+    # Economic data
+    econ_data = []
+    for i, h in enumerate(history):
+        fuel_stats = h.get('fuel_mainnet', {})
+        fuel_subnets = h.get('fuel_subnets', [])
+        
+        total_liquidity = sum([s.get('liquidity', 0) for s in fuel_subnets])
+        
+        econ_data.append({
+            'Step': i,
+            'Total_Supply': fuel_stats.get('total_supply', 0),
+            'Circulating': fuel_stats.get('circulating_supply', 0),
+            'Subnet_Liquidity': total_liquidity,
+            'Economic_Health': h.get('economic_health', 1.0) * 100,
+            'Economic_Stress': h.get('economic_stress', 0) * 100
+        })
+    
+    if econ_data:
+        econ_df = pd.DataFrame(econ_data)
+        
+        # Economic trends
+        fig = make_subplots(rows=2, cols=1, 
+                           subplot_titles=('FUEL Supply Evolution', 'Economic Health Trends'))
+        
+        fig.add_trace(
+            go.Scatter(x=econ_df['Step'], y=econ_df['Total_Supply'],
+                      name="Total Supply", line=dict(color='blue')),
+            row=1, col=1
+        )
+        fig.add_trace(
+            go.Scatter(x=econ_df['Step'], y=econ_df['Economic_Health'],
+                      name="Economic Health", line=dict(color='green')),
+            row=2, col=1
+        )
+        
+        fig.update_layout(height=500, title_text="💰 Economic Analysis")
+        st.plotly_chart(fig, use_container_width=True)
+
+def generate_security_analysis(history, current_state):
+    """Generate security and governance analysis"""
+    st.subheader("🔒 Security & Governance Analysis")
+    
+    # Security metrics
+    security_data = []
+    for i, h in enumerate(history):
+        violations = h.get('total_violations', 0)
+        governance_events = len(h.get('governance_events', []))
+        
+        security_data.append({
+            'Step': i,
+            'Violations': violations,
+            'Governance_Events': governance_events,
+            'Security_Score': max(0, 100 - violations * 10)
+        })
+    
+    if security_data:
+        sec_df = pd.DataFrame(security_data)
+        
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=sec_df['Step'], y=sec_df['Security_Score'],
+                               name="Security Score", line=dict(color='green', width=3)))
+        fig.add_trace(go.Scatter(x=sec_df['Step'], y=sec_df['Violations'],
+                               name="Violations", line=dict(color='red', width=3)))
+        
+        fig.update_layout(title="🔒 Security Analysis", height=400)
+        st.plotly_chart(fig, use_container_width=True)
+
+def generate_comparative_overlay_analysis(history, current_state):
+    """Generate comprehensive comparative overlay analysis"""
+    st.subheader("📊 Comparative Overlay Analysis")
+    
+    st.markdown("""
+    ### 🎯 Multi-Dimensional Data Overlay
+    This section overlays all collected data for comprehensive comparative analysis.
+    """)
+    
+    if len(history) > 5:
+        # Extract all metrics
+        overlay_data = []
+        for i, h in enumerate(history):
+            overlay_data.append({
+                'Step': i,
+                'Economic_Health': h.get('economic_health', 1.0) * 100,
+                'Network_Size': len(h.get('validators', [])) + len(h.get('forecasters', [])) + len(h.get('operators', [])),
+                'FUEL_Supply': h.get('fuel_mainnet', {}).get('total_supply', 0),
+                'Violations': h.get('total_violations', 0),
+                'Stress_Level': h.get('economic_stress', 0) * 100
+            })
+        
+        overlay_df = pd.DataFrame(overlay_data)
+        
+        # Normalize for overlay
+        normalized_data = overlay_df.copy()
+        for col in ['Economic_Health', 'Network_Size', 'FUEL_Supply', 'Violations', 'Stress_Level']:
+            if normalized_data[col].max() > 0:
+                normalized_data[f'{col}_norm'] = (normalized_data[col] / normalized_data[col].max()) * 100
+        
+        # All metrics overlay
+        fig = go.Figure()
+        colors = ['blue', 'green', 'red', 'orange', 'purple']
+        metrics = ['Economic_Health', 'Network_Size', 'FUEL_Supply', 'Violations', 'Stress_Level']
+        
+        for i, metric in enumerate(metrics):
+            fig.add_trace(
+                go.Scatter(
+                    x=normalized_data['Step'], 
+                    y=normalized_data[f'{metric}_norm'],
+                    name=metric.replace('_', ' '),
+                    line=dict(color=colors[i], width=2),
+                    opacity=0.8
+                )
+            )
+        
+        fig.update_layout(
+            title="📊 Ultimate Comparative Overlay Analysis",
+            height=600,
+            yaxis_title="Normalized Values (0-100)"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Correlation matrix
+        st.subheader("🔗 Correlation Analysis")
+        corr_matrix = overlay_df[['Economic_Health', 'Network_Size', 'FUEL_Supply', 'Violations', 'Stress_Level']].corr()
+        
+        fig_corr = px.imshow(
+            corr_matrix.values,
+            labels=dict(x="Metrics", y="Metrics", color="Correlation"),
+            x=[col.replace('_', ' ') for col in corr_matrix.columns],
+            y=[col.replace('_', ' ') for col in corr_matrix.index],
+            color_continuous_scale='RdBu',
+            title="📈 Cross-Metric Correlation Matrix"
+        )
+        st.plotly_chart(fig_corr, use_container_width=True)
+        
+        # Statistical summary
+        st.subheader("📈 Statistical Summary")
+        st.dataframe(overlay_df.describe(), use_container_width=True)
 
 # Professional Header
 st.markdown("""
@@ -134,11 +478,166 @@ with st.sidebar:
     )
     st.session_state.subnet_bridge_threshold = bridge_threshold
     
+    # Advanced Tokenomics Configuration
+    st.subheader("💰 Treasury & Tokenomics")
+    
+    # Initialize tokenomics session state
+    if 'tokenomics_config' not in st.session_state:
+        st.session_state.tokenomics_config = {
+            'initial_treasury': 1000000,
+            'fuel_cost': 0.01,
+            'target_price': 1.0,
+            'burn_rate': 0.02,
+            'staking_apy': 0.12,
+            'bridge_fee_rate': 0.005,
+            'validator_reward_rate': 0.1,
+            'inflation_rate': 0.03
+        }
+    
+    with st.expander("🏦 Treasury Configuration"):
+        initial_treasury = st.number_input(
+            "Initial Treasury (FUEL)", 
+            min_value=10000, 
+            max_value=10000000, 
+            value=st.session_state.tokenomics_config['initial_treasury'],
+            step=10000
+        )
+        
+        target_price = st.number_input(
+            "Target Price ($)", 
+            min_value=0.001, 
+            max_value=100.0, 
+            value=st.session_state.tokenomics_config['target_price'],
+            step=0.01,
+            format="%.3f"
+        )
+        
+        fuel_cost = st.number_input(
+            "Transaction Cost (FUEL)", 
+            min_value=0.001, 
+            max_value=10.0, 
+            value=st.session_state.tokenomics_config['fuel_cost'],
+            step=0.001,
+            format="%.3f"
+        )
+        
+        # Update tokenomics config
+        st.session_state.tokenomics_config.update({
+            'initial_treasury': initial_treasury,
+            'target_price': target_price,
+            'fuel_cost': fuel_cost
+        })
+    
+    with st.expander("⚙️ Economic Parameters"):
+        burn_rate = st.slider("Burn Rate", 0.0, 0.1, st.session_state.tokenomics_config['burn_rate'], 0.001)
+        staking_apy = st.slider("Staking APY", 0.0, 0.5, st.session_state.tokenomics_config['staking_apy'], 0.01)
+        bridge_fee_rate = st.slider("Bridge Fee Rate", 0.001, 0.02, st.session_state.tokenomics_config['bridge_fee_rate'], 0.001)
+        validator_reward_rate = st.slider("Validator Reward Rate", 0.01, 0.3, st.session_state.tokenomics_config['validator_reward_rate'], 0.01)
+        inflation_rate = st.slider("Inflation Rate", 0.0, 0.1, st.session_state.tokenomics_config['inflation_rate'], 0.001)
+        
+        # Update rates
+        st.session_state.tokenomics_config.update({
+            'burn_rate': burn_rate,
+            'staking_apy': staking_apy,
+            'bridge_fee_rate': bridge_fee_rate,
+            'validator_reward_rate': validator_reward_rate,
+            'inflation_rate': inflation_rate
+        })
+    
+    # Price Target Strategy
+    price_strategy = st.selectbox("Price Growth Strategy", [
+        "Conservative Growth",
+        "Aggressive Growth", 
+        "BTC Parity Target",
+        "ETH Parity Target",
+        "Stable Dollar Peg",
+        "Custom Target"
+    ])
+    
+    if price_strategy == "Custom Target":
+        custom_target = st.number_input("Custom Target Price ($)", 0.001, 100000.0, 1.0)
+        st.session_state.tokenomics_config['custom_target'] = custom_target
+    
+    st.session_state.tokenomics_config['price_strategy'] = price_strategy
+    
     # Analytics Settings
     st.subheader("📊 Analytics Settings")
     history_window = st.slider("History Window (steps)", 10, 100, 50, 5)
     show_predictions = st.checkbox("Show Forecaster Predictions", True)
     show_disputes = st.checkbox("Show Block Disputes", True)
+    
+    # Dynamic ARC Management
+    st.subheader("🔧 Dynamic ARC Management")
+    current_arcs = len(st.session_state.live_context_loop.arcs) if hasattr(st.session_state, 'live_context_loop') else 3
+    st.info(f"Current ARCs: {current_arcs}")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("➕ Add ARC", use_container_width=True):
+            if hasattr(st.session_state, 'live_context_loop'):
+                # Add new ARC with auto-generated ID
+                new_arc_id = st.session_state.live_context_loop.add_arc()
+                st.success(f"Added ARC-{new_arc_id}")
+                st.rerun()
+    
+    with col2:
+        if st.button("➖ Remove ARC", use_container_width=True):
+            if hasattr(st.session_state, 'live_context_loop') and current_arcs > 1:
+                removed_arc = st.session_state.live_context_loop.remove_arc()
+                if removed_arc:
+                    st.success(f"Removed ARC-{removed_arc}")
+                    st.rerun()
+                else:
+                    st.warning("Cannot remove ARC")
+            else:
+                st.warning("Cannot remove - minimum 1 ARC required")
+    
+    # Crisis Injection System
+    st.subheader("⚠️ Crisis Injection")
+    crisis_type = st.selectbox("Crisis Type", [
+        "None",
+        "Economic Collapse",
+        "Network Attack",
+        "Data Corruption",
+        "Byzantine Failure",
+        "Liquidity Crisis",
+        "Validator Outage",
+        "Bridge Exploit",
+        "Governance Attack",
+        "Oracle Manipulation",
+        "Flash Loan Attack"
+    ])
+    
+    crisis_severity = st.slider("Crisis Severity", 0.1, 1.0, 0.5, 0.1)
+    crisis_duration = st.slider("Crisis Duration (steps)", 1, 20, 5, 1)
+    
+    if st.button("💥 Inject Crisis", use_container_width=True) and crisis_type != "None":
+        if hasattr(st.session_state, 'live_context_loop'):
+            st.session_state.live_context_loop.inject_crisis(crisis_type, crisis_severity, crisis_duration)
+            st.error(f"💥 {crisis_type} injected! Severity: {crisis_severity:.1f}, Duration: {crisis_duration} steps")
+            st.rerun()
+    
+    # Report Generation
+    st.subheader("📄 Report Generation")
+    if not st.session_state.running and len(st.session_state.history) > 10:
+        report_type = st.selectbox("Report Type", [
+            "Comprehensive Analysis",
+            "Performance Summary", 
+            "Economic Analysis",
+            "Security Assessment",
+            "Network Health Report"
+        ])
+        
+        if st.button("📊 Generate Detailed Report", use_container_width=True):
+            st.session_state.generate_report = True
+            st.session_state.report_type = report_type
+            st.success("Report generation initiated!")
+            st.rerun()
+    else:
+        if st.session_state.running:
+            st.info("⏸️ Pause simulation to generate reports")
+        else:
+            st.info("📊 Need more data (10+ steps) for reports")
     
     # Live Status
     st.subheader("📡 System Status")
@@ -380,7 +879,7 @@ if st.session_state.step_count > 0:
                 if fuel_subnets:
                     st.subheader("⚡ Subnet FUEL Distribution")
                     
-                    # Create comprehensive FUEL distribution visualization
+                    # Create comprehensive FUEL distribution visualization with stable container
                     subnet_data = []
                     for subnet in fuel_subnets:
                         subnet_data.extend([
@@ -389,24 +888,35 @@ if st.session_state.step_count > 0:
                             {"Subnet": f"ARC-{subnet['arc_id']}", "Type": "Rewards", "Amount": subnet.get('rewards_pool', 0)}
                         ])
                     
-                    if subnet_data:
+                    if subnet_data and should_update_chart("fuel_distribution", st.session_state.step_count):
                         subnet_df = pd.DataFrame(subnet_data)
                         
-                        # Stacked bar chart for comprehensive view
-                        fig_subnet_dist = px.bar(
-                            subnet_df, 
-                            x='Subnet', 
-                            y='Amount', 
-                            color='Type',
-                            title="⚡ Comprehensive Subnet FUEL Analysis",
-                            color_discrete_map={
-                                'Liquidity': '#1f77b4',
-                                'Staked': '#ff7f0e', 
-                                'Rewards': '#2ca02c'
-                            }
-                        )
-                        fig_subnet_dist.update_layout(height=400)
-                        st.plotly_chart(fig_subnet_dist, use_container_width=True)
+                        # Stable chart container
+                        with st.container():
+                            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+                            
+                            # Cached stacked bar chart for comprehensive view
+                            fig_subnet_dist = create_cached_chart(
+                                "bar",
+                                subnet_df,
+                                {
+                                    'x': 'Subnet', 
+                                    'y': 'Amount', 
+                                    'color': 'Type',
+                                    'title': "⚡ Comprehensive Subnet FUEL Analysis",
+                                    'color_discrete_map': {
+                                        'Liquidity': '#1f77b4',
+                                        'Staked': '#ff7f0e', 
+                                        'Rewards': '#2ca02c'
+                                    },
+                                    'height': 350
+                                }
+                            )
+                            st.plotly_chart(fig_subnet_dist, use_container_width=True, key="fuel_dist")
+                            
+                            st.markdown('</div>', unsafe_allow_html=True)
+                        
+                        update_chart_cache("fuel_distribution", st.session_state.step_count)
                         
                         # Subnet performance table
                         subnet_summary = []
@@ -474,19 +984,33 @@ if st.session_state.step_count > 0:
                     if flow_data:
                         flow_df = pd.DataFrame(flow_data)
                         
-                        # Bridge performance scatter plot
-                        fig_bridge = px.scatter(
-                            flow_df,
-                            x='Transaction Volume',
-                            y='Liquidity Ratio',
-                            color='Bridge Status',
-                            size='Transaction Volume',
-                            title="🌉 Bridge Performance Matrix",
-                            color_discrete_map={'active': 'green', 'pending': 'orange', 'inactive': 'red'}
-                        )
-                        fig_bridge.add_hline(y=1.0, line_dash="dash", line_color="red", 
-                                           annotation_text="Bridge Threshold")
-                        st.plotly_chart(fig_bridge, use_container_width=True)
+                        if should_update_chart("bridge_flow", st.session_state.step_count):
+                            # Stable chart container
+                            with st.container():
+                                st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+                                
+                                # Cached bridge performance scatter plot
+                                fig_bridge = create_cached_chart(
+                                    "scatter",
+                                    flow_df,
+                                    {
+                                        'x': 'Transaction Volume',
+                                        'y': 'Liquidity Ratio',
+                                        'color': 'Bridge Status',
+                                        'size': 'Transaction Volume',
+                                        'title': "🌉 Bridge Performance Matrix",
+                                        'color_discrete_map': {'active': 'green', 'pending': 'orange', 'inactive': 'red'},
+                                        'height': 350
+                                    }
+                                )
+                                # Add bridge threshold line
+                                fig_bridge.add_hline(y=1.0, line_dash="dash", line_color="red", 
+                                                   annotation_text="Bridge Threshold")
+                                st.plotly_chart(fig_bridge, use_container_width=True, key="bridge_flow")
+                                
+                                st.markdown('</div>', unsafe_allow_html=True)
+                            
+                            update_chart_cache("bridge_flow", st.session_state.step_count)
                 else:
                     st.info("Bridge analytics will appear when subnet data is available")
             
@@ -525,96 +1049,111 @@ if st.session_state.step_count > 0:
                 if len(st.session_state.history) > 10:
                     st.subheader("📈 Economic Trend Analysis")
                     
-                    # Extract economic data from history
-                    econ_data = []
-                    for h in st.session_state.history[-20:]:
-                        econ_data.append({
-                            'Step': h.get('step', 0),
-                            'Economic Health': h.get('economic_health', 1.0) * 100,
-                            'Economic Stress': h.get('economic_stress', 0) * 100,
-                            'Agents Alive': h.get('fuel_alive', 0),
-                            'Avg Fuel': h.get('fuel_avg', 0)
-                        })
-                    
-                    econ_df = pd.DataFrame(econ_data)
-                    
-                    # Multi-metric economic dashboard
-                    fig_econ = make_subplots(
-                        rows=2, cols=2,
-                        subplot_titles=('Economic Health %', 'Agent Population', 'Economic Stress %', 'Average Fuel'),
-                        specs=[[{"secondary_y": False}, {"secondary_y": False}],
-                               [{"secondary_y": False}, {"secondary_y": False}]]
-                    )
-                    
-                    # Economic health trend
-                    fig_econ.add_trace(
-                        go.Scatter(
-                            x=econ_df['Step'], 
-                            y=econ_df['Economic Health'],
-                            name="Health %",
-                            line=dict(color='green', width=3)
-                        ),
-                        row=1, col=1
-                    )
-                    
-                    # Agent population
-                    fig_econ.add_trace(
-                        go.Scatter(
-                            x=econ_df['Step'], 
-                            y=econ_df['Agents Alive'],
-                            name="Alive",
-                            line=dict(color='blue', width=3)
-                        ),
-                        row=1, col=2
-                    )
-                    
-                    # Economic stress
-                    fig_econ.add_trace(
-                        go.Scatter(
-                            x=econ_df['Step'], 
-                            y=econ_df['Economic Stress'],
-                            name="Stress %",
-                            line=dict(color='red', width=3),
-                            fill='tonexty'
-                        ),
-                        row=2, col=1
-                    )
-                    
-                    # Average fuel
-                    fig_econ.add_trace(
-                        go.Scatter(
-                            x=econ_df['Step'], 
-                            y=econ_df['Avg Fuel'],
-                            name="Avg Fuel",
-                            line=dict(color='orange', width=3)
-                        ),
-                        row=2, col=2
-                    )
-                    
-                    fig_econ.update_layout(
-                        height=600, 
-                        title_text="📊 Comprehensive Economic Analysis",
-                        showlegend=False
-                    )
-                    st.plotly_chart(fig_econ, use_container_width=True)
-                    
-                    # Economic insights
-                    latest_health = econ_df['Economic Health'].iloc[-1]
-                    health_trend = econ_df['Economic Health'].iloc[-1] - econ_df['Economic Health'].iloc[-5] if len(econ_df) >= 5 else 0
-                    
-                    if latest_health > 80:
-                        st.success(f"🟢 Economy is thriving! Health: {latest_health:.1f}%")
-                    elif latest_health > 60:
-                        st.info(f"🟡 Economy is stable. Health: {latest_health:.1f}%")
-                    else:
-                        st.error(f"🔴 Economy needs attention! Health: {latest_health:.1f}%")
-                    
-                    if health_trend > 5:
-                        st.info("📈 Economic health is improving!")
-                    elif health_trend < -5:
-                        st.warning("📉 Economic health is declining!")
-                    else:
-                        st.info("➡️ Economic health is stable")
+                    if should_update_chart("economic_trends", st.session_state.step_count):
+                        # Extract economic data from history
+                        econ_data = []
+                        for h in st.session_state.history[-20:]:
+                            econ_data.append({
+                                'Step': h.get('step', 0),
+                                'Economic Health': h.get('economic_health', 1.0) * 100,
+                                'Economic Stress': h.get('economic_stress', 0) * 100,
+                                'Agents Alive': h.get('fuel_alive', 0),
+                                'Avg Fuel': h.get('fuel_avg', 0)
+                            })
+                        
+                        econ_df = pd.DataFrame(econ_data)
+                        
+                        # Stable chart container
+                        with st.container():
+                            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+                            
+                            # Cached multi-metric economic dashboard
+                            @st.cache_data(show_spinner=False)
+                            def create_economic_dashboard(data_hash):
+                                fig_econ = make_subplots(
+                                    rows=2, cols=2,
+                                    subplot_titles=('Economic Health %', 'Agent Population', 'Economic Stress %', 'Average Fuel'),
+                                    specs=[[{"secondary_y": False}, {"secondary_y": False}],
+                                           [{"secondary_y": False}, {"secondary_y": False}]]
+                                )
+                                
+                                # Economic health trend
+                                fig_econ.add_trace(
+                                    go.Scatter(
+                                        x=econ_df['Step'], 
+                                        y=econ_df['Economic Health'],
+                                        name="Health %",
+                                        line=dict(color='green', width=3)
+                                    ),
+                                    row=1, col=1
+                                )
+                                
+                                # Agent population
+                                fig_econ.add_trace(
+                                    go.Scatter(
+                                        x=econ_df['Step'], 
+                                        y=econ_df['Agents Alive'],
+                                        name="Alive",
+                                        line=dict(color='blue', width=3)
+                                    ),
+                                    row=1, col=2
+                                )
+                                
+                                # Economic stress
+                                fig_econ.add_trace(
+                                    go.Scatter(
+                                        x=econ_df['Step'], 
+                                        y=econ_df['Economic Stress'],
+                                        name="Stress %",
+                                        line=dict(color='red', width=3)
+                                    ),
+                                    row=2, col=1
+                                )
+                                
+                                # Average fuel
+                                fig_econ.add_trace(
+                                    go.Scatter(
+                                        x=econ_df['Step'], 
+                                        y=econ_df['Avg Fuel'],
+                                        name="Fuel",
+                                        line=dict(color='orange', width=3)
+                                    ),
+                                    row=2, col=2
+                                )
+                                
+                                fig_econ.update_layout(
+                                    height=500,
+                                    title_text="📊 Economic Health Dashboard",
+                                    showlegend=False
+                                )
+                                return fig_econ
+                            
+                            # Create cached economic dashboard
+                            data_hash = hash(str(econ_df.values.tobytes()))
+                            fig_econ = create_economic_dashboard(data_hash)
+                            st.plotly_chart(fig_econ, use_container_width=True, key="economic_trends")
+                            
+                            st.markdown('</div>', unsafe_allow_html=True)
+                        
+                        update_chart_cache("economic_trends", st.session_state.step_count)
+                        
+                        # Economic insights
+                        latest_health = econ_df['Economic Health'].iloc[-1]
+                        health_trend = econ_df['Economic Health'].iloc[-1] - econ_df['Economic Health'].iloc[-5] if len(econ_df) >= 5 else 0
+                        
+                        if latest_health > 80:
+                            st.success(f"🟢 Economy is thriving! Health: {latest_health:.1f}%")
+                        elif latest_health > 60:
+                            st.info(f"🟡 Economy is stable. Health: {latest_health:.1f}%")
+                        else:
+                            st.error(f"🔴 Economy needs attention! Health: {latest_health:.1f}%")
+                        
+                        if health_trend > 5:
+                            st.info("📈 Economic health is improving!")
+                        elif health_trend < -5:
+                            st.warning("📉 Economic health is declining!")
+                        else:
+                            st.info("➡️ Economic health is stable")
                 else:
                     st.info("📊 Collecting economic data... Need more simulation steps for trend analysis")
         
@@ -639,93 +1178,146 @@ if st.session_state.step_count > 0:
                 ])
                 
                 with performance_tab1:
-                    # REAL-TIME PERFORMANCE CHARTS
-                    if validators:
+                    # REAL-TIME PERFORMANCE CHARTS with stable containers
+                    if validators and should_update_chart("validators", st.session_state.step_count):
                         st.subheader("🛡️ Validator Performance - Live Charts")
                         validator_df = pd.DataFrame(validators)
                         
-                        # Live validator earnings chart
-                        fig_val_earnings = px.bar(
-                            validator_df, 
-                            x='id', 
-                            y='earnings', 
-                            color='score',
-                            title="💰 Validator Earnings (Live)",
-                            color_continuous_scale="Viridis"
-                        )
-                        fig_val_earnings.update_layout(height=400)
-                        st.plotly_chart(fig_val_earnings, use_container_width=True)
+                        # Create stable chart container
+                        with st.container():
+                            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+                            
+                            # Cached validator earnings chart
+                            fig_val_earnings = create_cached_chart(
+                                "bar",
+                                validator_df,
+                                {
+                                    'x': 'id', 
+                                    'y': 'earnings', 
+                                    'color': 'score',
+                                    'title': "💰 Validator Earnings (Live)",
+                                    'color_continuous_scale': "Viridis",
+                                    'height': 350
+                                }
+                            )
+                            st.plotly_chart(fig_val_earnings, use_container_width=True, key="val_earnings")
+                            
+                            st.markdown('</div>', unsafe_allow_html=True)
                         
-                        # Validator performance vs fuel correlation
-                        fig_val_corr = px.scatter(
-                            validator_df,
-                            x='fuel',
-                            y='score',
-                            size='earnings',
-                            color='alive',
-                            title="🔄 Validator Performance Correlation",
-                            color_discrete_map={True: 'green', False: 'red'}
-                        )
-                        st.plotly_chart(fig_val_corr, use_container_width=True)
+                        # Stable correlation chart container
+                        with st.container():
+                            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+                            
+                            fig_val_corr = create_cached_chart(
+                                "scatter",
+                                validator_df,
+                                {
+                                    'x': 'fuel',
+                                    'y': 'score',
+                                    'size': 'earnings',
+                                    'color': 'alive',
+                                    'title': "🔄 Validator Performance Correlation",
+                                    'color_discrete_map': {True: 'green', False: 'red'},
+                                    'height': 350
+                                }
+                            )
+                            st.plotly_chart(fig_val_corr, use_container_width=True, key="val_corr")
+                            
+                            st.markdown('</div>', unsafe_allow_html=True)
+                        
+                        update_chart_cache("validators", st.session_state.step_count)
                     
-                    if forecasters:
+                    if forecasters and should_update_chart("forecasters", st.session_state.step_count):
                         st.subheader("🔮 Forecaster Analytics - Live Data")
                         forecaster_df = pd.DataFrame(forecasters)
                         
-                        # Live forecaster accuracy vs predictions
-                        fig_forecast = make_subplots(
-                            rows=1, cols=2,
-                            subplot_titles=('Prediction Volume', 'Accuracy Distribution'),
-                            specs=[[{"type": "bar"}, {"type": "histogram"}]]
-                        )
+                        # Stable forecaster chart container
+                        with st.container():
+                            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+                            
+                            # Live forecaster accuracy vs predictions
+                            fig_forecast = make_subplots(
+                                rows=1, cols=2,
+                                subplot_titles=('Prediction Volume', 'Accuracy Distribution'),
+                                specs=[[{"type": "bar"}, {"type": "histogram"}]]
+                            )
+                            
+                            fig_forecast.add_trace(
+                                go.Bar(
+                                    x=forecaster_df['id'], 
+                                    y=forecaster_df['predictions'],
+                                    name="Predictions",
+                                    marker_color='lightblue'
+                                ),
+                                row=1, col=1
+                            )
+                            
+                            fig_forecast.add_trace(
+                                go.Histogram(
+                                    x=forecaster_df['accuracy'],
+                                    name="Accuracy",
+                                    marker_color='orange'
+                                ),
+                                row=1, col=2
+                            )
+                            
+                            fig_forecast.update_layout(
+                                height=350, 
+                                title_text="🔮 Live Forecaster Performance"
+                            )
+                            st.plotly_chart(fig_forecast, use_container_width=True, key="forecaster_perf")
+                            
+                            st.markdown('</div>', unsafe_allow_html=True)
                         
-                        fig_forecast.add_trace(
-                            go.Bar(
-                                x=forecaster_df['id'], 
-                                y=forecaster_df['predictions'],
-                                name="Predictions",
-                                marker_color='lightblue'
-                            ),
-                            row=1, col=1
-                        )
-                        
-                        fig_forecast.add_trace(
-                            go.Histogram(
-                                x=forecaster_df['accuracy'],
-                                name="Accuracy",
-                                marker_color='orange'
-                            ),
-                            row=1, col=2
-                        )
-                        
-                        fig_forecast.update_layout(height=400, title_text="🔮 Live Forecaster Performance")
-                        st.plotly_chart(fig_forecast, use_container_width=True)
+                        update_chart_cache("forecasters", st.session_state.step_count)
                     
-                    if operators:
+                    if operators and should_update_chart("operators", st.session_state.step_count):
                         st.subheader("⚙️ Operator Productivity - Real-time")
                         operator_df = pd.DataFrame(operators)
                         
-                        # Live operator productivity chart
-                        fig_ops = px.line_polar(
-                            operator_df,
-                            r='productivity',
-                            theta='id',
-                            line_close=True,
-                            title="⚙️ Operator Productivity Radar (Live)"
-                        )
-                        fig_ops.update_traces(fill='toself')
-                        st.plotly_chart(fig_ops, use_container_width=True)
+                        # Stable operator chart containers
+                        with st.container():
+                            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+                            
+                            # Cached operator productivity radar
+                            fig_ops = create_cached_chart(
+                                "line_polar",
+                                operator_df,
+                                {
+                                    'r': 'productivity',
+                                    'theta': 'id',
+                                    'line_close': True,
+                                    'title': "⚙️ Operator Productivity Radar (Live)",
+                                    'height': 350
+                                }
+                            )
+                            if fig_ops:
+                                fig_ops.update_traces(fill='toself')
+                                st.plotly_chart(fig_ops, use_container_width=True, key="ops_radar")
+                            
+                            st.markdown('</div>', unsafe_allow_html=True)
                         
-                        # Jobs completion bar chart
-                        fig_jobs = px.bar(
-                            operator_df,
-                            x='id',
-                            y='jobs_done',
-                            color='productivity',
-                            title="📋 Jobs Completed (Live Updates)",
-                            color_continuous_scale="Plasma"
-                        )
-                        st.plotly_chart(fig_jobs, use_container_width=True)
+                        with st.container():
+                            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+                            
+                            # Jobs completion bar chart
+                            fig_jobs = create_cached_chart(
+                                "bar",
+                                operator_df,
+                                {
+                                    'x': 'id',
+                                    'y': 'jobs_done',
+                                    'color': 'productivity',
+                                    'title': "📋 Jobs Completed (Live Updates)",
+                                    'color_continuous_scale': "Plasma",
+                                    'height': 350
+                                }
+                            )
+                            st.plotly_chart(fig_jobs, use_container_width=True, key="jobs_done")
+                            
+                            st.markdown('</div>', unsafe_allow_html=True)
+                        
+                        update_chart_cache("operators", st.session_state.step_count)
                 
                 with performance_tab2:
                     # DETAILED AGENT ANALYSIS WITH LIVE METRICS
@@ -1126,37 +1718,259 @@ if st.session_state.step_count > 0:
         with research_tab2:
             st.subheader("📋 Complete Agent Performance Analysis")
             
-            # Check if agent data is available
+            # Enhanced agent performance visualization
             if 'agents' in current_state and current_state['agents']:
-                # Detailed agent breakdowns
                 all_agents_df = pd.DataFrame(current_state['agents'])
                 
-                # Performance by type
+                # Agent performance overview charts
+                st.markdown("### 📊 Agent Performance Visualizations")
+                
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    # Agent type distribution
+                    type_counts = all_agents_df['type'].value_counts()
+                    fig_types = px.pie(
+                        values=type_counts.values,
+                        names=type_counts.index,
+                        title="🎯 Agent Type Distribution",
+                        color_discrete_sequence=px.colors.qualitative.Set3
+                    )
+                    st.plotly_chart(fig_types, use_container_width=True)
+                
+                with col2:
+                    # Agent performance correlation
+                    if 'score' in all_agents_df.columns and 'earnings' in all_agents_df.columns:
+                        fig_corr = px.scatter(
+                            all_agents_df,
+                            x='score',
+                            y='earnings',
+                            color='type',
+                            size='fuel' if 'fuel' in all_agents_df.columns else None,
+                            title="💰 Performance vs Earnings Correlation",
+                            hover_data=['id', 'alive', 'arc'] if 'arc' in all_agents_df.columns else ['id', 'alive']
+                        )
+                        st.plotly_chart(fig_corr, use_container_width=True)
+                
+                # Detailed agent analysis by type
                 for agent_type in ['validator', 'forecaster', 'operator']:
                     type_agents = all_agents_df[all_agents_df['type'] == agent_type]
                     if not type_agents.empty:
-                        st.write(f"**{agent_type.title()} Detailed Analysis:**")
-                        st.dataframe(type_agents, use_container_width=True)
+                        st.markdown(f"### 🔍 {agent_type.title()} Deep Analysis")
                         
-                        # Performance statistics
-                    if agent_type == 'validator':
-                        st.metric("Total Earnings", f"${type_agents['earnings'].sum()}")
-                        st.metric("Average Earnings", f"${type_agents['earnings'].mean():.2f}")
-                    elif agent_type == 'forecaster':
-                        st.metric("Total Predictions", type_agents['score'].sum())
-                        st.metric("Average Accuracy", f"{type_agents['score'].mean():.2f}")
-                    elif agent_type == 'operator':
-                        st.metric("Total Jobs", type_agents['jobs_done'].sum())
-                        st.metric("Average Productivity", f"{type_agents['jobs_done'].mean():.2f}")
+                        # Performance metrics
+                        col1, col2, col3, col4 = st.columns(4)
+                        
+                        with col1:
+                            if agent_type == 'validator':
+                                st.metric("Total Earnings", f"${type_agents['earnings'].sum():.2f}")
+                            elif agent_type == 'forecaster':
+                                st.metric("Total Predictions", int(type_agents['score'].sum()))
+                            elif agent_type == 'operator':
+                                st.metric("Total Jobs", int(type_agents['jobs_done'].sum()))
+                        
+                        with col2:
+                            if agent_type == 'validator':
+                                st.metric("Avg Earnings", f"${type_agents['earnings'].mean():.2f}")
+                            elif agent_type == 'forecaster':
+                                st.metric("Avg Accuracy", f"{type_agents['score'].mean():.2f}")
+                            elif agent_type == 'operator':
+                                st.metric("Avg Productivity", f"{type_agents['jobs_done'].mean():.2f}")
+                        
+                        with col3:
+                            alive_count = type_agents['alive'].sum() if 'alive' in type_agents.columns else len(type_agents)
+                            st.metric("Active Agents", alive_count)
+                        
+                        with col4:
+                            if 'fuel' in type_agents.columns:
+                                st.metric("Avg FUEL", f"{type_agents['fuel'].mean():.1f}")
+                        
+                        # Performance distribution chart
+                        if agent_type == 'validator' and 'earnings' in type_agents.columns:
+                            fig_dist = px.histogram(
+                                type_agents,
+                                x='earnings',
+                                title=f"💰 {agent_type.title()} Earnings Distribution",
+                                nbins=20
+                            )
+                            st.plotly_chart(fig_dist, use_container_width=True)
+                        
+                        elif agent_type == 'forecaster' and 'score' in type_agents.columns:
+                            fig_dist = px.histogram(
+                                type_agents,
+                                x='score',
+                                title=f"🎯 {agent_type.title()} Accuracy Distribution",
+                                nbins=20
+                            )
+                            st.plotly_chart(fig_dist, use_container_width=True)
+                        
+                        elif agent_type == 'operator' and 'jobs_done' in type_agents.columns:
+                            fig_dist = px.histogram(
+                                type_agents,
+                                x='jobs_done',
+                                title=f"⚙️ {agent_type.title()} Productivity Distribution",
+                                nbins=20
+                            )
+                            st.plotly_chart(fig_dist, use_container_width=True)
+                        
+                        # Detailed data table
+                        with st.expander(f"📄 {agent_type.title()} Detailed Data"):
+                            st.dataframe(type_agents, use_container_width=True)
+                            
             else:
                 st.info("Agent performance data not available - LiveContextLoop uses different agent structure")
-                st.write("**Available Data:**")
-                st.write(f"- FUEL Agents Alive: {current_state.get('fuel_alive', 'N/A')}")
-                st.write(f"- Economic Health: {current_state.get('economic_health', 'N/A')}")
-                st.write(f"- System Complexity: {current_state.get('system_complexity', 'N/A')}")
+                
+                # Alternative visualization for LiveContextLoop data
+                st.markdown("### 📊 Available System Metrics")
+                
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    fuel_alive = current_state.get('fuel_alive', 0)
+                    st.metric("FUEL Agents Alive", fuel_alive)
+                
+                with col2:
+                    economic_health = current_state.get('economic_health', 0)
+                    st.metric("Economic Health", f"{economic_health:.1%}")
+                
+                with col3:
+                    system_complexity = current_state.get('system_complexity', 0)
+                    st.metric("System Complexity", system_complexity)
+                
+                # Historical trend for available data
+                if len(st.session_state.history) > 5:
+                    hist_data = []
+                    for i, h in enumerate(st.session_state.history[-20:]):
+                        hist_data.append({
+                            'Step': i,
+                            'FUEL_Alive': h.get('fuel_alive', 0),
+                            'Economic_Health': h.get('economic_health', 0) * 100,
+                            'System_Complexity': h.get('system_complexity', 0)
+                        })
+                    
+                    hist_df = pd.DataFrame(hist_data)
+                    
+                    fig_trends = make_subplots(
+                        rows=1, cols=3,
+                        subplot_titles=('FUEL Agents Alive', 'Economic Health %', 'System Complexity')
+                    )
+                    
+                    fig_trends.add_trace(
+                        go.Scatter(x=hist_df['Step'], y=hist_df['FUEL_Alive'],
+                                  name="FUEL Alive", line=dict(color='blue')),
+                        row=1, col=1
+                    )
+                    
+                    fig_trends.add_trace(
+                        go.Scatter(x=hist_df['Step'], y=hist_df['Economic_Health'],
+                                  name="Economic Health", line=dict(color='green')),
+                        row=1, col=2
+                    )
+                    
+                    fig_trends.add_trace(
+                        go.Scatter(x=hist_df['Step'], y=hist_df['System_Complexity'],
+                                  name="System Complexity", line=dict(color='red')),
+                        row=1, col=3
+                    )
+                    
+                    fig_trends.update_layout(height=400, title_text="📈 System Metrics Trends")
+                    st.plotly_chart(fig_trends, use_container_width=True)
         
         with research_tab3:
-            st.subheader("🧪 Research Data Export")
+            st.subheader("🧪 Research Data Export & Analysis")
+            
+            # Enhanced research data analysis
+            st.markdown("### 📊 Research Data Visualizations")
+            
+            if len(st.session_state.history) > 10:
+                # Research data extraction and visualization
+                research_data = []
+                for i, h in enumerate(st.session_state.history):
+                    research_data.append({
+                        'Step': i,
+                        'Economic_Health': h.get('economic_health', 1.0) * 100,
+                        'Constitutional_Stability': h.get('constitutional_stability', 0.9) * 100,
+                        'Integration_Health': h.get('integration_health', 1.0) * 100,
+                        'FUEL_Alive': h.get('fuel_alive', 0),
+                        'Total_Violations': h.get('total_violations', 0),
+                        'System_Complexity': h.get('system_complexity', 0)
+                    })
+                
+                research_df = pd.DataFrame(research_data)
+                
+                # Comprehensive research analysis charts
+                fig_research = make_subplots(
+                    rows=2, cols=2,
+                    subplot_titles=('System Health Metrics', 'Stability Trends',
+                                  'Complexity vs Health', 'Violations Over Time'),
+                    specs=[[{"secondary_y": False}, {"secondary_y": False}],
+                           [{"type": "scatter"}, {"type": "bar"}]]
+                )
+                
+                # Health metrics
+                fig_research.add_trace(
+                    go.Scatter(x=research_df['Step'], y=research_df['Economic_Health'],
+                              name="Economic Health", line=dict(color='green', width=2)),
+                    row=1, col=1
+                )
+                fig_research.add_trace(
+                    go.Scatter(x=research_df['Step'], y=research_df['Constitutional_Stability'],
+                              name="Constitutional Stability", line=dict(color='blue', width=2)),
+                    row=1, col=1
+                )
+                fig_research.add_trace(
+                    go.Scatter(x=research_df['Step'], y=research_df['Integration_Health'],
+                              name="Integration Health", line=dict(color='purple', width=2)),
+                    row=1, col=1
+                )
+                
+                # Stability trends
+                fig_research.add_trace(
+                    go.Scatter(x=research_df['Step'], y=research_df['FUEL_Alive'],
+                              name="FUEL Agents", line=dict(color='orange', width=2)),
+                    row=1, col=2
+                )
+                
+                # Complexity vs Health scatter
+                fig_research.add_trace(
+                    go.Scatter(x=research_df['System_Complexity'], y=research_df['Economic_Health'],
+                              mode='markers', name="Complexity-Health",
+                              marker=dict(size=8, color=research_df['Step'], colorscale='Viridis')),
+                    row=2, col=1
+                )
+                
+                # Violations bar chart
+                fig_research.add_trace(
+                    go.Bar(x=research_df['Step'], y=research_df['Total_Violations'],
+                          name="Violations", marker_color='red'),
+                    row=2, col=2
+                )
+                
+                fig_research.update_layout(height=700, title_text="🧪 Comprehensive Research Analysis")
+                st.plotly_chart(fig_research, use_container_width=True)
+                
+                # Statistical analysis
+                st.markdown("### 📈 Statistical Research Summary")
+                
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.dataframe(research_df.describe(), use_container_width=True)
+                
+                with col2:
+                    # Correlation matrix
+                    corr_matrix = research_df[['Economic_Health', 'Constitutional_Stability', 
+                                             'Integration_Health', 'System_Complexity']].corr()
+                    
+                    fig_corr = px.imshow(
+                        corr_matrix.values,
+                        labels=dict(x="Metrics", y="Metrics", color="Correlation"),
+                        x=corr_matrix.columns,
+                        y=corr_matrix.index,
+                        color_continuous_scale='RdBu',
+                        title="🔗 Research Metrics Correlation"
+                    )
+                    st.plotly_chart(fig_corr, use_container_width=True)
             
             # Downloadable research data
             if st.button("📊 Generate Research Report"):
@@ -1218,7 +2032,20 @@ if st.session_state.running:
     # Limit history size for performance
     if len(st.session_state.history) > 200:
         st.session_state.history = st.session_state.history[-100:]
+
+# Handle Report Generation
+if hasattr(st.session_state, 'generate_report') and st.session_state.generate_report:
+    st.session_state.generate_report = False
+    report_type = getattr(st.session_state, 'report_type', 'Comprehensive Analysis')
     
+    with st.expander("📊 Generated Report", expanded=True):
+        generate_comprehensive_report(st.session_state.history, current_state, report_type)
+    
+    st.stop()  # Stop execution to show report
+
+if st.session_state.running:
     # Auto-refresh
     time.sleep(stream_speed)
     st.rerun()
+else:
+    st.info("⏸️ Simulation paused. Use controls in sidebar to continue or generate reports.")
