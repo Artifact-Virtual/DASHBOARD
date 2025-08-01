@@ -16,7 +16,7 @@ from adam_simulation.adam_sim import AdamAgent
 
 # Page config
 st.set_page_config(
-    page_title="AV Multi-ARC Professional Stream",
+    page_title="ARC MULTINET SIMULATION",
     page_icon="",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -432,8 +432,8 @@ def generate_comparative_overlay_analysis(history, current_state):
 # Professional Header
 st.markdown("""
 <div class="main-header">
-    <h1>🔴 ARTIFACT VIRTUAL MULTI-ARC PROFESSIONAL ANALYTICS STREAM</h1>
-    <p>Real-time blockchain simulation with advanced analytics and FUEL token economics</p>
+    <h2> ARC MULTINET SIMULATION </h2>
+    <p>Real-time blockchain simulation with advanced analytics and tokenomics</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -710,7 +710,7 @@ if st.session_state.step_count > 0:
     # Main content based on mode
     if st.session_state.running:
         # LIVE MODE - Full real-time dashboard
-        st.markdown("### 🔴 LIVE ANALYTICS DASHBOARD")
+        st.markdown("### LIVE ANALYTICS DASHBOARD")
         
         # Tab structure for organized data
         tab1, tab2, tab3, tab4, tab5 = st.tabs([
@@ -723,7 +723,7 @@ if st.session_state.step_count > 0:
         
         with tab1:
             # Enhanced ARC display with circular validation
-            st.subheader("🏗️ Advanced Multi-ARC Network with Circular Validation")
+            st.subheader("Multi-ARC Network with Circular Validation")
             
             # Show circular validation relationships
             validation_relationships = current_state.get('network_state', {}).get('validation_relationships', {})
