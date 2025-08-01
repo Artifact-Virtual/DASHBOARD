@@ -1,34 +1,40 @@
 #!/bin/bash
-# Comprehensive startup script for the Advanced Multi-ARC Constitutional Intelligence System
+# Professional React + WebSocket Dashboard for Advanced Multi-ARC Constitutional Intelligence System
 
 set -e  # Exit on any error
 
-echo "🚀 Starting Advanced Multi-ARC Constitutional Intelligence System..."
+echo "Multi-ARC Dashboard..."
 echo "========================================================================="
 
 # Function to cleanup processes on exit
 cleanup() {
     echo ""
-    echo "🛑 Shutting down system..."
+    echo "🛑 Shutting down professional dashboard system..."
     
     # Kill background processes
+    pkill -f ".venv/bin/python websocket_server.py" 2>/dev/null || true
+    pkill -f "python websocket_server.py" 2>/dev/null || true
     pkill -f ".venv/bin/python headless_daemon.py" 2>/dev/null || true
     pkill -f "python headless_daemon.py" 2>/dev/null || true
     pkill -f "python demon.py" 2>/dev/null || true
+    pkill -f "npm start" 2>/dev/null || true
     pkill -f "streamlit run" 2>/dev/null || true
     
     # Deactivate virtual environment
-    if [ "$VENV_ACTIVE" -eq 1 ]; then
+    if [ "$VENV_ACTIVE" = "1" ]; then
         deactivate 2>/dev/null || true
         echo "✅ Virtual environment deactivated"
     fi
     
-    echo "✅ Advanced system shutdown complete"
+    echo "✅ Professional dashboard system shutdown complete"
     exit 0
 }
 
 # Set up cleanup trap
 trap cleanup EXIT INT TERM
+
+# Initialize variables
+VENV_ACTIVE=0
 
 # Step 1: Activate virtual environment
 echo "📦 Activating virtual environment..."
@@ -80,19 +86,61 @@ else
     exit 1
 fi
 
+# Step 6: Start Professional WebSocket Backend
+echo "🔌 Starting Professional WebSocket Backend..."
+.venv/bin/python websocket_server.py &
+WEBSOCKET_PID=$!
+sleep 3
+
+# Check if WebSocket server started successfully
+if ps -p $WEBSOCKET_PID > /dev/null; then
+    echo "✅ WebSocket Backend started (PID: $WEBSOCKET_PID)"
+else
+    echo "❌ Failed to start WebSocket backend"
+    exit 1
+fi
+
+# Step 7: Install and start React frontend (if not already done)
+echo "⚛️  Setting up Professional React Dashboard..."
+if [ ! -d "react-dashboard/node_modules" ]; then
+    echo "📦 Installing React dependencies..."
+    cd react-dashboard
+    npm install
+    cd ..
+    echo "✅ React dependencies installed"
+fi
+
+echo "🚀 Starting Professional Trading Dashboard..."
+cd react-dashboard
+npm start &
+REACT_PID=$!
+cd ..
+sleep 5
+
+# Check if React app started successfully
+if ps -p $REACT_PID > /dev/null; then
+    echo "✅ React Dashboard started (PID: $REACT_PID)"
+else
+    echo "❌ Failed to start React dashboard"
+    exit 1
+fi
+
 # Step 6: Start Advanced Live Stream Dashboard
-echo "🖥️  Starting Advanced Multi-ARC Live Stream Dashboard..."
-echo "📍 Advanced Dashboard: http://localhost:8501"
-echo "🎮 Features:"
-echo "   • Real-time circular validation monitoring"
-echo "   • Constitutional intelligence tracking"  
-echo "   • Multi-ARC network visualization"
-echo "   • Economic stress analysis"
-echo "   • Crisis detection and management"
-echo "🔄 Dashboard auto-refreshes with live simulation data"
+echo "🖥️  Professional Trading Dashboard Successfully Launched!"
+echo "📍 React Dashboard: http://localhost:3000"
+echo "📍 WebSocket API: http://localhost:8000"
+echo "🎮 Professional Features:"
+echo "   • Real-time WebSocket streaming (no page refreshes)"
+echo "   • Professional trading dashboard aesthetics"
+echo "   • Silky smooth real-time charts"
+echo "   • Dynamic ARC management controls"
+echo "   • Crisis injection and management"
+echo "   • Multi-dimensional economic analysis"
+echo "   • Constitutional intelligence monitoring"
+echo "🔄 Dashboard updates at 60fps with live simulation data"
 echo ""
-echo "Press Ctrl+C to stop the entire system"
+echo "Press Ctrl+C to stop the entire professional system"
 echo "========================================================================="
 
-# Start Advanced Live Stream (this will block until user interrupts)
-.venv/bin/streamlit run live_stream.py --server.port 8501 --server.address 0.0.0.0
+# Keep script running and wait for user interrupt
+wait

@@ -1,13 +1,15 @@
 {
-  "step": 322,
-  "era": 322,
-  "crisis_mode": false,
-  "crisis_indicators": [],
+  "step": 400,
+  "era": 400,
+  "crisis_mode": true,
+  "crisis_indicators": [
+    "Scheduled economic stress test"
+  ],
   "network_state": {
     "arcs": [
       {
         "arc_id": 0,
-        "total_blocks": 322,
+        "total_blocks": 400,
         "disputed_blocks": 0,
         "last_block_valid": true,
         "current_rule": 0,
@@ -17,13 +19,160 @@
         ],
         "validator_count": 1,
         "recent_validation_failures": 20,
-        "adam_guilt": 0,
+        "adam_guilt": 0.3,
         "adam_policy": "emergency_policy",
-        "council_events": 0
+        "council_events": 0,
+        "blocks": [
+          {
+            "id": 0,
+            "valid": true,
+            "timestamp": 0,
+            "validator": 2,
+            "transactions": 25
+          },
+          {
+            "id": 1,
+            "valid": true,
+            "timestamp": 1,
+            "validator": 2,
+            "transactions": 5
+          },
+          {
+            "id": 2,
+            "valid": true,
+            "timestamp": 2,
+            "validator": 2,
+            "transactions": 13
+          },
+          {
+            "id": 3,
+            "valid": true,
+            "timestamp": 3,
+            "validator": 2,
+            "transactions": 25
+          },
+          {
+            "id": 4,
+            "valid": false,
+            "timestamp": 4,
+            "validator": 2,
+            "transactions": 6
+          },
+          {
+            "id": 5,
+            "valid": true,
+            "timestamp": 5,
+            "validator": 2,
+            "transactions": 24
+          },
+          {
+            "id": 6,
+            "valid": true,
+            "timestamp": 6,
+            "validator": 2,
+            "transactions": 9
+          },
+          {
+            "id": 7,
+            "valid": true,
+            "timestamp": 7,
+            "validator": 2,
+            "transactions": 20
+          },
+          {
+            "id": 8,
+            "valid": true,
+            "timestamp": 8,
+            "validator": 2,
+            "transactions": 15
+          },
+          {
+            "id": 9,
+            "valid": true,
+            "timestamp": 9,
+            "validator": 2,
+            "transactions": 16
+          },
+          {
+            "id": 10,
+            "valid": true,
+            "timestamp": 10,
+            "validator": 2,
+            "transactions": 25
+          },
+          {
+            "id": 11,
+            "valid": true,
+            "timestamp": 11,
+            "validator": 2,
+            "transactions": 24
+          },
+          {
+            "id": 12,
+            "valid": true,
+            "timestamp": 12,
+            "validator": 2,
+            "transactions": 16
+          },
+          {
+            "id": 13,
+            "valid": true,
+            "timestamp": 13,
+            "validator": 2,
+            "transactions": 10
+          },
+          {
+            "id": 14,
+            "valid": false,
+            "timestamp": 14,
+            "validator": 2,
+            "transactions": 10
+          },
+          {
+            "id": 15,
+            "valid": true,
+            "timestamp": 15,
+            "validator": 2,
+            "transactions": 10
+          },
+          {
+            "id": 16,
+            "valid": true,
+            "timestamp": 16,
+            "validator": 2,
+            "transactions": 11
+          },
+          {
+            "id": 17,
+            "valid": true,
+            "timestamp": 17,
+            "validator": 2,
+            "transactions": 8
+          },
+          {
+            "id": 18,
+            "valid": true,
+            "timestamp": 18,
+            "validator": 2,
+            "transactions": 17
+          },
+          {
+            "id": 19,
+            "valid": true,
+            "timestamp": 19,
+            "validator": 2,
+            "transactions": 8
+          }
+        ],
+        "performance_metrics": {
+          "avg_block_time": 2.6096220758964166,
+          "throughput_tps": 38,
+          "uptime": 0.9577958108553044
+        }
       },
       {
         "arc_id": 2,
-        "total_blocks": 322,
+        "total_blocks": 400,
         "disputed_blocks": 1,
         "last_block_valid": true,
         "current_rule": 0,
@@ -33,9 +182,156 @@
         ],
         "validator_count": 1,
         "recent_validation_failures": 20,
-        "adam_guilt": 0,
+        "adam_guilt": 0.3,
         "adam_policy": "emergency_policy",
-        "council_events": 8
+        "council_events": 5,
+        "blocks": [
+          {
+            "id": 0,
+            "valid": true,
+            "timestamp": 0,
+            "validator": 0,
+            "transactions": 13
+          },
+          {
+            "id": 1,
+            "valid": true,
+            "timestamp": 1,
+            "validator": 0,
+            "transactions": 5
+          },
+          {
+            "id": 2,
+            "valid": true,
+            "timestamp": 2,
+            "validator": 0,
+            "transactions": 19
+          },
+          {
+            "id": 3,
+            "valid": true,
+            "timestamp": 3,
+            "validator": 0,
+            "transactions": 15
+          },
+          {
+            "id": 4,
+            "valid": false,
+            "timestamp": 4,
+            "validator": 0,
+            "transactions": 24
+          },
+          {
+            "id": 5,
+            "valid": true,
+            "timestamp": 5,
+            "validator": 0,
+            "transactions": 14
+          },
+          {
+            "id": 6,
+            "valid": true,
+            "timestamp": 6,
+            "validator": 0,
+            "transactions": 11
+          },
+          {
+            "id": 7,
+            "valid": true,
+            "timestamp": 7,
+            "validator": 0,
+            "transactions": 21
+          },
+          {
+            "id": 8,
+            "valid": true,
+            "timestamp": 8,
+            "validator": 0,
+            "transactions": 19
+          },
+          {
+            "id": 9,
+            "valid": true,
+            "timestamp": 9,
+            "validator": 0,
+            "transactions": 17
+          },
+          {
+            "id": 10,
+            "valid": true,
+            "timestamp": 10,
+            "validator": 0,
+            "transactions": 12
+          },
+          {
+            "id": 11,
+            "valid": true,
+            "timestamp": 11,
+            "validator": 0,
+            "transactions": 5
+          },
+          {
+            "id": 12,
+            "valid": true,
+            "timestamp": 12,
+            "validator": 0,
+            "transactions": 6
+          },
+          {
+            "id": 13,
+            "valid": true,
+            "timestamp": 13,
+            "validator": 0,
+            "transactions": 21
+          },
+          {
+            "id": 14,
+            "valid": false,
+            "timestamp": 14,
+            "validator": 0,
+            "transactions": 19
+          },
+          {
+            "id": 15,
+            "valid": true,
+            "timestamp": 15,
+            "validator": 0,
+            "transactions": 11
+          },
+          {
+            "id": 16,
+            "valid": true,
+            "timestamp": 16,
+            "validator": 0,
+            "transactions": 16
+          },
+          {
+            "id": 17,
+            "valid": true,
+            "timestamp": 17,
+            "validator": 0,
+            "transactions": 24
+          },
+          {
+            "id": 18,
+            "valid": true,
+            "timestamp": 18,
+            "validator": 0,
+            "transactions": 5
+          },
+          {
+            "id": 19,
+            "valid": true,
+            "timestamp": 19,
+            "validator": 0,
+            "transactions": 11
+          }
+        ],
+        "performance_metrics": {
+          "avg_block_time": 2.2566629482636578,
+          "throughput_tps": 18,
+          "uptime": 0.956696803808353
+        }
       }
     ],
     "validation_relationships": {
@@ -58,12 +354,125 @@
     "network_topology": "circular",
     "dynamic_management_active": true
   },
-  "fuel_alive": 6,
-  "fuel_dead": 2,
-  "fuel_avg": 25.5,
+  "agents": [
+    {
+      "id": 0,
+      "type": "validator",
+      "arc": 0,
+      "fuel": 30,
+      "alive": true,
+      "score": 78.0,
+      "performance_trend": -1,
+      "earnings": 464,
+      "blocks_validated": 6
+    },
+    {
+      "id": 1,
+      "type": "forecaster",
+      "arc": 2,
+      "fuel": 36,
+      "alive": true,
+      "score": 55.99999999999999,
+      "performance_trend": -1,
+      "predictions": 33,
+      "accuracy": 0.5599999999999999
+    },
+    {
+      "id": 2,
+      "type": "operator",
+      "arc": 0,
+      "fuel": 28,
+      "alive": true,
+      "score": 40.0,
+      "performance_trend": -1,
+      "jobs_done": 13,
+      "productivity": 0.4
+    },
+    {
+      "id": 3,
+      "type": "validator",
+      "arc": 2,
+      "fuel": 0,
+      "alive": false,
+      "score": 75.0,
+      "performance_trend": 0,
+      "earnings": 142,
+      "blocks_validated": 0
+    },
+    {
+      "id": 4,
+      "type": "forecaster",
+      "arc": 0,
+      "fuel": 9,
+      "alive": true,
+      "score": 30.0,
+      "performance_trend": 1,
+      "predictions": 11,
+      "accuracy": 0.3
+    },
+    {
+      "id": 5,
+      "type": "operator",
+      "arc": 2,
+      "fuel": 33,
+      "alive": true,
+      "score": 40.0,
+      "performance_trend": 1,
+      "jobs_done": 15,
+      "productivity": 0.4
+    },
+    {
+      "id": 6,
+      "type": "validator",
+      "arc": 0,
+      "fuel": 9,
+      "alive": true,
+      "score": 75.9,
+      "performance_trend": -1,
+      "earnings": 246,
+      "blocks_validated": 1
+    },
+    {
+      "id": 7,
+      "type": "forecaster",
+      "arc": 2,
+      "fuel": 41,
+      "alive": true,
+      "score": 61.0,
+      "performance_trend": -1,
+      "predictions": 32,
+      "accuracy": 0.61
+    }
+  ],
+  "fuel_mainnet": {
+    "liquidity": 19300,
+    "volume_24h": 72343,
+    "bridge_fees": 176
+  },
+  "fuel_subnets": [
+    {
+      "arc_id": 0,
+      "liquidity": 10412,
+      "staked_fuel": 6247.2,
+      "rewards_pool": 1041.2,
+      "transaction_volume": 2729,
+      "bridge_status": "active"
+    },
+    {
+      "arc_id": 2,
+      "liquidity": 10667,
+      "staked_fuel": 6400.2,
+      "rewards_pool": 1066.7,
+      "transaction_volume": 1804,
+      "bridge_status": "active"
+    }
+  ],
+  "fuel_alive": 7,
+  "fuel_dead": 1,
+  "fuel_avg": 26.571428571428573,
   "fuel_deaths_this_step": 0,
-  "economic_stress": 0.25,
-  "economic_health": 0.75,
+  "economic_stress": 0.125,
+  "economic_health": 0.875,
   "total_violations": 0,
   "governance_events": [
     {
@@ -92,16 +501,16 @@
     }
   ],
   "system_events": [
+    "\u274c ARC-2 rejected ARC-0's block",
+    "\ud83e\udde0 ARC-0: network_stabilization",
+    "\ud83e\udde0 ARC-2: network_stabilization",
+    "\ud83c\udfdb\ufe0f Constitutional era advanced to 399",
+    "\ud83d\udea8 Economic crisis triggered: Scheduled economic stress test",
     "\u274c ARC-0 rejected ARC-2's block",
     "\u274c ARC-2 rejected ARC-0's block",
     "\ud83e\udde0 ARC-0: network_stabilization",
     "\ud83e\udde0 ARC-2: network_stabilization",
-    "\ud83c\udfdb\ufe0f Constitutional era advanced to 321",
-    "\u274c ARC-0 rejected ARC-2's block",
-    "\u274c ARC-2 rejected ARC-0's block",
-    "\ud83e\udde0 ARC-0: network_stabilization",
-    "\ud83e\udde0 ARC-2: network_stabilization",
-    "\ud83c\udfdb\ufe0f Constitutional era advanced to 322"
+    "\ud83c\udfdb\ufe0f Constitutional era advanced to 400"
   ],
   "constitutional_stability": 1.0,
   "total_disputes": 0,
@@ -109,11 +518,11 @@
   "integration_health": 1.0,
   "adam_scores": [
     0,
-    8
+    5
   ],
   "adam_guilt": [
-    0,
-    0
+    0.3,
+    0.3
   ],
   "adam_policies": [
     "emergency_policy",
@@ -122,7 +531,7 @@
   "arc_data": [
     {
       "arc_id": 0,
-      "total_blocks": 322,
+      "total_blocks": 400,
       "disputed_blocks": 0,
       "last_block_valid": true,
       "current_rule": 0,
@@ -132,13 +541,160 @@
       ],
       "validator_count": 1,
       "recent_validation_failures": 20,
-      "adam_guilt": 0,
+      "adam_guilt": 0.3,
       "adam_policy": "emergency_policy",
-      "council_events": 0
+      "council_events": 0,
+      "blocks": [
+        {
+          "id": 0,
+          "valid": true,
+          "timestamp": 0,
+          "validator": 2,
+          "transactions": 25
+        },
+        {
+          "id": 1,
+          "valid": true,
+          "timestamp": 1,
+          "validator": 2,
+          "transactions": 5
+        },
+        {
+          "id": 2,
+          "valid": true,
+          "timestamp": 2,
+          "validator": 2,
+          "transactions": 13
+        },
+        {
+          "id": 3,
+          "valid": true,
+          "timestamp": 3,
+          "validator": 2,
+          "transactions": 25
+        },
+        {
+          "id": 4,
+          "valid": false,
+          "timestamp": 4,
+          "validator": 2,
+          "transactions": 6
+        },
+        {
+          "id": 5,
+          "valid": true,
+          "timestamp": 5,
+          "validator": 2,
+          "transactions": 24
+        },
+        {
+          "id": 6,
+          "valid": true,
+          "timestamp": 6,
+          "validator": 2,
+          "transactions": 9
+        },
+        {
+          "id": 7,
+          "valid": true,
+          "timestamp": 7,
+          "validator": 2,
+          "transactions": 20
+        },
+        {
+          "id": 8,
+          "valid": true,
+          "timestamp": 8,
+          "validator": 2,
+          "transactions": 15
+        },
+        {
+          "id": 9,
+          "valid": true,
+          "timestamp": 9,
+          "validator": 2,
+          "transactions": 16
+        },
+        {
+          "id": 10,
+          "valid": true,
+          "timestamp": 10,
+          "validator": 2,
+          "transactions": 25
+        },
+        {
+          "id": 11,
+          "valid": true,
+          "timestamp": 11,
+          "validator": 2,
+          "transactions": 24
+        },
+        {
+          "id": 12,
+          "valid": true,
+          "timestamp": 12,
+          "validator": 2,
+          "transactions": 16
+        },
+        {
+          "id": 13,
+          "valid": true,
+          "timestamp": 13,
+          "validator": 2,
+          "transactions": 10
+        },
+        {
+          "id": 14,
+          "valid": false,
+          "timestamp": 14,
+          "validator": 2,
+          "transactions": 10
+        },
+        {
+          "id": 15,
+          "valid": true,
+          "timestamp": 15,
+          "validator": 2,
+          "transactions": 10
+        },
+        {
+          "id": 16,
+          "valid": true,
+          "timestamp": 16,
+          "validator": 2,
+          "transactions": 11
+        },
+        {
+          "id": 17,
+          "valid": true,
+          "timestamp": 17,
+          "validator": 2,
+          "transactions": 8
+        },
+        {
+          "id": 18,
+          "valid": true,
+          "timestamp": 18,
+          "validator": 2,
+          "transactions": 17
+        },
+        {
+          "id": 19,
+          "valid": true,
+          "timestamp": 19,
+          "validator": 2,
+          "transactions": 8
+        }
+      ],
+      "performance_metrics": {
+        "avg_block_time": 2.6096220758964166,
+        "throughput_tps": 38,
+        "uptime": 0.9577958108553044
+      }
     },
     {
       "arc_id": 2,
-      "total_blocks": 322,
+      "total_blocks": 400,
       "disputed_blocks": 1,
       "last_block_valid": true,
       "current_rule": 0,
@@ -148,17 +704,165 @@
       ],
       "validator_count": 1,
       "recent_validation_failures": 20,
-      "adam_guilt": 0,
+      "adam_guilt": 0.3,
       "adam_policy": "emergency_policy",
-      "council_events": 8
+      "council_events": 5,
+      "blocks": [
+        {
+          "id": 0,
+          "valid": true,
+          "timestamp": 0,
+          "validator": 0,
+          "transactions": 13
+        },
+        {
+          "id": 1,
+          "valid": true,
+          "timestamp": 1,
+          "validator": 0,
+          "transactions": 5
+        },
+        {
+          "id": 2,
+          "valid": true,
+          "timestamp": 2,
+          "validator": 0,
+          "transactions": 19
+        },
+        {
+          "id": 3,
+          "valid": true,
+          "timestamp": 3,
+          "validator": 0,
+          "transactions": 15
+        },
+        {
+          "id": 4,
+          "valid": false,
+          "timestamp": 4,
+          "validator": 0,
+          "transactions": 24
+        },
+        {
+          "id": 5,
+          "valid": true,
+          "timestamp": 5,
+          "validator": 0,
+          "transactions": 14
+        },
+        {
+          "id": 6,
+          "valid": true,
+          "timestamp": 6,
+          "validator": 0,
+          "transactions": 11
+        },
+        {
+          "id": 7,
+          "valid": true,
+          "timestamp": 7,
+          "validator": 0,
+          "transactions": 21
+        },
+        {
+          "id": 8,
+          "valid": true,
+          "timestamp": 8,
+          "validator": 0,
+          "transactions": 19
+        },
+        {
+          "id": 9,
+          "valid": true,
+          "timestamp": 9,
+          "validator": 0,
+          "transactions": 17
+        },
+        {
+          "id": 10,
+          "valid": true,
+          "timestamp": 10,
+          "validator": 0,
+          "transactions": 12
+        },
+        {
+          "id": 11,
+          "valid": true,
+          "timestamp": 11,
+          "validator": 0,
+          "transactions": 5
+        },
+        {
+          "id": 12,
+          "valid": true,
+          "timestamp": 12,
+          "validator": 0,
+          "transactions": 6
+        },
+        {
+          "id": 13,
+          "valid": true,
+          "timestamp": 13,
+          "validator": 0,
+          "transactions": 21
+        },
+        {
+          "id": 14,
+          "valid": false,
+          "timestamp": 14,
+          "validator": 0,
+          "transactions": 19
+        },
+        {
+          "id": 15,
+          "valid": true,
+          "timestamp": 15,
+          "validator": 0,
+          "transactions": 11
+        },
+        {
+          "id": 16,
+          "valid": true,
+          "timestamp": 16,
+          "validator": 0,
+          "transactions": 16
+        },
+        {
+          "id": 17,
+          "valid": true,
+          "timestamp": 17,
+          "validator": 0,
+          "transactions": 24
+        },
+        {
+          "id": 18,
+          "valid": true,
+          "timestamp": 18,
+          "validator": 0,
+          "transactions": 5
+        },
+        {
+          "id": 19,
+          "valid": true,
+          "timestamp": 19,
+          "validator": 0,
+          "transactions": 11
+        }
+      ],
+      "performance_metrics": {
+        "avg_block_time": 2.2566629482636578,
+        "throughput_tps": 18,
+        "uptime": 0.956696803808353
+      }
     }
   ],
   "events": [
+    "\ud83d\udea8 Economic crisis triggered: Scheduled economic stress test",
     "\u274c ARC-0 rejected ARC-2's block",
     "\u274c ARC-2 rejected ARC-0's block",
     "\ud83e\udde0 ARC-0: network_stabilization",
     "\ud83e\udde0 ARC-2: network_stabilization",
-    "\ud83c\udfdb\ufe0f Constitutional era advanced to 322"
+    "\ud83c\udfdb\ufe0f Constitutional era advanced to 400"
   ],
   "validation_results": {
     "0\u21922": {
@@ -170,7 +874,7 @@
       "primary_valid": true,
       "structure_valid": false,
       "consensus_valid": true,
-      "timestamp": 322
+      "timestamp": 400
     },
     "2\u21920": {
       "valid": false,
@@ -181,7 +885,7 @@
       "primary_valid": true,
       "structure_valid": false,
       "consensus_valid": true,
-      "timestamp": 322
+      "timestamp": 400
     }
   }
 }
