@@ -298,6 +298,6 @@ The system showcases sophisticated emergent governance patterns through the inte
 
 ## Logs
 
-- Nginx errors: `/tmp/nginx_error.log`
-- Tunnel logs: `/tmp/cloudflared.log`
-- Simulation logs: Console output from `demon.py`
+- **Nginx errors**: `/tmp/nginx_error.log`
+- **Tunnel logs**: `/tmp/cloudflared.log`  
+- **Advanced Multi-ARC Simulation logs**: Console output from `headless_daemon.py` and `live_stream.py`
