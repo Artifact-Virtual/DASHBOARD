@@ -2,7 +2,10 @@ import streamlit as st
 import sys
 sys.path.append('.')
 
-from arc_network.network import ArcNetwork
+from shared.context import LiveContextLoop
+from fuel_simulation.fuel_sim import FuelSimulator
+from arc_simulation.arc_sim import ArcSimulator
+from adam_simulation.adam_sim import AdamAgent
 import time
 import pandas as pd
 import plotly.express as px
@@ -61,9 +64,11 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize session state with enhanced tracking
-if 'network' not in st.session_state:
-    st.session_state.network = ArcNetwork(n_arcs=5, n_agents=15)
+# Initialize session state with enhanced LiveContextLoop tracking
+if 'live_context_loop' not in st.session_state:
+    # Create sophisticated multi-ARC network with circular validation
+    fuel_sim = FuelSimulator(n_agents=8)
+    st.session_state.live_context_loop = LiveContextLoop(ArcSimulator, AdamAgent, fuel_sim, initial_arc_count=3)
     st.session_state.step_count = 0
     st.session_state.running = False
     st.session_state.history = []
@@ -72,7 +77,9 @@ if 'network' not in st.session_state:
         'block_creation_rate': [],
         'agent_performance': [],
         'fuel_flows': [],
-        'network_health': []
+        'network_health': [],
+        'validation_network': [],
+        'circular_validation_events': []
     }
 
 # Professional Header
@@ -97,7 +104,8 @@ with st.sidebar:
             st.session_state.running = False
     
     if st.button("🔄 Reset Network", use_container_width=True):
-        st.session_state.network = ArcNetwork(n_arcs=5, n_agents=15)
+        fuel_sim = FuelSimulator(n_agents=8)
+        st.session_state.live_context_loop = LiveContextLoop(ArcSimulator, AdamAgent, fuel_sim, initial_arc_count=3)
         st.session_state.step_count = 0
         st.session_state.running = False
         st.session_state.history = []
@@ -105,7 +113,9 @@ with st.sidebar:
             'block_creation_rate': [],
             'agent_performance': [],
             'fuel_flows': [],
-            'network_health': []
+            'network_health': [],
+            'validation_network': [],
+            'circular_validation_events': []
         }
     
     # Stream settings
@@ -153,30 +163,31 @@ with st.sidebar:
 
 # Main Dashboard Area
 if st.session_state.step_count > 0:
-    current_state = st.session_state.network.get_state()
+    current_state = st.session_state.live_context_loop.get_current_state()
     
-    # Enhanced metrics row
+    # Enhanced metrics row with LiveContextLoop data
     col1, col2, col3, col4, col5 = st.columns(5)
     
-    total_blocks = sum(len(arc['blocks']) for arc in current_state['arcs'])
-    total_agents = len(current_state['agents'])
-    total_events = len(current_state['messages']['events'])
-    mainnet_fuel = current_state['fuel_mainnet']['liquidity']
+    # Extract data from sophisticated LiveContextLoop state
+    network_state = current_state.get('network_state', {})
+    arcs_data = network_state.get('arcs', [])
     
-    # Calculate total subnet FUEL tokens (not dollars)
-    total_subnet_fuel = sum(subnet['liquidity'] for subnet in current_state['fuel_subnets'])
+    total_blocks = sum(arc['total_blocks'] for arc in arcs_data)
+    fuel_alive = current_state.get('fuel_alive', 0)
+    fuel_dead = current_state.get('fuel_dead', 0)
+    total_events = current_state.get('total_disputes', 0)
+    avg_fuel = current_state.get('fuel_avg', 0)
     
     with col1:
-        st.metric("🔗 Network Blocks", total_blocks, 
-                 delta=len(st.session_state.history[-1]['arcs'][0]['blocks']) if st.session_state.history else None)
+        st.metric("🔗 Network Blocks", total_blocks)
     with col2:
-        st.metric("🤖 Active Agents", total_agents)
+        st.metric("🤖 Agents Alive", fuel_alive)
     with col3:
-        st.metric("📡 Live Events", total_events)
+        st.metric("� Agent Deaths", fuel_dead)
     with col4:
-        st.metric("💰 FUEL Mainnet", f"${mainnet_fuel:,.0f}")
+        st.metric("� Total Events", total_events)
     with col5:
-        st.metric("⚡ Subnet FUEL", f"{total_subnet_fuel:,.0f} tokens")
+        st.metric("⚡ Avg Fuel", f"{avg_fuel:.1f}")
     
     # Main content based on mode
     if st.session_state.running:
@@ -193,44 +204,59 @@ if st.session_state.step_count > 0:
         ])
         
         with tab1:
-            # Enhanced ARC display
-            st.subheader("🏗️ ARC Network Architecture")
-            arc_cols = st.columns(len(current_state['arcs']))
+            # Enhanced ARC display with circular validation
+            st.subheader("🏗️ Advanced Multi-ARC Network with Circular Validation")
             
-            for i, arc_state in enumerate(current_state['arcs']):
+            # Show circular validation relationships
+            validation_relationships = current_state.get('network_state', {}).get('validation_relationships', {})
+            if validation_relationships:
+                st.info(f"🔄 Circular Validation Active: {validation_relationships}")
+            
+            arc_cols = st.columns(len(arcs_data))
+            
+            for i, arc_data in enumerate(arcs_data):
                 with arc_cols[i]:
+                    validators = arc_data.get('validators', [])
+                    validator_str = ", ".join(map(str, validators)) if validators else "Self"
+                    
                     st.markdown(f"""
                     <div class="arc-status">
-                        <h4>ARC-{arc_state['arc_id']}</h4>
-                        <p><strong>Blocks:</strong> {len(arc_state['blocks'])}</p>
-                        <p><strong>Rules:</strong> {len(arc_state['rules'])}</p>
-                        <p><strong>Validators:</strong> {len([a for a in current_state['agents'] if a['arc'] == arc_state['arc_id'] and a['type'] == 'validator'])}</p>
+                        <h4>ARC-{arc_data['arc_id']}</h4>
+                        <p><strong>Blocks:</strong> {arc_data['total_blocks']}</p>
+                        <p><strong>Rule:</strong> {arc_data.get('current_rule', 'N/A')}</p>
+                        <p><strong>Validates:</strong> {validator_str}</p>
+                        <p><strong>ADAM Guilt:</strong> {arc_data.get('adam_guilt', 0):.2f}</p>
+                        <p><strong>Policy:</strong> {arc_data.get('adam_policy', 'N/A')}</p>
                     </div>
                     """, unsafe_allow_html=True)
-                    
-                    # Recent blocks with details
-                    if arc_state['blocks']:
-                        st.write("**Recent Blocks:**")
-                        for block in arc_state['blocks'][-3:]:
-                            status = "🔲" if block['valid'] else "❌"
-                            dispute = "⚔️" if block.get('disputed', False) else ""
-                            st.write(f"`{status} #{block['index']}` {block['content'][:20]}... {dispute}")
             
-            # Network topology visualization
-            if len(st.session_state.history) > 5:
-                st.subheader("📈 Block Creation Rate")
-                history_df = pd.DataFrame([
-                    {
-                        'Step': h['step'],
-                        'Total Blocks': sum(len(arc['blocks']) for arc in h['arcs']),
-                        'Valid Blocks': sum(sum(1 for block in arc['blocks'] if block['valid']) for arc in h['arcs'])
-                    }
-                    for h in st.session_state.history[-history_window:]
-                ])
+            # Show validation metrics
+            validation_metrics = current_state.get('network_state', {}).get('validation_metrics', {})
+            if validation_metrics:
+                st.subheader("🔍 Cross-ARC Validation Network")
+                col1, col2, col3 = st.columns(3)
                 
-                fig = px.line(history_df, x='Step', y=['Total Blocks', 'Valid Blocks'], 
-                             title="Network Block Growth")
-                st.plotly_chart(fig, use_container_width=True)
+                with col1:
+                    st.metric("Validation Pairs", validation_metrics.get('total_validation_pairs', 0))
+                with col2:
+                    st.metric("Recent Failures", validation_metrics.get('recent_failures', 0))
+                with col3:
+                    network_stress = validation_metrics.get('network_stress', 0)
+                    st.metric("Network Stress", f"{network_stress:.2%}")
+            
+            # Crisis indicators
+            crisis_indicators = current_state.get('crisis_indicators', [])
+            if crisis_indicators:
+                st.warning("🚨 Active Crisis Indicators:")
+                for indicator in crisis_indicators:
+                    st.write(f"- {indicator}")
+            
+            # Constitutional era and governance
+            col1, col2 = st.columns(2)
+            with col1:
+                st.metric("Constitutional Era", current_state.get('era', 1))
+            with col2:
+                st.metric("Total Violations", current_state.get('total_violations', 0))
         
         with tab2:
             # Enhanced FUEL economics
@@ -544,19 +570,19 @@ else:
     
     st.markdown("Click **▶️ Start** in the sidebar to begin the professional simulation stream.")
 
-# Live streaming execution
+# Live streaming execution with LiveContextLoop
 if st.session_state.running:
     start_time = time.time()
     
-    # Run simulation step
-    st.session_state.network.step()
+    # Run sophisticated LiveContextLoop simulation step
+    st.session_state.live_context_loop.step()
     st.session_state.step_count += 1
     
     # Record performance
     step_duration = time.time() - start_time
     
-    # Get state and add to history
-    state = st.session_state.network.get_state()
+    # Get comprehensive state from LiveContextLoop
+    state = st.session_state.live_context_loop.get_current_state()
     st.session_state.history.append({
         'step': st.session_state.step_count,
         'timestamp': time.time(),

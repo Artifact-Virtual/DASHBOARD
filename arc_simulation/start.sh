@@ -1,10 +1,10 @@
 #!/bin/bash
-# Comprehensive startup script for the constitution simulation system
+# Comprehensive startup script for the Advanced Multi-ARC Constitutional Intelligence System
 
 set -e  # Exit on any error
 
-echo "🚀 Starting Constitution Simulation System..."
-echo "================================================"
+echo "🚀 Starting Advanced Multi-ARC Constitutional Intelligence System..."
+echo "========================================================================="
 
 # Function to cleanup processes on exit
 cleanup() {
@@ -12,11 +12,9 @@ cleanup() {
     echo "🛑 Shutting down system..."
     
     # Kill background processes
+    pkill -f "python headless_daemon.py" 2>/dev/null || true
     pkill -f "python demon.py" 2>/dev/null || true
     pkill -f "streamlit run" 2>/dev/null || true
-    
-    # Stop systemd service if running
-    # systemctl --user stop demon.service 2>/dev/null || true
     
     # Deactivate virtual environment
     if [ "$VENV_ACTIVE" -eq 1 ]; then
@@ -24,7 +22,7 @@ cleanup() {
         echo "✅ Virtual environment deactivated"
     fi
     
-    echo "✅ System shutdown complete"
+    echo "✅ Advanced system shutdown complete"
     exit 0
 }
 
@@ -49,45 +47,50 @@ echo "✅ Data directory ready"
 
 # Step 3: Kill any existing processes
 echo "🧹 Cleaning up existing processes..."
+pkill -f "python headless_daemon.py" 2>/dev/null || true
 pkill -f "python demon.py" 2>/dev/null || true
 pkill -f "streamlit run" 2>/dev/null || true
-# systemctl --user stop demon.service 2>/dev/null || true
 sleep 2
 echo "✅ Cleanup complete"
 
-# Step 4: Start the simulation daemon in background
-echo "⚙️  Starting simulation daemon..."
-python demon.py &
-DAEMON_PID=$!
+# Step 4: Start the headless background data generator
+echo "⚙️  Starting headless Multi-ARC data generator..."
+python headless_daemon.py &
+HEADLESS_PID=$!
 sleep 3
 
-# Check if daemon started successfully
-if ps -p $DAEMON_PID > /dev/null; then
-    echo "✅ Simulation daemon started (PID: $DAEMON_PID)"
+# Check if headless daemon started successfully
+if ps -p $HEADLESS_PID > /dev/null; then
+    echo "✅ Headless data generator started (PID: $HEADLESS_PID)"
 else
-    echo "❌ Failed to start daemon"
+    echo "❌ Failed to start headless daemon"
     exit 1
 fi
 
 # Step 5: Verify data generation
-echo "📊 Verifying data generation..."
+echo "📊 Verifying rich data generation..."
 sleep 5
 if [ -f "simulation_data/latest.json" ]; then
     STEP=$(cat simulation_data/latest.json | jq -r '.step' 2>/dev/null || echo "unknown")
-    echo "✅ Data generation confirmed (Step: $STEP)"
+    echo "✅ Rich data generation confirmed (Step: $STEP)"
 else
     echo "❌ No simulation data found"
     exit 1
 fi
 
-# Step 6: Start Streamlit dashboard
-echo "🖥️  Starting web dashboard..."
-echo "📍 Dashboard will be available at: http://localhost:8501"
-echo "🎮 Use the sidebar controls to Play/Pause the simulation"
-echo "🔄 Enable 'Auto-refresh Dashboard' for live animations"
+# Step 6: Start Advanced Live Stream Dashboard
+echo "🖥️  Starting Advanced Multi-ARC Live Stream Dashboard..."
+echo "📍 Advanced Dashboard: http://localhost:8501"
+echo "🎮 Features:"
+echo "   • Real-time circular validation monitoring"
+echo "   • Constitutional intelligence tracking"  
+echo "   • Multi-ARC network visualization"
+echo "   • Economic stress analysis"
+echo "   • Crisis detection and management"
+echo "🔄 Dashboard auto-refreshes with live simulation data"
 echo ""
 echo "Press Ctrl+C to stop the entire system"
-echo "================================================"
+echo "========================================================================="
 
-# Start Streamlit (this will block until user interrupts)
-streamlit run visualization/dashboard.py --server.port 8501 --server.address 0.0.0.0
+# Start Advanced Live Stream (this will block until user interrupts)
+streamlit run live_stream.py --server.port 8501 --server.address 0.0.0.0

@@ -1,0 +1,18 @@
+- custom metrics and issues 
+
+-pipe into frontend through simulation visualization
+and analysis tools.
+> This allows for real-time monitoring and adjustments based on the performance of the system.
+> The frontend provides a user-friendly interface to visualize the data, making it easier to identify trends and issues.
+> The integration of these tools enhances the overall efficiency and effectiveness of the system, enabling better decision-making and optimization of processes.
+> The use of custom metrics allows for tailored performance indicators that are specific to the needs of the system and its objectives.
+> This approach ensures that the system can adapt to changing conditions and requirements, providing a robust framework for ongoing performance evaluation and improvement.
+
+- ability to add or remove arcs dynamically
+> This feature allows for flexibility in the simulation, enabling users to modify the system's structure as needed.
+> Users can add new arcs to expand the simulation or remove existing ones to streamline processes.
+> This dynamic capability enhances the adaptability of the simulation, allowing it to evolve based on user requirements
+> and changing conditions.
+> The ability to dynamically adjust the arcs ensures that the simulation remains relevant and effective in addressing the needs of the users.
+> It also facilitates experimentation with different configurations, providing insights into the impact of structural changes on the overall system performance.
+> This flexibility is crucial for testing various scenarios and optimizing the simulation for different objectives.
