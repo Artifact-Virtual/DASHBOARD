@@ -33,49 +33,43 @@ def check_reset():
 
 def write_state(state):
     # Convert numpy arrays and sets to lists for JSON serialization
-    def convert_for_json(obj):
+    def convert_numpy_and_sets(obj):
         if isinstance(obj, np.ndarray):
             return obj.tolist()
         elif isinstance(obj, set):
             return list(obj)
         elif isinstance(obj, dict):
-            return {k: convert_for_json(v) for k, v in obj.items()}
+            return {k: convert_numpy_and_sets(v) for k, v in obj.items()}
         elif isinstance(obj, list):
-            return [convert_for_json(item) for item in obj]
+            return [convert_numpy_and_sets(item) for item in obj]
         else:
             return obj
-    
-    json_state = convert_for_json(state)
+
+    converted_state = convert_numpy_and_sets(state)
     
     with open(STATE_PATH, "w") as f:
-        json.dump(json_state, f)
-    # Clean up any other files in DATA_DIR except latest.json and control.json
-    for fname in os.listdir(DATA_DIR):
-        if fname not in ("latest.json", "control.json"):
-            try:
-                os.remove(os.path.join(DATA_DIR, fname))
-            except Exception:
-                pass
+        json.dump(converted_state, f, indent=2)
 
 def main():
-    print("🔄 Starting daemon initialization...")
-    
-    # Pass classes, not instances, to LiveContextLoop
+    from fuel_simulation.fuel_sim import FuelSimulator
     from arc_simulation.arc_sim import ArcSimulator
     from adam_simulation.adam_sim import AdamAgent
-    from fuel_simulation.fuel_sim import FuelSimulator
-    
+
+    print("🔄 Starting DEBUG daemon initialization...")
     print("📦 Creating FuelSimulator...")
     fuel = FuelSimulator(n_agents=8)
     print("⚙️ Creating LiveContextLoop...")
     loop = LiveContextLoop(ArcSimulator, AdamAgent, fuel)
-    print("✅ Daemon initialization complete!")
+    print("✅ DEBUG Daemon initialization complete!")
+    print("🔄 Entering main loop...")
     
     step_count = 0
-    while True:
+    while step_count < 5:  # Only run 5 steps for debug
         step_count += 1
+        print(f"\n--- DEBUG Step {step_count} ---")
         
         # Check for reset command first
+        print("🔍 Checking reset...")
         if check_reset():
             print("🔄 Reset command received - reinitializing simulation...")
             # Reinitialize all components
@@ -83,19 +77,28 @@ def main():
             loop = LiveContextLoop(ArcSimulator, AdamAgent, fuel)
             print("✅ Simulation reset complete")
         
+        print("📖 Reading control...")
         control = read_control()
+        print(f"Control: {control}")
         
         if control.get("play", True):
             try:
+                print("⏯️ Executing step...")
                 loop.step()
+                print("💾 Writing state...")
                 if loop.logs:
                     write_state(loop.logs[-1])
+                print("✅ Step completed!")
             except Exception as e:
                 print(f"❌ Error during step: {e}")
                 import traceback
                 traceback.print_exc()
         
-        time.sleep(float(control.get("speed", 0.5)))
+        sleep_time = float(control.get("speed", 0.5))
+        print(f"😴 Sleeping for {sleep_time}s...")
+        time.sleep(sleep_time)
+    
+    print("🏁 DEBUG daemon finished 5 steps successfully!")
 
 if __name__ == "__main__":
     main()

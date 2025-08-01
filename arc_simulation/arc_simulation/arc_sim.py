@@ -51,6 +51,30 @@ class ArcSimulator:
     def default_rule(self, prev_block, data):
         # Accept all, unless content contains a "bad" number
         return "4" not in data["content"]
+    
+    def _validate_block_with_rule(self, block, rule_index):
+        """Validate a block using a specific rule index"""
+        try:
+            if rule_index >= len(self.rules):
+                rule_index = rule_index % len(self.rules)
+            
+            # Extract block data for validation
+            if isinstance(block, dict):
+                data = block.get("data", block.get("content", f"Block {block.get('index', 0)}"))
+                if isinstance(data, str):
+                    data = {"content": data}
+                elif not isinstance(data, dict):
+                    data = {"content": str(data)}
+            else:
+                data = {"content": str(block)}
+            
+            # Apply the rule
+            rule = self.rules[rule_index]
+            return rule(None, data)  # No previous block needed for cross-validation
+            
+        except Exception:
+            # If validation fails, default to rejecting the block
+            return False
 
     def get_state(self):
         return {

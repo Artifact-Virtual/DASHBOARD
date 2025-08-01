@@ -105,7 +105,107 @@ cert-nginx/
 - **SEO Optimized**: Proper meta tags and social media cards
 - **Performance**: Optimized bundles with code splitting
 
+## Arc Simulation System
+
+The `/arc_simulation` directory contains a Constitutional Intelligence System - a sophisticated multi-layer governance simulation with real-time dashboard capabilities.
+
+### Constitutional Intelligence Architecture
+
+The system implements three interconnected layers that create emergent governance patterns:
+
+#### Core Components
+
+- **ARC (Constitutional Layer)**: Blockchain-based constitutional law with evolving validation rules
+- **ADAM Protocol (AI Governance)**: Intelligent rule evolution based on ethical observations and guilt tracking  
+- **FUEL Network (Economic Substrate)**: Competitive agents in resource-constrained survival environment
+- **LiveContextLoop**: Central coordination system managing cross-layer interactions
+
+#### LiveContextLoop: The Coordination Engine
+
+The `LiveContextLoop` class serves as the central nervous system, orchestrating complex interactions between all layers:
+
+**Initialization Process:**
+```python
+# Creates single ARC-ADAM governance pair
+self.arc = ArcSimulator(0)      # Primary constitutional chain
+self.adam = AdamAgent(0)        # Primary governance AI  
+self.fuel_sim = FuelSimulator() # Economic substrate (pre-instantiated)
+```
+
+**Step Execution Cycle:**
+1. **Economic Foundation**: FUEL agents compete for resources, work, trade, and potentially die
+2. **Constitutional Validation**: ARC processes new blocks against evolving validation rules
+3. **Governance Intelligence**: ADAM observes patterns and triggers rule evolution
+4. **Cross-System Feedback**: Economic stress influences constitutional strictness
+5. **Event Resolution**: System-wide events are processed and logged
+
+**Crisis Management:**
+- Economic crises trigger every 50 steps OR when 2+ agents die simultaneously
+- Crisis mode influences constitutional rule strictness
+- ADAM Protocol responds to systemic stress with governance adaptations
+
+**Emergent Behaviors:**
+- Constitutional eras emerge from major rule changes
+- Rule strictness cycles based on economic conditions  
+- Governance learning through guilt accumulation and ethical observation
+- Complex feedback loops between law, intelligence, and economics
+
+### State Management
+
+The simulation uses a comprehensive file-based state management system:
+
+#### Control Files
+- `simulation_data/control.json`: Controls simulation playback
+  ```json
+  {"play": true, "speed": 0.5}
+  ```
+- `simulation_data/reset.json`: Triggers simulation reset (auto-deleted after read)
+- `simulation_data/latest.json`: Current simulation state data
+
+#### State Data Structure
+```json
+{
+  "step": 42,
+  "fuel_alive": 6,
+  "fuel_dead": 2,
+  "fuel_avg": 75.3,
+  "fuel_deaths_this_step": 1,
+  "adam_scores": [12, 8, 15],
+  "adam_guilt": [0.2, 0.8, 0.1],
+  "adam_policies": ["liberal", "conservative", "moderate"],
+  "arc_data": [
+    {"arc_id": 0, "total_blocks": 150, "disputed_blocks": 3, "last_block_valid": true}
+  ],
+  "crisis_mode": false,
+  "total_disputes": 2
+}
+```
+
+### Running the Simulation
+
+```bash
+cd arc_simulation
+chmod +x start.sh
+./start.sh
+```
+
+The system will:
+1. Activate virtual environment
+2. Start simulation daemon in background
+3. Launch Streamlit dashboard at http://localhost:8501
+4. Provide real-time visualization with play/pause controls
+
+### Daemon Management
+
+The simulation daemon (`demon.py`) runs continuously and:
+- Steps through all simulation components
+- Handles reset commands
+- Manages state persistence
+- Responds to play/pause controls
+- Provides error recovery
+
 ## Logs
 
 - Nginx errors: `/tmp/nginx_error.log`
 - Tunnel logs: `/tmp/cloudflared.log`
+- Simulation logs: Console output from `demon.py`
