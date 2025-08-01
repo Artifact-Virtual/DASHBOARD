@@ -7,17 +7,10 @@ set -e
 
 echo "🚀 Starting ArtifactVirtual.com Complete System (Systemd Mode)..."
 
-# Get the script directory (works even if script is symlinke# Main execution
-main() {
-    kill_all_services
-    start_vite
-    start_tunnel
-    start_arc_simulation
-    show_status
-    echo "🎉 All services started successfully!"
-    echo "💡 Service is running in systemd mode"_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Get the script directory (works even if script is symlinked)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WWW_DIR="$SCRIPT_DIR/www"
-ARC_DIR="$SCRIPT_DIR/arc_simulation"
+
 PID_DIR="/tmp/artifactvirtual"
 
 echo "📁 Working from: $SCRIPT_DIR"
@@ -41,23 +34,9 @@ kill_all_services() {
         rm -f "$PID_DIR/vite.pid"
     fi
     
-    # Kill any previous arc simulation instances
-    if [ -f "$PID_DIR/demon.pid" ]; then
-        OLD_PID=$(cat "$PID_DIR/demon.pid")
-        if kill -0 "$OLD_PID" 2>/dev/null; then
-            echo "💀 Killing previous Arc Simulation process (PID: $OLD_PID)"
-            kill -TERM "$OLD_PID" 2>/dev/null || true
-            sleep 2
-            kill -KILL "$OLD_PID" 2>/dev/null || true
-        fi
-        rm -f "$PID_DIR/demon.pid"
-    fi
-    
     # Kill any npm/node processes that might be running our app
     pkill -f "npm run dev" 2>/dev/null || true
     pkill -f "vite.*8080" 2>/dev/null || true
-    pkill -f "python.*demon.py" 2>/dev/null || true
-    pkill -f "streamlit run" 2>/dev/null || true
     sleep 1
     
     # Find PIDs using ports 8080 and 8501
@@ -169,92 +148,6 @@ start_tunnel() {
     fi
 }
 
-# Function to start Arc Simulation service
-start_arc_simulation() {
-    echo "\u2699 Starting Arc Simulation service..."
-
-    # Check if demon.py exists
-    if [ ! -f "$SCRIPT_DIR/arc_simulation/demon.py" ]; then
-        echo "\u274c demon.py not found in $SCRIPT_DIR/arc_simulation"
-        exit 1
-    fi
-
-    # Start Arc Simulation in background and save PID
-    python3 "$SCRIPT_DIR/arc_simulation/demon.py" > /tmp/arc_simulation.log 2>&1 &
-    ARC_SIM_PID=$!
-    echo "$ARC_SIM_PID" > "$PID_DIR/arc_simulation.pid"
-    echo "\u2705 Arc Simulation started (PID: $ARC_SIM_PID)"
-
-    # Wait a moment and check if it's running
-    sleep 3
-    if kill -0 "$ARC_SIM_PID" 2>/dev/null; then
-        echo "\u2705 Arc Simulation is running"
-        echo "\ud83d\udcdd Arc Simulation logs: /tmp/arc_simulation.log"
-    else
-        echo "\u274c Arc Simulation failed to start! Check logs:"
-        cat /tmp/arc_simulation.log
-        exit 1
-    fi
-}
-
-# Function to start arc simulation
-start_arc_simulation() {
-    echo "🔮 Starting Arc Simulation System..."
-    
-    # Check if arc_simulation directory exists
-    if [ ! -d "$ARC_DIR" ]; then
-        echo "❌ Arc simulation directory not found at: $ARC_DIR"
-        exit 1
-    fi
-    
-    # Change to arc_simulation directory
-    cd "$ARC_DIR"
-    echo "📁 Changed to: $(pwd)"
-    
-    # Check if virtual environment exists
-    if [ ! -d ".venv" ]; then
-        echo "❌ Virtual environment not found! Running setup..."
-        if [ -f "setup.sh" ]; then
-            chmod +x setup.sh
-            ./setup.sh
-        else
-            echo "❌ setup.sh not found! Please set up the arc simulation manually."
-            cd "$SCRIPT_DIR"
-            return 1
-        fi
-    fi
-    
-    # Activate virtual environment
-    source .venv/bin/activate
-    echo "✅ Virtual environment activated"
-    
-    # Ensure simulation_data directory exists
-    mkdir -p simulation_data
-    
-    # Start the demon process in background
-    python demon.py > /tmp/arc_simulation.log 2>&1 &
-    ARC_PID=$!
-    echo "$ARC_PID" > "$PID_DIR/demon.pid"
-    echo "✅ Arc Simulation demon started (PID: $ARC_PID)"
-    
-    # Wait for simulation to initialize
-    echo "⏳ Waiting for simulation to initialize..."
-    sleep 8
-    
-    # Check if it's running
-    if kill -0 "$ARC_PID" 2>/dev/null; then
-        echo "✅ Arc Simulation is running"
-        echo "📝 Arc Simulation logs: /tmp/arc_simulation.log"
-    else
-        echo "❌ Arc Simulation failed to start! Check logs:"
-        cat /tmp/arc_simulation.log
-        cd "$SCRIPT_DIR"
-        return 1
-    fi
-    
-    # Return to original directory
-    cd "$SCRIPT_DIR"
-}
 
 # Function to show status of all services
 show_status() {
@@ -275,23 +168,11 @@ show_status() {
         echo "❌ Cloudflare Tunnel: Not running"
     fi
     
-    if [ -f "$PID_DIR/demon.pid" ] && kill -0 "$(cat "$PID_DIR/demon.pid")" 2>/dev/null; then
-        echo "✅ Arc Simulation Service: Running (PID: $(cat "$PID_DIR/demon.pid"))"
-    else
-        echo "❌ Arc Simulation Service: Not running"
-    fi
-    
     # Port check
     if netstat -tlnp 2>/dev/null | grep -q ":8080.*LISTEN"; then
         echo "✅ Port 8080 (Landing Page): Listening"
     else
         echo "❌ Port 8080 (Landing Page): Not listening"
-    fi
-    
-    if netstat -tlnp 2>/dev/null | grep -q ":8501.*LISTEN"; then
-        echo "✅ Port 8501 (Arc Simulation): Listening"
-    else
-        echo "❌ Port 8501 (Arc Simulation): Not listening"
     fi
     
     echo ""
@@ -305,14 +186,15 @@ show_status() {
 }
 
 # Main execution
+
+# Main execution
 main() {
-    kill_port_8080
+    kill_all_services
     start_vite
     start_tunnel
-    start_arc_simulation
     show_status
-    echo "\ud83c\udf89 All services started successfully!"
-    echo "\ud83d\udca1 Service is running in systemd mode"
+    echo "🎉 All services started successfully!"
+    echo "💡 Service is running in systemd mode"
     # Prevent multiple instances: check if already running
     if pgrep -f "start-systemd.sh" | grep -v "$$" >/dev/null; then
         echo "\u274c Another instance of start-systemd.sh is already running. Exiting."

@@ -1,3 +1,6 @@
+import numpy as np
+import random
+
 
 class MessageBus:
     def __init__(self):
@@ -17,75 +20,102 @@ class MessageBus:
         return {"events": self.events}
 
 
-# Minimal implementation of LiveContextLoop for demon.py
+class AgentRegistry:
+    def __init__(self):
+        self.arcs = {}
+        
+    def register_arc(self, arc_id, arc):
+        self.arcs[arc_id] = arc
+        
+    def arc_counts(self):
+        return list(range(len(self.arcs)))
 
-import numpy as np
 
 class LiveContextLoop:
-    """
-    Orchestrates simulation steps, crisis detection, and event aggregation for ARC, ADAM, and FUEL.
-    """
-    def __init__(self, arc, adam, fuel):
-        self.arc = arc
-        self.adam = adam
-        self.fuel = fuel
-        self.step_num = 0
+    def __init__(self, arc_sim_class, adam_class, fuel_sim):
+        self.arc_sim_class = arc_sim_class
+        self.adam_class = adam_class
+        self.fuel_sim = fuel_sim
+        self.message_bus = MessageBus()
+        self.agent_registry = AgentRegistry()
+        self.step_count = 0
         self.logs = []
-        self.crisis_mode = False
-        self.era = 0
-        self.crisis_history = []
-
-    def detect_crisis(self, fuel_stats, arc_stats):
-        # Crisis: >1 FUEL agent dies in a step or >2 invalid ARC blocks in last 7 blocks
-        fuel_deaths = fuel_stats.get('deaths', 0)
-        invalid_blocks = arc_stats.get('invalid_blocks', [])
-        recent_invalid = sum(invalid_blocks[-7:]) if invalid_blocks else 0
-        crisis = fuel_deaths > 1 or recent_invalid > 2
-        return crisis
-
+        
+        # Initialize multiple ARCs and ADAMs
+        self.arcs = []
+        self.adams = []
+        
+        # Create 3 ARC-ADAM pairs
+        for i in range(3):
+            arc = arc_sim_class(i)
+            adam = adam_class(i)
+            self.arcs.append(arc)
+            self.adams.append(adam)
+            self.agent_registry.register_arc(i, arc)
+    
     def step(self):
-        self.step_num += 1
-
-        # Advance ARC, ADAM, FUEL with proper parameters
-        arc_state = self.arc.step(self.adam, None, None, None) if hasattr(self.arc, 'step') else {}
-        adam_state = self.adam.step() if hasattr(self.adam, 'step') else {}
-        fuel_state = self.fuel.step() if hasattr(self.fuel, 'step') else {}
-
-        # Extract scores/guilt from ADAM
-        adam_scores = adam_state.get('scores', np.zeros(1)) if isinstance(adam_state, dict) else np.zeros(1)
-        adam_guilt = adam_state.get('guilt', np.zeros(1)) if isinstance(adam_state, dict) else np.zeros(1)
-
-        # Extract FUEL stats
-        fuel_stats = fuel_state.get('stats', {}) if isinstance(fuel_state, dict) else {}
-
-        # Extract ARC stats
-        arc_stats = arc_state.get('stats', {}) if isinstance(arc_state, dict) else {}
-
-        # Crisis detection
-        self.crisis_mode = self.detect_crisis(fuel_stats, arc_stats)
-        if self.crisis_mode:
-            self.era += 1
-            self.crisis_history.append(self.step_num)
-
-        # Aggregate events
-        events = []
-        if hasattr(self.arc, 'get_events'):
-            events += self.arc.get_events()
-        if hasattr(self.adam, 'get_events'):
-            events += self.adam.get_events()
-        if hasattr(self.fuel, 'get_events'):
-            events += self.fuel.get_events()
-
-        # Log state
-        state = {
-            "step": self.step_num,
-            "crisis_mode": self.crisis_mode,
-            "era": self.era,
-            "adam_scores": adam_scores,
-            "adam_guilt": adam_guilt,
-            "fuel_stats": fuel_stats,
-            "arc_stats": arc_stats,
-            "events": events,
-            "crisis_history": self.crisis_history,
-        }
+        self.step_count += 1
+        crisis_mode = self.step_count % 50 == 0  # Crisis every 50 steps
+        
+        # Step all ARCs
+        for i, (arc, adam) in enumerate(zip(self.arcs, self.adams)):
+            arc.step(adam, None, self.agent_registry, self.message_bus)
+        
+        # Step FUEL simulation
+        self.fuel_sim.step(crisis_mode=crisis_mode)
+        
+        # Resolve cross-ARC events
+        self.message_bus.resolve_cross_arc_events(None)
+        
+        # Collect state for logging
+        state = self.get_current_state()
         self.logs.append(state)
+        
+        # Keep only last 100 logs to prevent memory issues
+        if len(self.logs) > 100:
+            self.logs = self.logs[-100:]
+    
+    def get_current_state(self):
+        # Collect fuel agent data
+        fuel_stats = self.fuel_sim.get_stats()
+        alive_agents = [stat for stat in fuel_stats if stat[2]]  # alive agents
+        dead_agents = [stat for stat in fuel_stats if not stat[2]]  # dead agents
+        
+        fuel_levels = [stat[1] for stat in alive_agents]
+        avg_fuel = np.mean(fuel_levels) if fuel_levels else 0
+        
+        # Collect ARC data
+        arc_data = []
+        for i, arc in enumerate(self.arcs):
+            arc_info = {
+                "arc_id": i,
+                "total_blocks": len(arc.blocks),
+                "disputed_blocks": len(arc.disputed_blocks),
+                "last_block_valid": arc.blocks[-1]["valid"] if arc.blocks else True
+            }
+            arc_data.append(arc_info)
+        
+        # Collect ADAM data
+        adam_scores = []
+        adam_guilt = []
+        adam_policies = []
+        
+        for adam in self.adams:
+            adam_state = adam.get_state()
+            adam_scores.append(len(adam.council_log))  # Use council events as score
+            adam_guilt.append(adam.guilt)
+            adam_policies.append(adam.policy)
+        
+        return {
+            "step": self.step_count,
+            "fuel_alive": len(alive_agents),
+            "fuel_dead": len(dead_agents),
+            "fuel_avg": float(avg_fuel),
+            "fuel_deaths_this_step": self.fuel_sim.dead_last_step,
+            "adam_scores": np.array(adam_scores),
+            "adam_guilt": np.array(adam_guilt),
+            "adam_policies": adam_policies,
+            "arc_data": arc_data,
+            "crisis_mode": self.step_count % 50 == 0,
+            "total_disputes": len(self.message_bus.events)
+        }

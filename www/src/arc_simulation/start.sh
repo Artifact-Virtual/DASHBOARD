@@ -16,7 +16,7 @@ cleanup() {
     pkill -f "streamlit run" 2>/dev/null || true
     
     # Stop systemd service if running
-    systemctl --user stop demon.service 2>/dev/null || true
+    # systemctl --user stop demon.service 2>/dev/null || true
     
     # Deactivate virtual environment
     if [ "$VENV_ACTIVE" -eq 1 ]; then
@@ -51,7 +51,7 @@ echo "✅ Data directory ready"
 echo "🧹 Cleaning up existing processes..."
 pkill -f "python demon.py" 2>/dev/null || true
 pkill -f "streamlit run" 2>/dev/null || true
-systemctl --user stop demon.service 2>/dev/null || true
+# systemctl --user stop demon.service 2>/dev/null || true
 sleep 2
 echo "✅ Cleanup complete"
 
