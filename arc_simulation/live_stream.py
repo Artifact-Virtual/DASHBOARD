@@ -1,17 +1,18 @@
 import streamlit as st
 import sys
-sys.path.append('.')
-
-from shared.context import LiveContextLoop
-from fuel_simulation.fuel_sim import FuelSimulator
-from arc_simulation.arc_sim import ArcSimulator
-from adam_simulation.adam_sim import AdamAgent
 import time
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import numpy as np
+
+sys.path.append('.')
+
+from shared.context import LiveContextLoop
+from fuel_simulation.fuel_sim import FuelSimulator
+from arc_simulation.arc_sim import ArcSimulator
+from adam_simulation.adam_sim import AdamAgent
 
 # Page config
 st.set_page_config(
@@ -68,7 +69,9 @@ st.markdown("""
 if 'live_context_loop' not in st.session_state:
     # Create sophisticated multi-ARC network with circular validation
     fuel_sim = FuelSimulator(n_agents=8)
-    st.session_state.live_context_loop = LiveContextLoop(ArcSimulator, AdamAgent, fuel_sim, initial_arc_count=3)
+    st.session_state.live_context_loop = LiveContextLoop(
+        ArcSimulator, AdamAgent, fuel_sim, initial_arc_count=3
+    )
     st.session_state.step_count = 0
     st.session_state.running = False
     st.session_state.history = []
@@ -105,7 +108,9 @@ with st.sidebar:
     
     if st.button("🔄 Reset Network", use_container_width=True):
         fuel_sim = FuelSimulator(n_agents=8)
-        st.session_state.live_context_loop = LiveContextLoop(ArcSimulator, AdamAgent, fuel_sim, initial_arc_count=3)
+        st.session_state.live_context_loop = LiveContextLoop(
+            ArcSimulator, AdamAgent, fuel_sim, initial_arc_count=3
+        )
         st.session_state.step_count = 0
         st.session_state.running = False
         st.session_state.history = []
@@ -124,7 +129,9 @@ with st.sidebar:
     
     # FUEL Economics Settings
     st.subheader("⚡ FUEL Economics")
-    bridge_threshold = st.slider("Subnet Bridge Threshold (FUEL)", 100, 1000, 500, 50)
+    bridge_threshold = st.slider(
+        "Subnet Bridge Threshold (FUEL)", 100, 1000, 500, 50
+    )
     st.session_state.subnet_bridge_threshold = bridge_threshold
     
     # Analytics Settings
@@ -136,7 +143,10 @@ with st.sidebar:
     # Live Status
     st.subheader("📡 System Status")
     if st.session_state.running:
-        st.markdown('<div class="live-indicator">🔴 STREAMING LIVE</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="live-indicator">🔴 STREAMING LIVE</div>', 
+            unsafe_allow_html=True
+        )
         st.metric("Active Step", st.session_state.step_count)
     else:
         st.info("⏸️ PAUSED")
@@ -144,13 +154,19 @@ with st.sidebar:
     
     # Performance metrics
     if len(st.session_state.history) > 1:
-        avg_duration = np.mean([h.get('duration', 0) for h in st.session_state.history[-10:]])
+        avg_duration = np.mean([
+            h.get('duration', 0) for h in st.session_state.history[-10:]
+        ])
         st.metric("Avg Step Time", f"{avg_duration:.3f}s")
     
     # Network health indicator
     if st.session_state.step_count > 0:
         current_state = st.session_state.live_context_loop.get_current_state()
-        if 'network_state' in current_state and 'arcs' in current_state['network_state']:
+        network_state_check = (
+            'network_state' in current_state and 
+            'arcs' in current_state['network_state']
+        )
+        if network_state_check:
             arcs = current_state['network_state']['arcs']
             total_blocks = sum(arc.get('total_blocks', 0) for arc in arcs)
             # Estimate validity from validation failures
@@ -222,14 +238,81 @@ if st.session_state.step_count > 0:
                     validators = arc_data.get('validators', [])
                     validator_str = ", ".join(map(str, validators)) if validators else "Self"
                     
+                    # Calculate real-time validation metrics
+                    total_blocks = arc_data.get('total_blocks', 0)
+                    disputed_blocks = arc_data.get('disputed_blocks', 0)
+                    recent_failures = arc_data.get('recent_validation_failures', 0)
+                    
+                    # Validation success rate as percentage
+                    validation_success = ((total_blocks - disputed_blocks) / max(1, total_blocks)) * 100
+                    
+                    # ADAM guilt and anxiety metrics
+                    adam_guilt = arc_data.get('adam_guilt', 0)
+                    adam_policy = arc_data.get('adam_policy', 'moderate')
+                    
+                    # Calculate anxiety based on policy and validation failures
+                    if adam_policy == 'emergency_policy':
+                        anxiety_level = min(1.0, 0.8 + recent_failures * 0.05)
+                        anxiety_desc = "🔴 High Crisis"
+                    elif adam_policy == 'conservative':
+                        anxiety_level = min(1.0, 0.6 + recent_failures * 0.03)
+                        anxiety_desc = "🟡 Cautious"
+                    elif adam_policy == 'liberal':
+                        anxiety_level = max(0.1, 0.3 - recent_failures * 0.02)
+                        anxiety_desc = "🟢 Relaxed"
+                    else:  # moderate
+                        anxiety_level = 0.4 + recent_failures * 0.02
+                        anxiety_desc = "🔵 Balanced"
+                    
+                    # Performance status based on validation success
+                    if validation_success >= 95:
+                        performance_status = "🟢 Excellent"
+                    elif validation_success >= 80:
+                        performance_status = "🟡 Good"
+                    elif validation_success >= 60:
+                        performance_status = "🟠 Moderate"
+                    else:
+                        performance_status = "🔴 Poor"
+                    
                     st.markdown(f"""
                     <div class="arc-status">
-                        <h4>ARC-{arc_data['arc_id']}</h4>
-                        <p><strong>Blocks:</strong> {arc_data['total_blocks']}</p>
-                        <p><strong>Rule:</strong> {arc_data.get('current_rule', 'N/A')}</p>
-                        <p><strong>Validates:</strong> {validator_str}</p>
-                        <p><strong>ADAM Guilt:</strong> {arc_data.get('adam_guilt', 0):.2f}</p>
-                        <p><strong>Policy:</strong> {arc_data.get('adam_policy', 'N/A')}</p>
+                        <h4>🏛️ ARC-{arc_data['arc_id']} {performance_status}</h4>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    # Validation progress bar
+                    st.markdown(f"""
+                    <div style="background: linear-gradient(90deg, #4CAF50 {validation_success}%, #f44336 {100-validation_success}%); 
+                                height: 8px; border-radius: 4px; margin: 8px 0;"></div>
+                    """, unsafe_allow_html=True)
+                    
+                    # Basic metrics
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.write(f"**✅ Validation:** {validation_success:.1f}%")
+                        st.write(f"**📦 Blocks:** {total_blocks}")
+                        st.write(f"**⚖️ Rule Index:** {arc_data.get('current_rule', 0)}")
+                    
+                    with col2:
+                        st.write(f"**🔗 Validates:** ARC-{validator_str}")
+                        st.write(f"**⚠️ Recent Failures:** {recent_failures}")
+                    
+                    # ADAM Guilt section
+                    st.write(f"**🧠 ADAM Guilt:** {adam_guilt:.3f}")
+                    guilt_progress = st.progress(adam_guilt)
+                    
+                    # Anxiety section  
+                    st.write(f"**😰 Anxiety:** {anxiety_level:.2f} ({anxiety_desc})")
+                    anxiety_progress = st.progress(anxiety_level)
+                    
+                    # Policy and additional info
+                    st.write(f"**🎯 Policy:** {adam_policy}")
+                    
+                    st.markdown("""
+                    <div style="font-size: 0.9em; color: #666; margin-top: 8px;">
+                        <p>• Validation decides ARC health</p>
+                        <p>• Guilt affects ADAM decisions</p>
+                        <p>• Anxiety from policy stress</p>
                     </div>
                     """, unsafe_allow_html=True)
             
@@ -262,149 +345,613 @@ if st.session_state.step_count > 0:
                 st.metric("Total Violations", current_state.get('total_violations', 0))
         
         with tab2:
-            # Enhanced FUEL economics
-            st.subheader("⚡ FUEL Token Economics Dashboard")
+            # Enhanced FUEL economics with COMPREHENSIVE REAL-TIME ANALYTICS
+            st.subheader("⚡ FUEL Token Economics Dashboard - LIVE DATA")
             
-            # FUEL distribution chart - using available data from LiveContextLoop
-            fuel_data = []
-            
-            # Check if fuel mainnet data exists, otherwise use basic metrics
-            fuel_mainnet_liquidity = current_state.get('fuel_mainnet', {}).get('liquidity', 10000)  # Default fallback
-            fuel_data.append({"Location": "Mainnet", "Amount": fuel_mainnet_liquidity, "Type": "USD"})
-            
-            # Check if fuel subnets exist, otherwise skip or create mock data
+            # Get comprehensive FUEL data from enhanced LiveContextLoop
+            fuel_mainnet = current_state.get('fuel_mainnet', {})
             fuel_subnets = current_state.get('fuel_subnets', [])
-            if not fuel_subnets:
-                # Create basic subnet data from available ARC info
-                for arc_data in arcs_data:
-                    fuel_data.append({
-                        "Location": f"ARC-{arc_data['arc_id']} Subnet",
-                        "Amount": arc_data.get('total_blocks', 0) * 100,  # Estimate based on blocks
-                        "Type": "FUEL Tokens"
-                    })
-            else:
-                for subnet in fuel_subnets:
-                    fuel_data.append({
-                        "Location": f"ARC-{subnet['arc_id']} Subnet",
-                        "Amount": subnet['liquidity'],
-                        "Type": "FUEL Tokens"
-                    })
             
-            fuel_df = pd.DataFrame(fuel_data)
+            # COMPREHENSIVE FUEL ANALYTICS DASHBOARD
+            fuel_tab1, fuel_tab2, fuel_tab3 = st.tabs([
+                "💰 Mainnet & Liquidity", 
+                "🌉 Bridge Analytics",
+                "📊 Economic Health"
+            ])
             
-            # Separate charts for USD and FUEL tokens
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                mainnet_df = fuel_df[fuel_df['Type'] == 'USD']
-                if not mainnet_df.empty:
-                    fig_mainnet = px.pie(mainnet_df, values='Amount', names='Location',
-                                       title="💰 Mainnet USD Liquidity")
-                    st.plotly_chart(fig_mainnet, use_container_width=True)
-            
-            with col2:
-                subnet_df = fuel_df[fuel_df['Type'] == 'FUEL Tokens']
-                if not subnet_df.empty:
-                    fig_subnet = px.bar(subnet_df, x='Location', y='Amount',
-                                      title="⚡ Subnet FUEL Token Balances")
-                    st.plotly_chart(fig_subnet, use_container_width=True)
-            
-            # Bridge threshold monitoring
-            st.subheader("🌉 Bridge Monitoring")
-            
-            # Use the safely extracted fuel_subnets
-            if fuel_subnets:
-                bridge_cols = st.columns(len(fuel_subnets))
+            with fuel_tab1:
+                # MAINNET LIQUIDITY DASHBOARD
+                st.subheader("💰 Mainnet FUEL Economics")
                 
-                for i, subnet in enumerate(fuel_subnets):
-                    with bridge_cols[i]:
-                        progress = subnet['liquidity'] / st.session_state.subnet_bridge_threshold
-                        st.metric(f"ARC-{subnet['arc_id']}", f"{subnet['liquidity']} FUEL")
-                        st.progress(min(progress, 1.0))
+                # Key mainnet metrics
+                mainnet_liquidity = fuel_mainnet.get('liquidity', 10000)
+                mainnet_volume = fuel_mainnet.get('volume_24h', 75000)
+                bridge_fees = fuel_mainnet.get('bridge_fees', 250)
+                
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("💰 Mainnet Liquidity", f"${mainnet_liquidity:,}")
+                with col2:
+                    st.metric("📈 24h Volume", f"${mainnet_volume:,}")
+                with col3:
+                    st.metric("🌉 Bridge Fees", f"${bridge_fees}")
+                
+                # SUBNET DISTRIBUTION ANALYSIS
+                if fuel_subnets:
+                    st.subheader("⚡ Subnet FUEL Distribution")
+                    
+                    # Create comprehensive FUEL distribution visualization
+                    subnet_data = []
+                    for subnet in fuel_subnets:
+                        subnet_data.extend([
+                            {"Subnet": f"ARC-{subnet['arc_id']}", "Type": "Liquidity", "Amount": subnet.get('liquidity', 0)},
+                            {"Subnet": f"ARC-{subnet['arc_id']}", "Type": "Staked", "Amount": subnet.get('staked_fuel', 0)},
+                            {"Subnet": f"ARC-{subnet['arc_id']}", "Type": "Rewards", "Amount": subnet.get('rewards_pool', 0)}
+                        ])
+                    
+                    if subnet_data:
+                        subnet_df = pd.DataFrame(subnet_data)
                         
-                        if subnet['liquidity'] >= st.session_state.subnet_bridge_threshold:
-                            st.success("🌉 Ready to Bridge!")
-                        else:
-                            remaining = st.session_state.subnet_bridge_threshold - subnet['liquidity']
-                            st.info(f"Need {remaining} more FUEL")
-            else:
-                st.info("No subnet data available for bridge monitoring")
+                        # Stacked bar chart for comprehensive view
+                        fig_subnet_dist = px.bar(
+                            subnet_df, 
+                            x='Subnet', 
+                            y='Amount', 
+                            color='Type',
+                            title="⚡ Comprehensive Subnet FUEL Analysis",
+                            color_discrete_map={
+                                'Liquidity': '#1f77b4',
+                                'Staked': '#ff7f0e', 
+                                'Rewards': '#2ca02c'
+                            }
+                        )
+                        fig_subnet_dist.update_layout(height=400)
+                        st.plotly_chart(fig_subnet_dist, use_container_width=True)
+                        
+                        # Subnet performance table
+                        subnet_summary = []
+                        for subnet in fuel_subnets:
+                            subnet_summary.append({
+                                'ARC ID': subnet['arc_id'],
+                                'Liquidity': f"{subnet.get('liquidity', 0):,} FUEL",
+                                'Staked': f"{subnet.get('staked_fuel', 0):,} FUEL",
+                                'Rewards Pool': f"{subnet.get('rewards_pool', 0):,} FUEL",
+                                'TX Volume': f"{subnet.get('transaction_volume', 0):,}",
+                                'Bridge Status': subnet.get('bridge_status', 'unknown').title()
+                            })
+                        
+                        subnet_df_summary = pd.DataFrame(subnet_summary)
+                        st.dataframe(subnet_df_summary, use_container_width=True)
+                else:
+                    st.info("No subnet data available - initializing FUEL subnet network...")
+            
+            with fuel_tab2:
+                # BRIDGE ANALYTICS AND MONITORING
+                st.subheader("🌉 Cross-Chain Bridge Analytics")
+                
+                if fuel_subnets:
+                    # Bridge threshold progress monitoring
+                    st.write("**Bridge Readiness Status:**")
+                    
+                    bridge_cols = st.columns(len(fuel_subnets))
+                    for i, subnet in enumerate(fuel_subnets):
+                        with bridge_cols[i]:
+                            liquidity = subnet.get('liquidity', 0)
+                            progress = min(1.0, liquidity / st.session_state.subnet_bridge_threshold)
+                            status = subnet.get('bridge_status', 'pending')
+                            
+                            # Bridge status indicator
+                            if status == 'active':
+                                st.success(f"🟢 ARC-{subnet['arc_id']}")
+                            elif progress >= 1.0:
+                                st.info(f"🔵 ARC-{subnet['arc_id']}")
+                            else:
+                                st.warning(f"🟡 ARC-{subnet['arc_id']}")
+                            
+                            st.metric(f"ARC-{subnet['arc_id']} Liquidity", f"{liquidity:,} FUEL")
+                            st.progress(progress)
+                            
+                            if liquidity >= st.session_state.subnet_bridge_threshold:
+                                st.success("🌉 Bridge Ready!")
+                            else:
+                                remaining = st.session_state.subnet_bridge_threshold - liquidity
+                                st.info(f"Need {remaining:,} more FUEL")
+                    
+                    # Bridge flow visualization
+                    st.subheader("🔄 Bridge Flow Analysis")
+                    
+                    # Create bridge flow data
+                    flow_data = []
+                    for subnet in fuel_subnets:
+                        tx_volume = subnet.get('transaction_volume', 0)
+                        flow_data.append({
+                            'Subnet': f"ARC-{subnet['arc_id']}",
+                            'Transaction Volume': tx_volume,
+                            'Bridge Status': subnet.get('bridge_status', 'pending'),
+                            'Liquidity Ratio': subnet.get('liquidity', 0) / st.session_state.subnet_bridge_threshold
+                        })
+                    
+                    if flow_data:
+                        flow_df = pd.DataFrame(flow_data)
+                        
+                        # Bridge performance scatter plot
+                        fig_bridge = px.scatter(
+                            flow_df,
+                            x='Transaction Volume',
+                            y='Liquidity Ratio',
+                            color='Bridge Status',
+                            size='Transaction Volume',
+                            title="🌉 Bridge Performance Matrix",
+                            color_discrete_map={'active': 'green', 'pending': 'orange', 'inactive': 'red'}
+                        )
+                        fig_bridge.add_hline(y=1.0, line_dash="dash", line_color="red", 
+                                           annotation_text="Bridge Threshold")
+                        st.plotly_chart(fig_bridge, use_container_width=True)
+                else:
+                    st.info("Bridge analytics will appear when subnet data is available")
+            
+            with fuel_tab3:
+                # ECONOMIC HEALTH ANALYSIS
+                st.subheader("📊 Network Economic Health")
+                
+                # Economic stress indicators
+                economic_stress = current_state.get('economic_stress', 0)
+                economic_health = current_state.get('economic_health', 1.0)
+                fuel_alive = current_state.get('fuel_alive', 0)
+                fuel_dead = current_state.get('fuel_dead', 0)
+                
+                # Health metrics
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    if economic_health > 0.8:
+                        st.success(f"🟢 Economic Health: {economic_health:.1%}")
+                    elif economic_health > 0.6:
+                        st.warning(f"🟡 Economic Health: {economic_health:.1%}")
+                    else:
+                        st.error(f"🔴 Economic Health: {economic_health:.1%}")
+                
+                with col2:
+                    st.metric("⚡ Agents Alive", fuel_alive, delta=f"-{fuel_dead} died")
+                
+                with col3:
+                    if economic_stress < 0.3:
+                        st.success(f"🟢 Stress Level: {economic_stress:.1%}")
+                    elif economic_stress < 0.6:
+                        st.warning(f"🟡 Stress Level: {economic_stress:.1%}")
+                    else:
+                        st.error(f"🔴 Stress Level: {economic_stress:.1%}")
+                
+                # Economic trend analysis
+                if len(st.session_state.history) > 10:
+                    st.subheader("📈 Economic Trend Analysis")
+                    
+                    # Extract economic data from history
+                    econ_data = []
+                    for h in st.session_state.history[-20:]:
+                        econ_data.append({
+                            'Step': h.get('step', 0),
+                            'Economic Health': h.get('economic_health', 1.0) * 100,
+                            'Economic Stress': h.get('economic_stress', 0) * 100,
+                            'Agents Alive': h.get('fuel_alive', 0),
+                            'Avg Fuel': h.get('fuel_avg', 0)
+                        })
+                    
+                    econ_df = pd.DataFrame(econ_data)
+                    
+                    # Multi-metric economic dashboard
+                    fig_econ = make_subplots(
+                        rows=2, cols=2,
+                        subplot_titles=('Economic Health %', 'Agent Population', 'Economic Stress %', 'Average Fuel'),
+                        specs=[[{"secondary_y": False}, {"secondary_y": False}],
+                               [{"secondary_y": False}, {"secondary_y": False}]]
+                    )
+                    
+                    # Economic health trend
+                    fig_econ.add_trace(
+                        go.Scatter(
+                            x=econ_df['Step'], 
+                            y=econ_df['Economic Health'],
+                            name="Health %",
+                            line=dict(color='green', width=3)
+                        ),
+                        row=1, col=1
+                    )
+                    
+                    # Agent population
+                    fig_econ.add_trace(
+                        go.Scatter(
+                            x=econ_df['Step'], 
+                            y=econ_df['Agents Alive'],
+                            name="Alive",
+                            line=dict(color='blue', width=3)
+                        ),
+                        row=1, col=2
+                    )
+                    
+                    # Economic stress
+                    fig_econ.add_trace(
+                        go.Scatter(
+                            x=econ_df['Step'], 
+                            y=econ_df['Economic Stress'],
+                            name="Stress %",
+                            line=dict(color='red', width=3),
+                            fill='tonexty'
+                        ),
+                        row=2, col=1
+                    )
+                    
+                    # Average fuel
+                    fig_econ.add_trace(
+                        go.Scatter(
+                            x=econ_df['Step'], 
+                            y=econ_df['Avg Fuel'],
+                            name="Avg Fuel",
+                            line=dict(color='orange', width=3)
+                        ),
+                        row=2, col=2
+                    )
+                    
+                    fig_econ.update_layout(
+                        height=600, 
+                        title_text="📊 Comprehensive Economic Analysis",
+                        showlegend=False
+                    )
+                    st.plotly_chart(fig_econ, use_container_width=True)
+                    
+                    # Economic insights
+                    latest_health = econ_df['Economic Health'].iloc[-1]
+                    health_trend = econ_df['Economic Health'].iloc[-1] - econ_df['Economic Health'].iloc[-5] if len(econ_df) >= 5 else 0
+                    
+                    if latest_health > 80:
+                        st.success(f"🟢 Economy is thriving! Health: {latest_health:.1f}%")
+                    elif latest_health > 60:
+                        st.info(f"🟡 Economy is stable. Health: {latest_health:.1f}%")
+                    else:
+                        st.error(f"🔴 Economy needs attention! Health: {latest_health:.1f}%")
+                    
+                    if health_trend > 5:
+                        st.info("📈 Economic health is improving!")
+                    elif health_trend < -5:
+                        st.warning("📉 Economic health is declining!")
+                    else:
+                        st.info("➡️ Economic health is stable")
+                else:
+                    st.info("📊 Collecting economic data... Need more simulation steps for trend analysis")
         
         with tab3:
-            # Enhanced agent analytics
-            st.subheader("🤖 Agent Performance Analytics")
+            # Enhanced agent analytics with REAL-TIME PERFORMANCE GRAPHS
+            st.subheader("🤖 Agent Performance Analytics - LIVE DATA")
             
-            # Use available data from LiveContextLoop state
+            # Use comprehensive agent data from enhanced LiveContextLoop state
             agents_data = current_state.get('agents', [])
             
             if agents_data:
-                # Agent type breakdown with performance metrics
+                # Real-time agent performance breakdown
                 validators = [a for a in agents_data if a.get('type') == 'validator']
                 forecasters = [a for a in agents_data if a.get('type') == 'forecaster']
                 operators = [a for a in agents_data if a.get('type') == 'operator']
                 
-                col1, col2, col3 = st.columns(3)
+                # COMPREHENSIVE PERFORMANCE DASHBOARD
+                performance_tab1, performance_tab2, performance_tab3 = st.tabs([
+                    "📊 Live Performance Charts", 
+                    "🔍 Detailed Agent Analysis",
+                    "📈 Real-time Trends"
+                ])
                 
-                with col1:
-                    st.markdown("#### ⚖️ Validators")
+                with performance_tab1:
+                    # REAL-TIME PERFORMANCE CHARTS
                     if validators:
-                        val_df = pd.DataFrame(validators)
-                        if 'earnings' in val_df.columns and 'arc' in val_df.columns:
-                            fig = px.bar(val_df, x='arc', y='earnings', 
-                                       title="Validator Earnings by ARC")
-                            st.plotly_chart(fig, use_container_width=True)
-                        else:
-                            st.metric("Active Validators", len(validators))
-                    else:
-                        st.info("No validator data available")
-            else:
-                # Show basic agent info from FUEL simulation
-                st.info("📊 Using FUEL Agent Data")
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.metric("🤖 Agents Alive", current_state.get('fuel_alive', 0))
-                with col2:
-                    st.metric("💀 Agent Deaths", current_state.get('fuel_dead', 0))
+                        st.subheader("🛡️ Validator Performance - Live Charts")
+                        validator_df = pd.DataFrame(validators)
+                        
+                        # Live validator earnings chart
+                        fig_val_earnings = px.bar(
+                            validator_df, 
+                            x='id', 
+                            y='earnings', 
+                            color='score',
+                            title="💰 Validator Earnings (Live)",
+                            color_continuous_scale="Viridis"
+                        )
+                        fig_val_earnings.update_layout(height=400)
+                        st.plotly_chart(fig_val_earnings, use_container_width=True)
+                        
+                        # Validator performance vs fuel correlation
+                        fig_val_corr = px.scatter(
+                            validator_df,
+                            x='fuel',
+                            y='score',
+                            size='earnings',
+                            color='alive',
+                            title="🔄 Validator Performance Correlation",
+                            color_discrete_map={True: 'green', False: 'red'}
+                        )
+                        st.plotly_chart(fig_val_corr, use_container_width=True)
                     
-                    # Top performer - handle case where validators are just IDs
-                    if validators and len(validators) > 0:
-                        if isinstance(validators[0], dict) and 'earnings' in validators[0]:
-                            top_validator = max(validators, key=lambda x: x['earnings'])
-                            st.success(f"🏆 Top: ARC-{top_validator['arc']} (${top_validator['earnings']})")
-                        else:
-                            st.info(f"🏆 Active Validators: {len(validators)}")
+                    if forecasters:
+                        st.subheader("🔮 Forecaster Analytics - Live Data")
+                        forecaster_df = pd.DataFrame(forecasters)
+                        
+                        # Live forecaster accuracy vs predictions
+                        fig_forecast = make_subplots(
+                            rows=1, cols=2,
+                            subplot_titles=('Prediction Volume', 'Accuracy Distribution'),
+                            specs=[[{"type": "bar"}, {"type": "histogram"}]]
+                        )
+                        
+                        fig_forecast.add_trace(
+                            go.Bar(
+                                x=forecaster_df['id'], 
+                                y=forecaster_df['predictions'],
+                                name="Predictions",
+                                marker_color='lightblue'
+                            ),
+                            row=1, col=1
+                        )
+                        
+                        fig_forecast.add_trace(
+                            go.Histogram(
+                                x=forecaster_df['accuracy'],
+                                name="Accuracy",
+                                marker_color='orange'
+                            ),
+                            row=1, col=2
+                        )
+                        
+                        fig_forecast.update_layout(height=400, title_text="🔮 Live Forecaster Performance")
+                        st.plotly_chart(fig_forecast, use_container_width=True)
+                    
+                    if operators:
+                        st.subheader("⚙️ Operator Productivity - Real-time")
+                        operator_df = pd.DataFrame(operators)
+                        
+                        # Live operator productivity chart
+                        fig_ops = px.line_polar(
+                            operator_df,
+                            r='productivity',
+                            theta='id',
+                            line_close=True,
+                            title="⚙️ Operator Productivity Radar (Live)"
+                        )
+                        fig_ops.update_traces(fill='toself')
+                        st.plotly_chart(fig_ops, use_container_width=True)
+                        
+                        # Jobs completion bar chart
+                        fig_jobs = px.bar(
+                            operator_df,
+                            x='id',
+                            y='jobs_done',
+                            color='productivity',
+                            title="📋 Jobs Completed (Live Updates)",
+                            color_continuous_scale="Plasma"
+                        )
+                        st.plotly_chart(fig_jobs, use_container_width=True)
+                
+                with performance_tab2:
+                    # DETAILED AGENT ANALYSIS WITH LIVE METRICS
+                    st.subheader("🔍 Individual Agent Deep Dive")
+                    
+                    # Agent type performance summary
+                    for agent_type in ['validator', 'forecaster', 'operator']:
+                        type_agents = [a for a in agents_data if a.get('type') == agent_type]
+                        if type_agents:
+                            with st.expander(f"📊 {agent_type.title()} Detailed Analysis ({len(type_agents)} active)", expanded=False):
+                                type_df = pd.DataFrame(type_agents)
+                                
+                                # Performance summary metrics
+                                col1, col2, col3 = st.columns(3)
+                                with col1:
+                                    avg_score = type_df['score'].mean()
+                                    st.metric(f"Avg {agent_type.title()} Score", f"{avg_score:.1f}")
+                                with col2:
+                                    alive_count = type_df['alive'].sum()
+                                    st.metric("Active Agents", f"{alive_count}/{len(type_agents)}")
+                                with col3:
+                                    avg_fuel = type_df['fuel'].mean()
+                                    st.metric("Avg Fuel", f"{avg_fuel:.1f}")
+                                
+                                # Detailed performance table
+                                st.write("**Live Performance Data:**")
+                                display_df = type_df.copy()
+                                display_df['alive'] = display_df['alive'].map({True: '🟢 Active', False: '🔴 Inactive'})
+                                st.dataframe(display_df, use_container_width=True)
+                                
+                                # Agent-specific performance metrics
+                                if agent_type == 'validator':
+                                    total_earnings = type_df['earnings'].sum()
+                                    st.info(f"💰 Total Network Earnings: ${total_earnings:,}")
+                                elif agent_type == 'forecaster':
+                                    total_predictions = type_df['predictions'].sum()
+                                    avg_accuracy = type_df['accuracy'].mean()
+                                    st.info(f"🔮 Network Predictions: {total_predictions} (Avg Accuracy: {avg_accuracy:.1%})")
+                                elif agent_type == 'operator':
+                                    total_jobs = type_df['jobs_done'].sum()
+                                    avg_productivity = type_df['productivity'].mean()
+                                    st.info(f"⚙️ Network Productivity: {total_jobs} jobs ({avg_productivity:.1%} efficiency)")
+                
+                with performance_tab3:
+                    # REAL-TIME TREND ANALYSIS
+                    st.subheader("📈 Real-time Performance Trends")
+                    
+                    if len(st.session_state.history) > 5:
+                        # Extract historical agent performance data
+                        trend_data = []
+                        for i, h in enumerate(st.session_state.history[-20:]):
+                            step_agents = h.get('agents', [])
+                            if step_agents:
+                                for agent_type in ['validator', 'forecaster', 'operator']:
+                                    type_agents = [a for a in step_agents if a.get('type') == agent_type]
+                                    if type_agents:
+                                        avg_score = np.mean([a['score'] for a in type_agents])
+                                        avg_fuel = np.mean([a['fuel'] for a in type_agents])
+                                        active_count = sum(a['alive'] for a in type_agents)
+                                        
+                                        trend_data.append({
+                                            'Step': h.get('step', st.session_state.step_count - 20 + i),
+                                            'Agent_Type': agent_type,
+                                            'Avg_Score': avg_score,
+                                            'Avg_Fuel': avg_fuel,
+                                            'Active_Count': active_count
+                                        })
+                        
+                        if trend_data:
+                            trend_df = pd.DataFrame(trend_data)
+                            
+                            # Multi-line performance trend chart
+                            fig_trends = make_subplots(
+                                rows=2, cols=2,
+                                subplot_titles=('Performance Scores', 'Fuel Levels', 'Active Agents', 'Score vs Fuel'),
+                                specs=[[{"secondary_y": False}, {"secondary_y": False}],
+                                       [{"secondary_y": False}, {"secondary_y": False}]]
+                            )
+                            
+                            colors = {'validator': '#1f77b4', 'forecaster': '#ff7f0e', 'operator': '#2ca02c'}
+                            
+                            for agent_type in ['validator', 'forecaster', 'operator']:
+                                type_data = trend_df[trend_df['Agent_Type'] == agent_type]
+                                if not type_data.empty:
+                                    # Performance scores
+                                    fig_trends.add_trace(
+                                        go.Scatter(
+                                            x=type_data['Step'], 
+                                            y=type_data['Avg_Score'],
+                                            name=f"{agent_type.title()} Score",
+                                            line=dict(color=colors[agent_type])
+                                        ),
+                                        row=1, col=1
+                                    )
+                                    
+                                    # Fuel levels
+                                    fig_trends.add_trace(
+                                        go.Scatter(
+                                            x=type_data['Step'], 
+                                            y=type_data['Avg_Fuel'],
+                                            name=f"{agent_type.title()} Fuel",
+                                            line=dict(color=colors[agent_type], dash='dash')
+                                        ),
+                                        row=1, col=2
+                                    )
+                                    
+                                    # Active count
+                                    fig_trends.add_trace(
+                                        go.Scatter(
+                                            x=type_data['Step'], 
+                                            y=type_data['Active_Count'],
+                                            name=f"{agent_type.title()} Active",
+                                            line=dict(color=colors[agent_type], dash='dot')
+                                        ),
+                                        row=2, col=1
+                                    )
+                                    
+                                    # Score vs Fuel correlation
+                                    fig_trends.add_trace(
+                                        go.Scatter(
+                                            x=type_data['Avg_Fuel'], 
+                                            y=type_data['Avg_Score'],
+                                            mode='markers',
+                                            name=f"{agent_type.title()} Correlation",
+                                            marker=dict(color=colors[agent_type], size=8)
+                                        ),
+                                        row=2, col=2
+                                    )
+                            
+                            fig_trends.update_layout(
+                                height=800, 
+                                title_text="📈 Real-time Agent Performance Trends",
+                                showlegend=True
+                            )
+                            st.plotly_chart(fig_trends, use_container_width=True)
+                            
+                            # Performance insights
+                            latest_data = trend_df[trend_df['Step'] == trend_df['Step'].max()]
+                            if not latest_data.empty:
+                                st.subheader("🧠 Performance Insights")
+                                for agent_type in ['validator', 'forecaster', 'operator']:
+                                    type_latest = latest_data[latest_data['Agent_Type'] == agent_type]
+                                    if not type_latest.empty:
+                                        score = type_latest['Avg_Score'].iloc[0]
+                                        fuel = type_latest['Avg_Fuel'].iloc[0]
+                                        active = type_latest['Active_Count'].iloc[0]
+                                        
+                                        if score > 80:
+                                            st.success(f"🟢 {agent_type.title()}s performing excellently (Score: {score:.1f})")
+                                        elif score > 60:
+                                            st.info(f"🟡 {agent_type.title()}s performing adequately (Score: {score:.1f})")
+                                        else:
+                                            st.warning(f"🔴 {agent_type.title()}s need attention (Score: {score:.1f})")
                     else:
-                        st.info("🏆 No validators active")
+                        st.info("📊 Collecting trend data... Need more simulation steps for trend analysis")
+            else:
+                st.warning("🚨 No detailed agent data available! The LiveContextLoop may need to be restarted.")
+                st.info("💡 Try clicking 'Reset Network' to restore comprehensive agent tracking.")
             
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.markdown("#### ⚖️ Validators")
+                if agents_data and validators:
+                    val_df = pd.DataFrame(validators)
+                    # Add arc assignment based on agent ID
+                    val_df['arc'] = val_df['id'] % len(current_state.get('network_state', {}).get('arcs', [1]))
+                    
+                    fig = px.bar(val_df, x='id', y='earnings', 
+                               color='score', title="Validator Earnings")
+                    st.plotly_chart(fig, use_container_width=True)
+                elif agents_data:
+                    st.info("No validator data available")
+                else:
+                    # Show basic agent info from FUEL simulation
+                    st.info("📊 Using FUEL Agent Data")
+                    st.metric("🤖 Agents Alive", current_state.get('fuel_alive', 0))
+                    
             with col2:
                 st.markdown("#### 🔮 Forecasters")
-                if forecasters:
+                if agents_data and forecasters:
                     fore_df = pd.DataFrame(forecasters)
-                    fig = px.scatter(fore_df, x='arc', y='score', size='score',
-                                   title="Forecaster Accuracy by ARC")
+                    # Add arc assignment based on agent ID
+                    fore_df['arc'] = fore_df['id'] % len(current_state.get('network_state', {}).get('arcs', [1]))
+                    
+                    fig = px.scatter(fore_df, x='id', y='score', size='accuracy',
+                                   color='arc', title="Forecaster Accuracy (Real-time)")
                     st.plotly_chart(fig, use_container_width=True)
                     
                     # Most accurate
                     top_forecaster = max(forecasters, key=lambda x: x['score'])
-                    st.success(f"🎯 Best: ARC-{top_forecaster['arc']} ({top_forecaster['score']} correct)")
+                    st.success(f"🎯 Best: Agent-{top_forecaster['id']} ({top_forecaster['score']:.1f}% accuracy)")
+                elif agents_data:
+                    st.info("No forecaster data available")
+                else:
+                    st.metric("💀 Agent Deaths", current_state.get('fuel_dead', 0))
             
             with col3:
                 st.markdown("#### ⚙️ Operators")
-                if operators:
+                if agents_data and operators:
                     op_df = pd.DataFrame(operators)
-                    fig = px.bar(op_df, x='arc', y='jobs_done',
-                               title="Operator Jobs by ARC")
+                    # Add arc assignment based on agent ID
+                    op_df['arc'] = op_df['id'] % len(current_state.get('network_state', {}).get('arcs', [1]))
+                    
+                    fig = px.bar(op_df, x='id', y='jobs_done',
+                               color='productivity', title="Operator Productivity")
                     st.plotly_chart(fig, use_container_width=True)
                     
                     # Most productive
                     top_operator = max(operators, key=lambda x: x['jobs_done'])
-                    st.success(f"🔧 Busiest: ARC-{top_operator['arc']} ({top_operator['jobs_done']} jobs)")
+                    st.success(f"🔧 Best: Agent-{top_operator['id']} ({top_operator['jobs_done']} jobs)")
+                elif agents_data:
+                    st.info("No operator data available")
+                else:
+                    st.info("📊 Economic Health")
+                    st.metric("Economic Stress", f"{current_state.get('economic_stress', 0):.1%}")
         
         with tab4:
             # Enhanced event monitoring
             st.subheader("📡 Cross-ARC Event Monitor")
             
-            events = current_state['messages']['events']
+            # Safe access to events data
+            events = current_state.get('messages', {}).get('events', [])
+            if not events:
+                events = current_state.get('governance_events', [])
+            
             if events:
                 # Event timeline
                 event_data = []
@@ -445,13 +992,25 @@ if st.session_state.step_count > 0:
                 # Network health trends
                 health_data = []
                 for h in st.session_state.history[-history_window:]:
-                    total_b = sum(len(arc['blocks']) for arc in h['arcs'])
-                    valid_b = sum(sum(1 for block in arc['blocks'] if block['valid']) for arc in h['arcs'])
+                    # Get ARCs from network_state, with safe fallback
+                    arcs = h.get('network_state', {}).get('arcs', [])
+                    total_b = sum(arc.get('total_blocks', 0) for arc in arcs)
+                    # Calculate health based on disputed vs total blocks
+                    disputed_b = sum(arc.get('disputed_blocks', 0) for arc in arcs)
+                    valid_b = max(0, total_b - disputed_b)
+                    
+                    # Safe access to events
+                    events_count = 0
+                    if 'messages' in h and 'events' in h['messages']:
+                        events_count = len(h['messages']['events'])
+                    elif 'system_events' in h:
+                        events_count = len(h['system_events'])
+                    
                     health_data.append({
                         'Step': h['step'],
                         'Health': (valid_b / total_b * 100) if total_b > 0 else 100,
                         'Blocks': total_b,
-                        'Events': len(h['messages']['events'])
+                        'Events': events_count
                     })
                 
                 health_df = pd.DataFrame(health_data)
