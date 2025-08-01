@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import './styles/main.css';
 
 // Component imports
@@ -23,7 +23,6 @@ const App = () => {
 
   // WebSocket connection with error handling
   const { 
-    data: wsData, 
     connected, 
     error: wsError, 
     sendMessage 
