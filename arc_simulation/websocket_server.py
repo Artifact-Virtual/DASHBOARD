@@ -6,17 +6,12 @@ Streams real-time data to React dashboard with trading-style aesthetics
 
 import asyncio
 import json
+import os
 import time
 from typing import Dict, Any
 import uvicorn
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-
-from shared.context import LiveContextLoop
-from fuel_simulation.fuel_sim import FuelSimulator
-from arc_simulation.arc_sim import ArcSimulator
-from adam_simulation.adam_sim import AdamAgent
 
 app = FastAPI(title="ARC Multi-Network WebSocket API")
 
@@ -93,105 +88,23 @@ class SimulationManager:
                 await asyncio.sleep(1)
                 
             except Exception as e:
-                print(f"Simulation error: {e}")
+                print(f"Data streaming error: {e}")
                 await asyncio.sleep(1)
-    
-    def _update_tokenomics(self, current_state):
-        """Update FUEL token price based on network activity"""
-        # Price evolution algorithm based on network health and activity
-        economic_health = current_state.get('economic_health', 1.0)
-        fuel_alive = current_state.get('fuel_alive', 0)
-        network_activity = current_state.get('total_disputes', 0)
-        
-        # Price impact factors
-        health_factor = economic_health * 1.5  # Health boost
-        activity_factor = min(2.0, fuel_alive / 8.0)  # Agent activity
-        network_factor = max(0.5, 1.0 - (network_activity * 0.1))  # Network stability
-        
-        # Strategy-based price targets
-        price_targets = {
-            'Conservative Growth': 1.0,
-            'Aggressive Growth': 10.0,
-            'BTC Parity Target': 65000.0,
-            'ETH Parity Target': 3500.0,
-            'Stable Dollar Peg': 1.0,
-            'Custom Target': self.tokenomics_config.get('custom_target', 1.0)
-        }
-        
-        target_price = price_targets.get(self.tokenomics_config['price_strategy'], 1.0)
-        
-        # Calculate price change
-        current_price = self.tokenomics_config['current_price']
-        price_momentum = health_factor * activity_factor * network_factor
-        
-        # Growth rate based on distance from target
-        distance_to_target = target_price - current_price
-        growth_rate = min(0.05, distance_to_target * 0.001) * price_momentum
-        
-        # Apply price change
-        new_price = current_price * (1 + growth_rate)
-        self.tokenomics_config['current_price'] = max(0.0001, new_price)
-        
-        # Update treasury and other metrics
-        self.tokenomics_config['market_cap'] = self.tokenomics_config['current_price'] * 1000000
-        self.tokenomics_config['price_change_24h'] = growth_rate * 100
-        
-    def _get_price_history(self):
-        """Get recent price history for charts"""
-        return [
-            {
-                'timestamp': h['timestamp'],
-                'price': h['tokenomics']['current_price'],
-                'volume': h['simulation_state'].get('total_disputes', 0) * 1000
-            }
-            for h in self.history[-50:]  # Last 50 data points
-        ]
-    
-    def _calculate_network_health(self, current_state):
-        """Calculate comprehensive network health metrics"""
-        economic_health = current_state.get('economic_health', 1.0)
-        fuel_alive = current_state.get('fuel_alive', 0)
-        total_violations = current_state.get('total_violations', 0)
-        
-        # Network health score (0-100)
-        health_score = (
-            economic_health * 40 +  # Economic health weight
-            (fuel_alive / 8.0) * 30 +  # Agent survival weight
-            max(0, (1 - total_violations * 0.1)) * 30  # Violation penalty
-        )
-        
-        return {
-            'overall_score': min(100, health_score),
-            'economic_health': economic_health * 100,
-            'agent_survival_rate': (fuel_alive / 8.0) * 100,
-            'network_stability': max(0, (1 - total_violations * 0.1)) * 100,
-            'status': 'Excellent' if health_score > 80 else 'Good' if health_score > 60 else 'Poor'
-        }
-    
-    def _generate_trading_metrics(self, current_state):
-        """Generate trading-style metrics for professional dashboard"""
-        price = self.tokenomics_config['current_price']
-        
-        # Simulate order book data
-        spread = price * 0.001  # 0.1% spread
-        
-        return {
-            'bid': price - spread,
-            'ask': price + spread,
-            'spread': spread,
-            'volume_24h': current_state.get('total_disputes', 0) * 10000,
-            'high_24h': price * 1.1,
-            'low_24h': price * 0.9,
-            'price_change_percent': self.tokenomics_config.get('price_change_24h', 0),
-            'market_cap': self.tokenomics_config.get('market_cap', 0),
-            'circulating_supply': current_state.get('fuel_mainnet', {}).get('circulating_supply', 1000000)
-        }
     
     async def broadcast_data(self, data):
         """Broadcast data to all connected WebSocket clients"""
         if self.connected_clients:
             message = json.dumps(data, default=str)
             disconnected = set()
+            
+            for client in self.connected_clients:
+                try:
+                    await client.send_text(message)
+                except:
+                    disconnected.add(client)
+            
+            # Remove disconnected clients
+            self.connected_clients -= disconnected
             
             for client in self.connected_clients:
                 try:
@@ -209,30 +122,15 @@ class SimulationManager:
     def remove_client(self, websocket: WebSocket):
         """Remove a WebSocket client"""
         self.connected_clients.discard(websocket)
-    
-    def toggle_simulation(self):
-        """Start/stop simulation"""
-        self.running = not self.running
-        return self.running
-    
-    def inject_crisis(self, crisis_type: str, severity: float, duration: int):
-        """Inject crisis into simulation"""
-        self.live_context_loop.inject_crisis(crisis_type, severity, duration)
-    
-    def add_arc(self):
-        """Add new ARC to network"""
-        return self.live_context_loop.add_arc()
-    
-    def remove_arc(self):
-        """Remove ARC from network"""
-        return self.live_context_loop.remove_arc()
-    
-    def update_tokenomics(self, config: Dict[str, Any]):
-        """Update tokenomics configuration"""
-        self.tokenomics_config.update(config)
 
 # Global simulation manager
 sim_manager = SimulationManager()
+
+# Start data streaming when server starts
+@app.on_event("startup")
+async def startup_event():
+    """Start the data streaming task"""
+    asyncio.create_task(sim_manager.start_data_streaming())
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -241,22 +139,15 @@ async def websocket_endpoint(websocket: WebSocket):
     sim_manager.add_client(websocket)
     
     try:
-        # Send initial data
+        # Send initial data if available
         if sim_manager.history:
             await websocket.send_text(json.dumps(sim_manager.history[-1], default=str))
         
         # Keep connection alive
         while True:
             try:
-                # Ping to keep connection alive
-                data = await asyncio.wait_for(websocket.receive_text(), timeout=1.0)
-                
-                # Handle commands from frontend
-                try:
-                    command = json.loads(data)
-                    await handle_command(command, websocket)
-                except json.JSONDecodeError:
-                    pass
+                # Simple ping-pong to keep connection alive
+                await asyncio.wait_for(websocket.receive_text(), timeout=30.0)
                     
             except asyncio.TimeoutError:
                 # Send heartbeat
@@ -265,6 +156,21 @@ async def websocket_endpoint(websocket: WebSocket):
                 
     except WebSocketDisconnect:
         sim_manager.remove_client(websocket)
+
+@app.get("/api/status")
+async def get_status():
+    """Get current simulation status"""
+    data = sim_manager.read_simulation_data()
+    if data:
+        return {"status": "running", "step": data.get('step', 0)}
+    return {"status": "no_data"}
+
+if __name__ == "__main__":
+    import uvicorn
+    print("🚀 Starting ARC Multi-Network WebSocket Server...")
+    print("📡 WebSocket endpoint: ws://localhost:8000/ws")
+    print("🌐 API endpoint: http://localhost:8000/api/status")
+    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")
 
 async def handle_command(command: Dict[str, Any], websocket: WebSocket):
     """Handle commands from frontend"""
