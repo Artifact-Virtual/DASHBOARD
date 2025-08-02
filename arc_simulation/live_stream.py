@@ -1644,7 +1644,8 @@ if st.session_state.step_count > 0:
                 st.plotly_chart(fig, use_container_width=True)
                 
                 # Key insights
-                st.markdown("#### 🧠 AI Insights")
+                st.markdown("#### ⚡ AI Insights")
+                
                 avg_health = health_df['Health'].mean()
                 health_trend = health_df['Health'].diff().mean()
                 
@@ -1996,8 +1997,8 @@ if st.session_state.step_count > 0:
 
 else:
     # Initial state
-    st.info("🚀 Professional Multi-ARC Analytics Stream Ready")
-    st.markdown("### 🎯 Features:")
+    st.info("Professional Multi-ARC Analytics Stream Ready")
+    st.markdown("#### 🎯 Features:")
     st.markdown("""
     - **🔴 Live Streaming**: Real-time network monitoring with professional analytics
     - **⏸️ Research Mode**: Detailed analysis when paused - perfect for studying network behavior

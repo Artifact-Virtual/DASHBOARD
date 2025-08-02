@@ -31,72 +31,66 @@ app.add_middleware(
 
 class SimulationManager:
     def __init__(self):
-        # Initialize the simulation
-        fuel_sim = FuelSimulator(n_agents=8)
-        self.live_context_loop = LiveContextLoop(
-            ArcSimulator, AdamAgent, fuel_sim, initial_arc_count=3
-        )
+        # Don't initialize simulation - read from files instead
         self.running = False
         self.step_count = 0
         self.history = []
         self.connected_clients = set()
-        self.tokenomics_config = {
-            'initial_treasury': 1000000,
-            'fuel_cost': 0.01,
-            'target_price': 1.0,
-            'current_price': 0.001,  # Start very low
-            'burn_rate': 0.02,
-            'staking_apy': 0.12,
-            'bridge_fee_rate': 0.005,
-            'validator_reward_rate': 0.1,
-            'inflation_rate': 0.03,
-            'price_strategy': 'Conservative Growth'
-        }
+        self.data_dir = "simulation_data"
+        self.state_file = "latest.json"
+        self.last_update = 0
         
-    async def start_simulation(self):
-        """Start the simulation loop"""
+    def read_simulation_data(self):
+        """Read simulation data from headless daemon files"""
+        try:
+            state_path = os.path.join(self.data_dir, self.state_file)
+            if os.path.exists(state_path):
+                with open(state_path, 'r') as f:
+                    data = json.load(f)
+                return data
+        except Exception as e:
+            print(f"Error reading simulation data: {e}")
+        return None
+        
+    async def start_data_streaming(self):
+        """Start streaming data from headless daemon files"""
         self.running = True
         while self.running:
             try:
-                start_time = time.time()
+                # Read latest data from headless daemon
+                data = self.read_simulation_data()
                 
-                # Execute simulation step
-                self.live_context_loop.step()
-                self.step_count += 1
+                if data and data.get('step', 0) != self.last_update:
+                    self.last_update = data.get('step', 0)
+                    
+                    # Enhance data for dashboard
+                    dashboard_data = {
+                        'timestamp': time.time(),
+                        'step': data.get('step', 0),
+                        'era': data.get('era', 0),
+                        'crisis_mode': data.get('crisis_mode', False),
+                        'crisis_indicators': data.get('crisis_indicators', []),
+                        'network_state': data.get('network_state', {}),
+                        'fuel_state': data.get('fuel_state', {}),
+                        'system_events': data.get('system_events', [])
+                    }
+                    
+                    # Store in history
+                    self.history.append(dashboard_data)
+                    
+                    # Limit history for performance
+                    if len(self.history) > 100:
+                        self.history = self.history[-50:]
+                    
+                    # Broadcast to all connected clients
+                    await self.broadcast_data(dashboard_data)
                 
-                # Get current state
-                current_state = self.live_context_loop.get_current_state()
+                # Check for updates every 500ms
+                await asyncio.sleep(0.5)
                 
-                # Calculate price evolution based on tokenomics
-                self._update_tokenomics(current_state)
-                
-                # Add timing information
-                step_duration = time.time() - start_time
-                
-                # Prepare enhanced data for dashboard
-                dashboard_data = {
-                    'timestamp': time.time(),
-                    'step': self.step_count,
-                    'duration': step_duration,
-                    'simulation_state': current_state,
-                    'tokenomics': self.tokenomics_config,
-                    'price_history': self._get_price_history(),
-                    'network_health': self._calculate_network_health(current_state),
-                    'trading_metrics': self._generate_trading_metrics(current_state)
-                }
-                
-                # Store in history
-                self.history.append(dashboard_data)
-                
-                # Limit history for performance
-                if len(self.history) > 200:
-                    self.history = self.history[-100:]
-                
-                # Broadcast to all connected clients
-                await self.broadcast_data(dashboard_data)
-                
-                # Control simulation speed
-                await asyncio.sleep(0.5)  # 2 steps per second
+            except Exception as e:
+                print(f"Data streaming error: {e}")
+                await asyncio.sleep(1)
                 
             except Exception as e:
                 print(f"Simulation error: {e}")

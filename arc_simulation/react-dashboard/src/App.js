@@ -1,286 +1,234 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles/main.css';
 
-// Component imports
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
-import Dashboard from './components/Dashboard';
-import Analytics from './components/Analytics';
-import SystemStatus from './components/SystemStatus';
-import ArcManagement from './components/ArcManagement';
-
-// Custom hooks
-import useWebSocket from './hooks/useWebSocket';
-
 const App = () => {
-  // Application state
-  const [activeView, setActiveView] = useState('dashboard');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [simulationRunning, setSimulationRunning] = useState(false);
-  const [simulationData, setSimulationData] = useState(null);
-  const [connectionStatus, setConnectionStatus] = useState('connecting');
+  const [data, setData] = useState(null);
+  const [connected, setConnected] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // WebSocket connection with error handling
-  const { 
-    connected, 
-    error: wsError, 
-    sendMessage 
-  } = useWebSocket('ws://localhost:8000/ws', {
-    onOpen: () => {
-      console.log('✅ WebSocket connected successfully');
-      setConnectionStatus('connected');
-      setError(null);
-    },
-    onClose: () => {
-      console.log('🔌 WebSocket disconnected');
-      setConnectionStatus('disconnected');
-    },
-    onError: (error) => {
-      console.error('❌ WebSocket error:', error);
-      setConnectionStatus('error');
-      setError('Failed to connect to simulation server');
-    },
-    onMessage: (data) => {
-      // Process incoming simulation data
+  // WebSocket connection
+  useEffect(() => {
+    const ws = new WebSocket('ws://localhost:8000/ws');
+    
+    ws.onopen = () => {
+      console.log('Connected to simulation');
+      setConnected(true);
+      setLoading(false);
+    };
+    
+    ws.onmessage = (event) => {
       try {
-        setSimulationData(data);
-        setSimulationRunning(data?.running || false);
-        
-        // Clear any previous errors on successful data
-        if (error) {
-          setError(null);
+        const newData = JSON.parse(event.data);
+        if (newData.type !== 'heartbeat') {
+          setData(newData);
         }
       } catch (err) {
-        console.error('Error processing WebSocket data:', err);
-        setError('Error processing simulation data');
+        console.error('Data parse error:', err);
       }
-    }
-  });
-
-  // Simulation control functions
-  const startSimulation = useCallback(() => {
-    if (connected) {
-      sendMessage({ action: 'start_simulation' });
-      console.log('🚀 Starting simulation...');
-    } else {
-      setError('Cannot start simulation - not connected to server');
-    }
-  }, [connected, sendMessage]);
-
-  const stopSimulation = useCallback(() => {
-    if (connected) {
-      sendMessage({ action: 'stop_simulation' });
-      console.log('⏹️ Stopping simulation...');
-    } else {
-      setError('Cannot stop simulation - not connected to server');
-    }
-  }, [connected, sendMessage]);
-
-  const resetSimulation = useCallback(() => {
-    if (connected) {
-      sendMessage({ action: 'reset_simulation' });
-      console.log('🔄 Resetting simulation...');
-    } else {
-      setError('Cannot reset simulation - not connected to server');
-    }
-  }, [connected, sendMessage]);
-
-  // Navigation handlers
-  const navigationItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-    { id: 'analytics', label: 'Analytics', icon: '📈' },
-    { id: 'arcs', label: 'ARC Management', icon: '🔧' },
-    { id: 'system', label: 'System Status', icon: '⚙️' }
-  ];
-
-  const handleNavigation = useCallback((viewId) => {
-    setActiveView(viewId);
-    console.log(`📍 Navigating to: ${viewId}`);
+    };
+    
+    ws.onclose = () => {
+      console.log('Disconnected from simulation');
+      setConnected(false);
+    };
+    
+    ws.onerror = (err) => {
+      console.error('WebSocket error:', err);
+      setError('Connection failed');
+      setLoading(false);
+    };
+    
+    return () => ws.close();
   }, []);
 
-  // Real-time status calculations
-  const systemHealth = simulationData?.economic_health || 0;
-  const totalFuel = simulationData?.fuel_agents?.reduce((sum, agent) => sum + (agent.fuel || 0), 0) || 0;
-  const activeArcs = simulationData?.validators?.length || 0;
-  const currentStep = simulationData?.step || 0;
+  // Connection status
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-spinner"></div>
+        <p>Connecting to simulation...</p>
+      </div>
+    );
+  }
 
-  // Render appropriate view component
-  const renderActiveView = () => {
-    const commonProps = {
-      data: simulationData,
-      connected,
-      error: wsError || error,
-      startSimulation,
-      stopSimulation,
-      resetSimulation,
-      simulationRunning
-    };
+  if (error) {
+    return (
+      <div className="error-screen">
+        <h2>Connection Error</h2>
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()}>Retry</button>
+      </div>
+    );
+  }
 
-    switch (activeView) {
-      case 'dashboard':
-        return <Dashboard {...commonProps} />;
-      case 'analytics':
-        return <Analytics {...commonProps} />;
-      case 'arcs':
-        return <ArcManagement {...commonProps} />;
-      case 'system':
-        return <SystemStatus {...commonProps} />;
-      default:
-        return <Dashboard {...commonProps} />;
-    }
-  };
+  if (!data) {
+    return (
+      <div className="waiting-screen">
+        <div className="status-indicator">
+          <div className={`connection-dot ${connected ? 'connected' : 'disconnected'}`}></div>
+          <span>{connected ? 'Connected' : 'Disconnected'}</span>
+        </div>
+        <p>Waiting for simulation data...</p>
+      </div>
+    );
+  }
 
-  // Connection status indicator
-  const getConnectionStatusColor = () => {
-    switch (connectionStatus) {
-      case 'connected': return '#00ff88';
-      case 'connecting': return '#ffaa00';
-      case 'disconnected': return '#ff6b6b';
-      case 'error': return '#ff4757';
-      default: return '#888';
-    }
-  };
+  // Extract key metrics
+  const networkState = data.network_state || {};
+  const arcs = networkState.arcs || [];
+  const totalBlocks = arcs.reduce((sum, arc) => sum + (arc.total_blocks || 0), 0);
+  const fuelData = data.fuel_state || {};
+  const aliveAgents = fuelData.alive_count || 0;
+  const step = data.step || 0;
+  const crisisMode = data.crisis_mode || false;
 
   return (
     <div className="app">
-      {/* Connection Status Bar */}
-      <div className="connection-status" style={{
-        background: connectionStatus === 'connected' ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 75, 87, 0.1)',
-        borderBottom: `1px solid ${getConnectionStatusColor()}`,
-        padding: '4px 16px',
-        fontSize: '12px',
-        textAlign: 'center',
-        color: getConnectionStatusColor()
-      }}>
-        {connectionStatus === 'connected' && '🟢 Connected to Multi-ARC System'}
-        {connectionStatus === 'connecting' && '🟡 Connecting to server...'}
-        {connectionStatus === 'disconnected' && '🔴 Disconnected from server'}
-        {connectionStatus === 'error' && '❌ Connection error - Check server status'}
-      </div>
-
-      {/* Main App Header */}
-      <Header
-        connected={connected}
-        error={error}
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-        data={simulationData}
-        connectionStatus={connectionStatus}
-        systemHealth={systemHealth}
-        totalFuel={totalFuel}
-        activeArcs={activeArcs}
-        currentStep={currentStep}
-      />
-
-      {/* Main Application Layout */}
-      <div className="app-layout">
-        {/* Navigation Sidebar */}
-        <Sidebar
-          open={sidebarOpen}
-          activeView={activeView}
-          onNavigate={handleNavigation}
-          navigationItems={navigationItems}
-          simulationRunning={simulationRunning}
-          startSimulation={startSimulation}
-          stopSimulation={stopSimulation}
-          resetSimulation={resetSimulation}
-          connected={connected}
-          systemHealth={systemHealth}
-          totalFuel={totalFuel}
-          activeArcs={activeArcs}
-        />
-
-        {/* Main Content Area */}
-        <main className={`main-content ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
-          {/* Error Display */}
-          {error && (
-            <div className="error-banner">
-              <div className="error-content">
-                <span className="error-icon">⚠️</span>
-                <span className="error-message">{error}</span>
-                <button 
-                  className="error-dismiss"
-                  onClick={() => setError(null)}
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Real-time Dashboard Data */}
-          {simulationData && (
-            <div className="live-data-strip">
-              <div className="live-metric">
-                <span className="metric-label">STEP</span>
-                <span className="metric-value">{currentStep.toLocaleString()}</span>
-              </div>
-              <div className="live-metric">
-                <span className="metric-label">HEALTH</span>
-                <span className="metric-value" style={{
-                  color: systemHealth > 0.7 ? '#00ff88' : systemHealth > 0.4 ? '#ffaa00' : '#ff6b6b'
-                }}>
-                  {(systemHealth * 100).toFixed(1)}%
-                </span>
-              </div>
-              <div className="live-metric">
-                <span className="metric-label">FUEL</span>
-                <span className="metric-value">{totalFuel.toFixed(2)}</span>
-              </div>
-              <div className="live-metric">
-                <span className="metric-label">ARCS</span>
-                <span className="metric-value">{activeArcs}</span>
-              </div>
-              <div className="live-metric">
-                <span className="metric-label">STATUS</span>
-                <span className="metric-value" style={{
-                  color: simulationRunning ? '#00ff88' : '#888'
-                }}>
-                  {simulationRunning ? 'RUNNING' : 'STOPPED'}
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* Dynamic View Content */}
-          <div className="view-container">
-            {renderActiveView()}
+      {/* Header */}
+      <header className="header">
+        <div className="header-content">
+          <h1>ARC Simulation Dashboard</h1>
+          <div className="header-status">
+            <div className={`status-dot ${connected ? 'connected' : 'disconnected'}`}></div>
+            <span>Step {step.toLocaleString()}</span>
+            {crisisMode && <span className="crisis-badge">CRISIS</span>}
           </div>
-
-          {/* Trading Status Footer */}
-          <div className="trading-footer">
-            <div className="footer-section">
-              <span className="footer-label">Multi-ARC Constitutional Intelligence</span>
-              <span className="footer-value">
-                {connected ? '🟢 ONLINE' : '🔴 OFFLINE'}
-              </span>
-            </div>
-            <div className="footer-section">
-              <span className="footer-label">Last Update</span>
-              <span className="footer-value">
-                {simulationData ? new Date().toLocaleTimeString() : 'No data'}
-              </span>
-            </div>
-            <div className="footer-section">
-              <span className="footer-label">Performance</span>
-              <span className="footer-value">
-                {simulationData ? 'OPTIMAL' : 'MONITORING'}
-              </span>
-            </div>
-          </div>
-        </main>
-      </div>
-
-      {/* Real-time Data Overlay for Development */}
-      {process.env.NODE_ENV === 'development' && simulationData && (
-        <div className="dev-overlay">
-          <details>
-            <summary>🔍 Live Data Debug</summary>
-            <pre>{JSON.stringify(simulationData, null, 2)}</pre>
-          </details>
         </div>
-      )}
+      </header>
+
+      {/* Main Content */}
+      <main className="main-content">
+        {/* Key Metrics */}
+        <section className="metrics-grid">
+          <div className="metric-card">
+            <h3>Network Blocks</h3>
+            <div className="metric-value">{totalBlocks.toLocaleString()}</div>
+          </div>
+          <div className="metric-card">
+            <h3>Active ARCs</h3>
+            <div className="metric-value">{arcs.length}</div>
+          </div>
+          <div className="metric-card">
+            <h3>Living Agents</h3>
+            <div className="metric-value">{aliveAgents}</div>
+          </div>
+          <div className="metric-card">
+            <h3>Era</h3>
+            <div className="metric-value">{data.era || 0}</div>
+          </div>
+        </section>
+
+        {/* ARC Network Status */}
+        <section className="arc-section">
+          <h2>ARC Network</h2>
+          <div className="arc-grid">
+            {arcs.map((arc, index) => (
+              <div key={arc.arc_id || index} className="arc-card">
+                <div className="arc-header">
+                  <h4>ARC-{arc.arc_id}</h4>
+                  <div className={`validation-status ${arc.last_block_valid ? 'valid' : 'invalid'}`}>
+                    {arc.last_block_valid ? '✓' : '✗'}
+                  </div>
+                </div>
+                <div className="arc-metrics">
+                  <div className="arc-metric">
+                    <span>Blocks</span>
+                    <span>{(arc.total_blocks || 0).toLocaleString()}</span>
+                  </div>
+                  <div className="arc-metric">
+                    <span>Rule</span>
+                    <span>#{arc.current_rule || 0}</span>
+                  </div>
+                  <div className="arc-metric">
+                    <span>Strictness</span>
+                    <span>{((arc.rule_strictness || 1) * 100).toFixed(0)}%</span>
+                  </div>
+                  <div className="arc-metric">
+                    <span>Validators</span>
+                    <span>{arc.validator_count || 0}</span>
+                  </div>
+                  <div className="arc-metric">
+                    <span>Failures</span>
+                    <span>{arc.recent_validation_failures || 0}</span>
+                  </div>
+                  <div className="arc-metric">
+                    <span>ADAM Guilt</span>
+                    <span>{((arc.adam_guilt || 0) * 100).toFixed(1)}%</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* FUEL Economic System */}
+        <section className="fuel-section">
+          <h2>FUEL Economic System</h2>
+          <div className="fuel-grid">
+            <div className="fuel-card">
+              <h4>Agent Status</h4>
+              <div className="agent-stats">
+                <div className="stat">
+                  <span className="stat-label">Alive</span>
+                  <span className="stat-value alive">{fuelData.alive_count || 0}</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-label">Dead</span>
+                  <span className="stat-value dead">{fuelData.dead_count || 0}</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-label">Average FUEL</span>
+                  <span className="stat-value">{(fuelData.avg_fuel || 0).toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+            
+            {fuelData.agents && (
+              <div className="fuel-card agents-grid">
+                <h4>Individual Agents</h4>
+                <div className="agents-list">
+                  {fuelData.agents.slice(0, 8).map((agent, index) => (
+                    <div key={index} className={`agent-item ${agent.alive ? 'alive' : 'dead'}`}>
+                      <span>Agent {index}</span>
+                      <span>{agent.fuel?.toFixed(1) || '0.0'}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Crisis Indicators */}
+        {crisisMode && data.crisis_indicators && (
+          <section className="crisis-section">
+            <h2>🚨 Crisis Status</h2>
+            <div className="crisis-alerts">
+              {data.crisis_indicators.map((indicator, index) => (
+                <div key={index} className="crisis-alert">
+                  {indicator}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* System Events */}
+        {data.system_events && data.system_events.length > 0 && (
+          <section className="events-section">
+            <h2>Recent Events</h2>
+            <div className="events-list">
+              {data.system_events.slice(-10).reverse().map((event, index) => (
+                <div key={index} className="event-item">
+                  <span className="event-type">{event.type || 'Event'}</span>
+                  <span className="event-desc">{event.description || 'System event'}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+      </main>
     </div>
   );
 };
