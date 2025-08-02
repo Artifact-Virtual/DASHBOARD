@@ -1,329 +1,304 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { 
+  Play, 
+  Pause, 
+  RotateCcw, 
+  Plus, 
+  Minus, 
+  Zap, 
+  AlertTriangle,
+  Settings,
+  TrendingUp,
+  DollarSign
+} from 'lucide-react';
 
-const Sidebar = ({ 
-  activeTab, 
-  setActiveTab, 
-  sidebarOpen, 
-  setSidebarOpen, 
-  connected, 
-  injectCrisis, 
-  updateConfig,
-  data 
-}) => {
-  const [crisisType, setCrisisType] = useState('economic_collapse');
+const Sidebar = ({ simulationData, controls, connectionStatus }) => {
+  const [crisisType, setCrisisType] = useState('Economic Collapse');
   const [crisisSeverity, setCrisisSeverity] = useState(0.5);
-  const [crisisDuration, setCrisisDuration] = useState(10);
-
-  const menuItems = [
-    { id: 'dashboard', icon: '📊', label: 'Dashboard', description: 'Live System Overview' },
-    { id: 'analytics', icon: '📈', label: 'Analytics', description: 'Performance Analysis' },
-    { id: 'arcs', icon: '🔗', label: 'ARC Management', description: 'Network Nodes' },
-    { id: 'system', icon: '⚙️', label: 'System Status', description: 'Health & Diagnostics' }
-  ];
+  const [crisisDuration, setCrisisDuration] = useState(5);
+  const [isRunning, setIsRunning] = useState(false);
 
   const crisisTypes = [
-    { value: 'economic_collapse', label: 'Economic Collapse', icon: '💥' },
-    { value: 'network_attack', label: 'Network Attack', icon: '🔴' },
-    { value: 'data_corruption', label: 'Data Corruption', icon: '🗃️' },
-    { value: 'byzantine_failure', label: 'Byzantine Failure', icon: '⚡' },
-    { value: 'liquidity_crisis', label: 'Liquidity Crisis', icon: '💧' },
-    { value: 'validator_outage', label: 'Validator Outage', icon: '🔧' },
-    { value: 'bridge_exploit', label: 'Bridge Exploit', icon: '🌉' },
-    { value: 'governance_attack', label: 'Governance Attack', icon: '🏛️' },
-    { value: 'oracle_manipulation', label: 'Oracle Manipulation', icon: '🔮' },
-    { value: 'flash_loan_attack', label: 'Flash Loan Attack', icon: '⚡' }
+    'Economic Collapse',
+    'Network Attack',
+    'Data Corruption',
+    'Byzantine Failure',
+    'Liquidity Crisis',
+    'Validator Outage',
+    'Bridge Exploit',
+    'Governance Attack',
+    'Oracle Manipulation',
+    'Flash Loan Attack'
   ];
 
-  const handleCrisisInject = () => {
-    if (!connected) return;
-    
-    const crisisConfig = {
-      type: crisisType,
-      severity: crisisSeverity,
-      duration: crisisDuration,
-      immediate: true
-    };
-    
-    injectCrisis(crisisConfig);
+  const handleStartStop = () => {
+    if (isRunning) {
+      controls.stopSimulation();
+    } else {
+      controls.startSimulation();
+    }
+    setIsRunning(!isRunning);
   };
 
-  const sidebarStyle = {
-    position: 'fixed',
-    left: 0,
-    top: 0,
-    width: sidebarOpen ? '280px' : '60px',
-    height: '100vh',
-    background: 'var(--bg-secondary)',
-    borderRight: '1px solid var(--border-color)',
-    transition: 'width 0.3s ease',
-    zIndex: 1000,
-    overflow: 'hidden'
+  const getNetworkStats = () => {
+    if (!simulationData?.simulation_state) {
+      return { arcs: 0, agents: 0, blocks: 0 };
+    }
+
+    const state = simulationData.simulation_state;
+    const networkState = state.network_state || {};
+    const arcs = networkState.arcs || [];
+    
+    return {
+      arcs: arcs.length,
+      agents: state.fuel_alive || 0,
+      blocks: arcs.reduce((sum, arc) => sum + (arc.total_blocks || 0), 0)
+    };
   };
+
+  const stats = getNetworkStats();
 
   return (
-    <aside style={sidebarStyle}>
-      <div style={{ 
-        padding: 'var(--spacing-lg)', 
-        height: '100%', 
-        overflow: 'auto',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
-        {/* Navigation Menu */}
-        <nav style={{ marginBottom: 'var(--spacing-xl)' }}>
-          {sidebarOpen && (
-            <h3 style={{
-              color: 'var(--text-secondary)',
-              fontSize: '0.75rem',
-              fontWeight: '600',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: 'var(--spacing-md)'
-            }}>
-              Navigation
-            </h3>
-          )}
+    <div className="h-full bg-dark-800 p-6 space-y-6">
+      {/* Control Panel Header */}
+      <div className="text-center pb-4 border-b border-dark-600">
+        <h2 className="text-xl font-bold text-gradient">Control Panel</h2>
+        <p className="text-sm text-gray-400 mt-1">Professional Controls</p>
+      </div>
+
+      {/* Main Controls */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold flex items-center space-x-2">
+          <Settings className="w-5 h-5 text-accent-blue" />
+          <span>Simulation</span>
+        </h3>
+
+        {/* Start/Stop Controls */}
+        <div className="grid grid-cols-2 gap-3">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleStartStop}
+            disabled={connectionStatus !== 'connected'}
+            className={`btn-primary flex items-center justify-center space-x-2 ${
+              isRunning ? 'bg-accent-red' : 'bg-accent-green'
+            } ${connectionStatus !== 'connected' ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {isRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+            <span>{isRunning ? 'Pause' : 'Start'}</span>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              setIsRunning(false);
+              // Add reset logic
+            }}
+            disabled={connectionStatus !== 'connected'}
+            className={`btn-secondary flex items-center justify-center space-x-2 ${
+              connectionStatus !== 'connected' ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            <RotateCcw className="w-4 h-4" />
+            <span>Reset</span>
+          </motion.button>
+        </div>
+
+        {/* Network Statistics */}
+        <div className="trading-card">
+          <h4 className="font-medium mb-3 flex items-center space-x-2">
+            <TrendingUp className="w-4 h-4 text-accent-green" />
+            <span>Network Status</span>
+          </h4>
           
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--spacing-sm)',
-                padding: 'var(--spacing-sm) var(--spacing-md)',
-                marginBottom: 'var(--spacing-xs)',
-                background: activeTab === item.id ? 'var(--gradient-primary)' : 'transparent',
-                border: 'none',
-                borderRadius: 'var(--radius-md)',
-                color: activeTab === item.id ? 'white' : 'var(--text-secondary)',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                textAlign: 'left'
-              }}
-              onMouseEnter={(e) => {
-                if (activeTab !== item.id) {
-                  e.target.style.background = 'var(--bg-hover)';
-                  e.target.style.color = 'var(--text-primary)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (activeTab !== item.id) {
-                  e.target.style.background = 'transparent';
-                  e.target.style.color = 'var(--text-secondary)';
-                }
-              }}
-            >
-              <span style={{ fontSize: '1.25rem' }}>{item.icon}</span>
-              {sidebarOpen && (
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: '500', fontSize: '0.875rem' }}>
-                    {item.label}
-                  </div>
-                  <div style={{ 
-                    fontSize: '0.75rem', 
-                    opacity: 0.8,
-                    marginTop: '2px'
-                  }}>
-                    {item.description}
-                  </div>
-                </div>
-              )}
-            </button>
-          ))}
-        </nav>
-
-        {/* Crisis Management Controls */}
-        {sidebarOpen && connected && (
-          <div style={{ marginBottom: 'var(--spacing-xl)' }}>
-            <h3 style={{
-              color: 'var(--text-secondary)',
-              fontSize: '0.75rem',
-              fontWeight: '600',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: 'var(--spacing-md)'
-            }}>
-              Crisis Management
-            </h3>
-            
-            <div className="card" style={{ padding: 'var(--spacing-md)' }}>
-              {/* Crisis Type Selection */}
-              <label style={{
-                display: 'block',
-                color: 'var(--text-secondary)',
-                fontSize: '0.75rem',
-                fontWeight: '600',
-                marginBottom: 'var(--spacing-xs)'
-              }}>
-                Crisis Type
-              </label>
-              <select
-                value={crisisType}
-                onChange={(e) => setCrisisType(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: 'var(--spacing-sm)',
-                  background: 'var(--bg-tertiary)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: 'var(--radius-md)',
-                  color: 'var(--text-primary)',
-                  fontSize: '0.875rem',
-                  marginBottom: 'var(--spacing-md)'
-                }}
-              >
-                {crisisTypes.map((crisis) => (
-                  <option key={crisis.value} value={crisis.value}>
-                    {crisis.icon} {crisis.label}
-                  </option>
-                ))}
-              </select>
-
-              {/* Severity Slider */}
-              <label style={{
-                display: 'block',
-                color: 'var(--text-secondary)',
-                fontSize: '0.75rem',
-                fontWeight: '600',
-                marginBottom: 'var(--spacing-xs)'
-              }}>
-                Severity: {(crisisSeverity * 100).toFixed(0)}%
-              </label>
-              <input
-                type="range"
-                min="0.1"
-                max="1.0"
-                step="0.1"
-                value={crisisSeverity}
-                onChange={(e) => setCrisisSeverity(parseFloat(e.target.value))}
-                style={{
-                  width: '100%',
-                  marginBottom: 'var(--spacing-md)'
-                }}
-              />
-
-              {/* Duration Input */}
-              <label style={{
-                display: 'block',
-                color: 'var(--text-secondary)',
-                fontSize: '0.75rem',
-                fontWeight: '600',
-                marginBottom: 'var(--spacing-xs)'
-              }}>
-                Duration (steps)
-              </label>
-              <input
-                type="number"
-                min="1"
-                max="100"
-                value={crisisDuration}
-                onChange={(e) => setCrisisDuration(parseInt(e.target.value))}
-                style={{
-                  width: '100%',
-                  padding: 'var(--spacing-sm)',
-                  background: 'var(--bg-tertiary)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: 'var(--radius-md)',
-                  color: 'var(--text-primary)',
-                  fontSize: '0.875rem',
-                  marginBottom: 'var(--spacing-md)'
-                }}
-              />
-
-              {/* Inject Crisis Button */}
-              <button
-                onClick={handleCrisisInject}
-                className="btn btn-danger"
-                style={{
-                  width: '100%',
-                  justifyContent: 'center',
-                  fontWeight: '600'
-                }}
-              >
-                💥 Inject Crisis
-              </button>
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <div className="text-xl font-mono font-bold text-accent-blue">{stats.arcs}</div>
+              <div className="text-xs text-gray-400">ARCs</div>
+            </div>
+            <div>
+              <div className="text-xl font-mono font-bold text-accent-green">{stats.agents}</div>
+              <div className="text-xs text-gray-400">Agents</div>
+            </div>
+            <div>
+              <div className="text-xl font-mono font-bold text-accent-purple">{stats.blocks}</div>
+              <div className="text-xs text-gray-400">Blocks</div>
             </div>
           </div>
-        )}
+        </div>
+      </div>
 
-        {/* System Stats */}
-        {sidebarOpen && data && (
-          <div style={{ marginTop: 'auto' }}>
-            <h3 style={{
-              color: 'var(--text-secondary)',
-              fontSize: '0.75rem',
-              fontWeight: '600',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              marginBottom: 'var(--spacing-md)'
-            }}>
-              Quick Stats
-            </h3>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center',
-                padding: 'var(--spacing-xs) 0',
-                borderBottom: '1px solid var(--border-color)'
-              }}>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                  Active ARCs
-                </span>
-                <span style={{ 
-                  color: 'var(--accent-blue)', 
-                  fontWeight: '600',
-                  fontSize: '0.875rem'
-                }}>
-                  {data.validators?.length || 0}
+      {/* ARC Management */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold flex items-center space-x-2">
+          <Zap className="w-5 h-5 text-accent-purple" />
+          <span>ARC Management</span>
+        </h3>
+
+        <div className="grid grid-cols-2 gap-3">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={controls.addArc}
+            disabled={connectionStatus !== 'connected'}
+            className={`btn-secondary flex items-center justify-center space-x-2 ${
+              connectionStatus !== 'connected' ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add ARC</span>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={controls.removeArc}
+            disabled={connectionStatus !== 'connected' || stats.arcs <= 1}
+            className={`btn-secondary flex items-center justify-center space-x-2 ${
+              connectionStatus !== 'connected' || stats.arcs <= 1 
+                ? 'opacity-50 cursor-not-allowed' 
+                : ''
+            }`}
+          >
+            <Minus className="w-4 h-4" />
+            <span>Remove</span>
+          </motion.button>
+        </div>
+      </div>
+
+      {/* Crisis Injection */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold flex items-center space-x-2">
+          <AlertTriangle className="w-5 h-5 text-accent-red" />
+          <span>Crisis Injection</span>
+        </h3>
+
+        <div className="space-y-3">
+          {/* Crisis Type */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Crisis Type</label>
+            <select
+              value={crisisType}
+              onChange={(e) => setCrisisType(e.target.value)}
+              className="select-trading w-full"
+            >
+              {crisisTypes.map((type) => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Severity */}
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Severity: {(crisisSeverity * 100).toFixed(0)}%
+            </label>
+            <input
+              type="range"
+              min="0.1"
+              max="1.0"
+              step="0.1"
+              value={crisisSeverity}
+              onChange={(e) => setCrisisSeverity(parseFloat(e.target.value))}
+              className="w-full accent-accent-red"
+            />
+          </div>
+
+          {/* Duration */}
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Duration: {crisisDuration} steps
+            </label>
+            <input
+              type="range"
+              min="1"
+              max="20"
+              step="1"
+              value={crisisDuration}
+              onChange={(e) => setCrisisDuration(parseInt(e.target.value))}
+              className="w-full accent-accent-yellow"
+            />
+          </div>
+
+          {/* Inject Button */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => controls.injectCrisis(crisisType, crisisSeverity, crisisDuration)}
+            disabled={connectionStatus !== 'connected'}
+            className={`btn-danger w-full flex items-center justify-center space-x-2 ${
+              connectionStatus !== 'connected' ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            <AlertTriangle className="w-4 h-4" />
+            <span>Inject Crisis</span>
+          </motion.button>
+        </div>
+      </div>
+
+      {/* FUEL Economics */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold flex items-center space-x-2">
+          <DollarSign className="w-5 h-5 text-accent-green" />
+          <span>FUEL Economics</span>
+        </h3>
+
+        {simulationData?.tokenomics && (
+          <div className="trading-card">
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-gray-400">Current Price</span>
+                <span className="font-mono text-accent-green">
+                  ${simulationData.tokenomics.current_price.toFixed(6)}
                 </span>
               </div>
               
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center',
-                padding: 'var(--spacing-xs) 0',
-                borderBottom: '1px solid var(--border-color)'
-              }}>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                  Fuel Agents
-                </span>
-                <span style={{ 
-                  color: 'var(--accent-green)', 
-                  fontWeight: '600',
-                  fontSize: '0.875rem'
-                }}>
-                  {data.fuel_agents?.length || 0}
+              <div className="flex justify-between">
+                <span className="text-gray-400">Market Cap</span>
+                <span className="font-mono text-white">
+                  ${(simulationData.tokenomics.market_cap || 0).toLocaleString()}
                 </span>
               </div>
               
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center',
-                padding: 'var(--spacing-xs) 0'
-              }}>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                  Network Health
-                </span>
-                <span style={{ 
-                  color: data.economic_health > 0.7 ? 'var(--accent-green)' : 
-                         data.economic_health > 0.4 ? 'var(--accent-yellow)' : 'var(--accent-red)',
-                  fontWeight: '600',
-                  fontSize: '0.875rem'
-                }}>
-                  {((data.economic_health || 0) * 100).toFixed(0)}%
+              <div className="flex justify-between">
+                <span className="text-gray-400">24h Change</span>
+                <span className={`font-mono ${
+                  (simulationData.tokenomics.price_change_24h || 0) > 0 
+                    ? 'text-accent-green' 
+                    : 'text-accent-red'
+                }`}>
+                  {(simulationData.tokenomics.price_change_24h || 0) > 0 ? '+' : ''}
+                  {(simulationData.tokenomics.price_change_24h || 0).toFixed(2)}%
                 </span>
               </div>
             </div>
           </div>
         )}
       </div>
-    </aside>
+
+      {/* Connection Info */}
+      <div className="trading-card">
+        <h4 className="font-medium mb-2">Connection</h4>
+        <div className="flex items-center space-x-2">
+          <div className={`w-2 h-2 rounded-full ${
+            connectionStatus === 'connected' 
+              ? 'bg-accent-green' 
+              : connectionStatus === 'connecting'
+              ? 'bg-accent-yellow animate-pulse'
+              : 'bg-accent-red'
+          }`} />
+          <span className="text-sm">{connectionStatus}</span>
+        </div>
+        
+        {simulationData && (
+          <div className="mt-2 text-xs text-gray-400">
+            Step: {simulationData.step || 0}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

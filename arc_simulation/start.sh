@@ -1,9 +1,9 @@
 #!/bin/bash
-# React + WebSocket Dashboard for Advanced Multi-ARC Constitutional Intelligence System
+# Professional React + WebSocket Dashboard for Multi-ARC Constitutional Intelligence System
 
 set -e  # Exit on any error
 
-echo "Multi-ARC Dashboard..."
+echo "🚀 Multi-ARC Professional Dashboard"
 echo "========================================================================="
 
 # Function to cleanup processes on exit
@@ -16,10 +16,7 @@ cleanup() {
     pkill -f "python websocket_server.py" 2>/dev/null || true
     pkill -f ".venv/bin/python headless_daemon.py" 2>/dev/null || true
     pkill -f "python headless_daemon.py" 2>/dev/null || true
-    pkill -f "python demon.py" 2>/dev/null || true
-    pkill -f "npm start" 2>/dev/null || true
     pkill -f "serve -s build" 2>/dev/null || true
-    pkill -f "streamlit run" 2>/dev/null || true
     
     # Kill any processes using ports
     fuser -k 8000/tcp 2>/dev/null || true
@@ -41,14 +38,12 @@ trap cleanup EXIT INT TERM
 # Initialize variables
 VENV_ACTIVE=0
 
-# Step 1: Clean up existing processes first
+# Step 1: Clean up existing processes
 echo "🧹 Cleaning up existing processes..."
 pkill -f ".venv/bin/python websocket_server.py" 2>/dev/null || true
 pkill -f "python websocket_server.py" 2>/dev/null || true
 pkill -f ".venv/bin/python headless_daemon.py" 2>/dev/null || true
 pkill -f "python headless_daemon.py" 2>/dev/null || true
-pkill -f "python demon.py" 2>/dev/null || true
-pkill -f "npm start" 2>/dev/null || true
 pkill -f "serve -s build" 2>/dev/null || true
 
 # Kill any processes using our ports
@@ -90,14 +85,6 @@ fi
 echo "📁 Setting up data directory..."
 mkdir -p simulation_data
 echo "✅ Data directory ready"
-
-# Kill any processes using ports 8000 and 3000
-echo "🧹 Cleaning up ports 8000 and 3000..."
-fuser -k 8000/tcp 2>/dev/null || true
-fuser -k 3000/tcp 2>/dev/null || true
-
-sleep 3
-echo "✅ Cleanup complete"
 
 # Step 4: Start the headless background data generator
 echo "⚙️  Starting headless Multi-ARC data generator..."
@@ -154,7 +141,7 @@ npm run build
 echo "✅ React app built successfully"
 
 echo "🚀 Starting Dashboard with serve..."
-serve -s build -l 3000 &
+npx serve -s build -l 3000 &
 REACT_PID=$!
 cd ..
 sleep 5

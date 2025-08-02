@@ -1,170 +1,198 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+import { 
+  Activity, 
+  DollarSign, 
+  TrendingUp, 
+  Shield, 
+  Zap,
+  BarChart3,
+  Network
+} from 'lucide-react';
 
-const Header = ({ connected, error, sidebarOpen, setSidebarOpen, data }) => {
-  const currentTime = new Date().toLocaleString();
-  const simulationStep = data?.step || 0;
-  const economicHealth = data?.economic_health || 0;
+const Header = ({ connectionStatus, currentData, onViewChange, currentView }) => {
+  const navigationItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
+    { id: 'network', label: 'Network', icon: Network },
+    { id: 'trading', label: 'Trading', icon: TrendingUp },
+    { id: 'analytics', label: 'Analytics', icon: Activity }
+  ];
+
+  // Extract key metrics from current data
+  const getHeaderMetrics = () => {
+    if (!currentData?.simulation_state) {
+      return {
+        price: '0.001',
+        change: '0.00',
+        volume: '0',
+        networkHealth: '100'
+      };
+    }
+
+    const { tokenomics, simulation_state } = currentData;
+    const price = tokenomics?.current_price || 0.001;
+    const change = tokenomics?.price_change_24h || 0;
+    const volume = simulation_state?.total_disputes || 0;
+    const health = simulation_state?.economic_health || 1.0;
+
+    return {
+      price: price.toFixed(6),
+      change: change.toFixed(2),
+      volume: (volume * 1000).toLocaleString(),
+      networkHealth: (health * 100).toFixed(1)
+    };
+  };
+
+  const metrics = getHeaderMetrics();
 
   return (
-    <header style={{
-      background: 'var(--bg-secondary)',
-      borderBottom: '1px solid var(--border-color)',
-      padding: 'var(--spacing-md) var(--spacing-lg)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      minHeight: '64px'
-    }}>
-      {/* Left Side - Logo and Navigation Toggle */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: 'var(--text-secondary)',
-            fontSize: '1.25rem',
-            cursor: 'pointer',
-            padding: 'var(--spacing-sm)',
-            borderRadius: 'var(--radius-md)',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.background = 'var(--bg-hover)';
-            e.target.style.color = 'var(--text-primary)';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.background = 'transparent';
-            e.target.style.color = 'var(--text-secondary)';
-          }}
+    <motion.header
+      initial={{ y: -80 }}
+      animate={{ y: 0 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      className="fixed top-0 left-0 right-0 z-50 bg-dark-800 border-b border-dark-600 glass"
+    >
+      <div className="flex items-center justify-between px-6 py-3">
+        {/* Logo and Brand */}
+        <motion.div 
+          className="flex items-center space-x-4"
+          whileHover={{ scale: 1.02 }}
         >
-          ☰
-        </button>
-        
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
-          <div style={{
-            width: '32px',
-            height: '32px',
-            background: 'var(--gradient-primary)',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontWeight: '700',
-            fontSize: '0.875rem'
-          }}>
-            ARC
+          <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
+            <Zap className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 style={{
-              fontSize: '1.25rem',
-              fontWeight: '700',
-              color: 'var(--text-primary)',
-              margin: 0
-            }}>
-              Multi-ARC Trading Dashboard
-            </h1>
-            <div style={{
-              fontSize: '0.75rem',
-              color: 'var(--text-muted)',
-              margin: 0
-            }}>
-              Constitutional Intelligence Network
+            <h1 className="text-xl font-bold text-gradient">ARC MULTINET</h1>
+            <p className="text-xs text-gray-400">Professional Trading Dashboard</p>
+          </div>
+        </motion.div>
+
+        {/* Navigation */}
+        <nav className="hidden md:flex items-center space-x-1">
+          {navigationItems.map((item) => (
+            <motion.button
+              key={item.id}
+              onClick={() => onViewChange(item.id)}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+                currentView === item.id
+                  ? 'bg-accent-blue text-white'
+                  : 'text-gray-400 hover:text-white hover:bg-dark-700'
+              }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <item.icon className="w-4 h-4" />
+              <span className="text-sm font-medium">{item.label}</span>
+            </motion.button>
+          ))}
+        </nav>
+
+        {/* Real-time Metrics */}
+        <div className="hidden lg:flex items-center space-x-6">
+          {/* FUEL Price */}
+          <motion.div 
+            className="text-right"
+            animate={{ 
+              scale: currentData?.timestamp ? [1, 1.02, 1] : 1 
+            }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="flex items-center space-x-1">
+              <DollarSign className="w-4 h-4 text-accent-green" />
+              <span className="text-lg font-mono font-bold text-accent-green">
+                ${metrics.price}
+              </span>
             </div>
+            <div className={`text-xs ${
+              parseFloat(metrics.change) > 0 
+                ? 'text-accent-green' 
+                : parseFloat(metrics.change) < 0 
+                ? 'text-accent-red' 
+                : 'text-gray-400'
+            }`}>
+              {parseFloat(metrics.change) > 0 ? '+' : ''}{metrics.change}%
+            </div>
+          </motion.div>
+
+          {/* Volume */}
+          <div className="text-right">
+            <div className="flex items-center space-x-1">
+              <TrendingUp className="w-4 h-4 text-accent-blue" />
+              <span className="text-sm font-medium text-white">
+                {metrics.volume}
+              </span>
+            </div>
+            <div className="text-xs text-gray-400">24h Volume</div>
+          </div>
+
+          {/* Network Health */}
+          <div className="text-right">
+            <div className="flex items-center space-x-1">
+              <Shield className={`w-4 h-4 ${
+                parseFloat(metrics.networkHealth) > 80 
+                  ? 'text-accent-green' 
+                  : parseFloat(metrics.networkHealth) > 60 
+                  ? 'text-accent-yellow' 
+                  : 'text-accent-red'
+              }`} />
+              <span className={`text-sm font-medium ${
+                parseFloat(metrics.networkHealth) > 80 
+                  ? 'text-accent-green' 
+                  : parseFloat(metrics.networkHealth) > 60 
+                  ? 'text-accent-yellow' 
+                  : 'text-accent-red'
+              }`}>
+                {metrics.networkHealth}%
+              </span>
+            </div>
+            <div className="text-xs text-gray-400">Health</div>
           </div>
         </div>
-      </div>
 
-      {/* Center - Live Status and Metrics */}
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: 'var(--spacing-lg)',
-        flex: 1,
-        justifyContent: 'center'
-      }}>
         {/* Connection Status */}
-        <div className="status-indicator" style={{
-          background: connected ? 'rgba(72, 187, 120, 0.2)' : 'rgba(245, 101, 101, 0.2)',
-          color: connected ? 'var(--accent-green)' : 'var(--accent-red)'
-        }}>
-          <div className={connected ? 'live-dot' : ''} style={{
-            width: '8px',
-            height: '8px',
-            background: connected ? 'var(--accent-green)' : 'var(--accent-red)',
-            borderRadius: '50%'
-          }}></div>
-          {connected ? 'LIVE' : 'OFFLINE'}
-        </div>
-
-        {/* Simulation Step */}
-        {connected && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)' }}>
-            <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Step:</span>
-            <span style={{ 
-              color: 'var(--accent-blue)', 
-              fontWeight: '600',
-              fontFamily: 'monospace',
-              fontSize: '0.875rem'
-            }}>
-              {simulationStep.toLocaleString()}
-            </span>
-          </div>
-        )}
-
-        {/* Economic Health */}
-        {connected && economicHealth > 0 && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xs)' }}>
-            <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Health:</span>
-            <span style={{ 
-              color: economicHealth > 0.7 ? 'var(--accent-green)' : 
-                     economicHealth > 0.4 ? 'var(--accent-yellow)' : 'var(--accent-red)',
-              fontWeight: '600',
-              fontSize: '0.875rem'
-            }}>
-              {(economicHealth * 100).toFixed(1)}%
-            </span>
-          </div>
-        )}
+        <motion.div
+          className="flex items-center space-x-2"
+          animate={{ scale: connectionStatus === 'connected' ? [1, 1.05, 1] : 1 }}
+          transition={{ duration: 2, repeat: connectionStatus === 'connected' ? Infinity : 0 }}
+        >
+          <div className={`w-3 h-3 rounded-full ${
+            connectionStatus === 'connected' 
+              ? 'bg-accent-green shadow-lg shadow-accent-green/50' 
+              : connectionStatus === 'connecting'
+              ? 'bg-accent-yellow animate-pulse'
+              : 'bg-accent-red'
+          }`} />
+          <span className="text-sm font-medium">
+            {connectionStatus === 'connected' 
+              ? 'LIVE' 
+              : connectionStatus === 'connecting'
+              ? 'CONNECTING'
+              : 'OFFLINE'}
+          </span>
+        </motion.div>
       </div>
 
-      {/* Right Side - System Info */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
-        {/* Current Time */}
-        <div style={{ textAlign: 'right' }}>
-          <div style={{
-            fontSize: '0.75rem',
-            color: 'var(--text-muted)',
-            marginBottom: '2px'
-          }}>
-            SYSTEM TIME
-          </div>
-          <div style={{
-            fontSize: '0.875rem',
-            color: 'var(--text-primary)',
-            fontFamily: 'monospace'
-          }}>
-            {currentTime}
-          </div>
-        </div>
-
-        {/* System Status Indicator */}
-        <div style={{
-          width: '40px',
-          height: '40px',
-          background: connected ? 'var(--gradient-success)' : 'var(--gradient-danger)',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          fontSize: '1.25rem'
-        }}>
-          {connected ? '⚡' : '⚠️'}
+      {/* Mobile Navigation */}
+      <div className="md:hidden border-t border-dark-600">
+        <div className="flex items-center justify-around py-2">
+          {navigationItems.map((item) => (
+            <motion.button
+              key={item.id}
+              onClick={() => onViewChange(item.id)}
+              className={`flex flex-col items-center space-y-1 p-2 rounded-lg ${
+                currentView === item.id
+                  ? 'text-accent-blue'
+                  : 'text-gray-400'
+              }`}
+              whileTap={{ scale: 0.95 }}
+            >
+              <item.icon className="w-5 h-5" />
+              <span className="text-xs">{item.label}</span>
+            </motion.button>
+          ))}
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 };
 

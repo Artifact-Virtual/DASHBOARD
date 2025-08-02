@@ -31,6 +31,9 @@ ssl/certs/
 /tmp/
 /temp/
 
+# Python virtual environments
+.venv/
+
 # Vite cache
 .vite/
 www/.vite/

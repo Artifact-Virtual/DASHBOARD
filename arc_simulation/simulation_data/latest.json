@@ -1,15 +1,15 @@
 {
-  "step": 400,
-  "era": 400,
+  "step": 2378,
+  "era": 2378,
   "crisis_mode": true,
   "crisis_indicators": [
-    "Scheduled economic stress test"
+    "Resource shortage: Only 0 agents surviving"
   ],
   "network_state": {
     "arcs": [
       {
         "arc_id": 0,
-        "total_blocks": 400,
+        "total_blocks": 2378,
         "disputed_blocks": 0,
         "last_block_valid": true,
         "current_rule": 0,
@@ -19,7 +19,7 @@
         ],
         "validator_count": 1,
         "recent_validation_failures": 20,
-        "adam_guilt": 0.3,
+        "adam_guilt": 0,
         "adam_policy": "emergency_policy",
         "council_events": 0,
         "blocks": [
@@ -28,14 +28,14 @@
             "valid": true,
             "timestamp": 0,
             "validator": 2,
-            "transactions": 25
+            "transactions": 13
           },
           {
             "id": 1,
             "valid": true,
             "timestamp": 1,
             "validator": 2,
-            "transactions": 5
+            "transactions": 13
           },
           {
             "id": 2,
@@ -49,130 +49,130 @@
             "valid": true,
             "timestamp": 3,
             "validator": 2,
-            "transactions": 25
+            "transactions": 19
           },
           {
             "id": 4,
-            "valid": false,
+            "valid": true,
             "timestamp": 4,
             "validator": 2,
-            "transactions": 6
+            "transactions": 8
           },
           {
             "id": 5,
             "valid": true,
             "timestamp": 5,
             "validator": 2,
-            "transactions": 24
+            "transactions": 20
           },
           {
             "id": 6,
-            "valid": true,
+            "valid": false,
             "timestamp": 6,
             "validator": 2,
-            "transactions": 9
+            "transactions": 23
           },
           {
             "id": 7,
             "valid": true,
             "timestamp": 7,
             "validator": 2,
-            "transactions": 20
+            "transactions": 19
           },
           {
             "id": 8,
             "valid": true,
             "timestamp": 8,
             "validator": 2,
-            "transactions": 15
+            "transactions": 11
           },
           {
             "id": 9,
             "valid": true,
             "timestamp": 9,
             "validator": 2,
-            "transactions": 16
+            "transactions": 12
           },
           {
             "id": 10,
             "valid": true,
             "timestamp": 10,
             "validator": 2,
-            "transactions": 25
+            "transactions": 12
           },
           {
             "id": 11,
             "valid": true,
             "timestamp": 11,
             "validator": 2,
-            "transactions": 24
+            "transactions": 5
           },
           {
             "id": 12,
             "valid": true,
             "timestamp": 12,
             "validator": 2,
-            "transactions": 16
+            "transactions": 23
           },
           {
             "id": 13,
             "valid": true,
             "timestamp": 13,
             "validator": 2,
-            "transactions": 10
+            "transactions": 21
           },
           {
             "id": 14,
-            "valid": false,
+            "valid": true,
             "timestamp": 14,
             "validator": 2,
-            "transactions": 10
+            "transactions": 23
           },
           {
             "id": 15,
             "valid": true,
             "timestamp": 15,
             "validator": 2,
-            "transactions": 10
+            "transactions": 15
           },
           {
             "id": 16,
-            "valid": true,
+            "valid": false,
             "timestamp": 16,
             "validator": 2,
-            "transactions": 11
+            "transactions": 8
           },
           {
             "id": 17,
             "valid": true,
             "timestamp": 17,
             "validator": 2,
-            "transactions": 8
+            "transactions": 20
           },
           {
             "id": 18,
             "valid": true,
             "timestamp": 18,
             "validator": 2,
-            "transactions": 17
+            "transactions": 20
           },
           {
             "id": 19,
             "valid": true,
             "timestamp": 19,
             "validator": 2,
-            "transactions": 8
+            "transactions": 10
           }
         ],
         "performance_metrics": {
-          "avg_block_time": 2.6096220758964166,
-          "throughput_tps": 38,
-          "uptime": 0.9577958108553044
+          "avg_block_time": 2.4502002278621564,
+          "throughput_tps": 27,
+          "uptime": 0.9850275812758275
         }
       },
       {
         "arc_id": 2,
-        "total_blocks": 400,
+        "total_blocks": 2378,
         "disputed_blocks": 1,
         "last_block_valid": true,
         "current_rule": 0,
@@ -182,111 +182,111 @@
         ],
         "validator_count": 1,
         "recent_validation_failures": 20,
-        "adam_guilt": 0.3,
+        "adam_guilt": 0,
         "adam_policy": "emergency_policy",
-        "council_events": 5,
+        "council_events": 34,
         "blocks": [
           {
             "id": 0,
             "valid": true,
             "timestamp": 0,
             "validator": 0,
-            "transactions": 13
+            "transactions": 12
           },
           {
             "id": 1,
             "valid": true,
             "timestamp": 1,
             "validator": 0,
-            "transactions": 5
+            "transactions": 7
           },
           {
             "id": 2,
             "valid": true,
             "timestamp": 2,
             "validator": 0,
-            "transactions": 19
+            "transactions": 7
           },
           {
             "id": 3,
             "valid": true,
             "timestamp": 3,
             "validator": 0,
-            "transactions": 15
+            "transactions": 13
           },
           {
             "id": 4,
-            "valid": false,
+            "valid": true,
             "timestamp": 4,
             "validator": 0,
-            "transactions": 24
+            "transactions": 25
           },
           {
             "id": 5,
             "valid": true,
             "timestamp": 5,
             "validator": 0,
-            "transactions": 14
+            "transactions": 19
           },
           {
             "id": 6,
-            "valid": true,
+            "valid": false,
             "timestamp": 6,
             "validator": 0,
-            "transactions": 11
+            "transactions": 16
           },
           {
             "id": 7,
             "valid": true,
             "timestamp": 7,
             "validator": 0,
-            "transactions": 21
+            "transactions": 11
           },
           {
             "id": 8,
             "valid": true,
             "timestamp": 8,
             "validator": 0,
-            "transactions": 19
+            "transactions": 17
           },
           {
             "id": 9,
             "valid": true,
             "timestamp": 9,
             "validator": 0,
-            "transactions": 17
+            "transactions": 8
           },
           {
             "id": 10,
             "valid": true,
             "timestamp": 10,
             "validator": 0,
-            "transactions": 12
+            "transactions": 14
           },
           {
             "id": 11,
             "valid": true,
             "timestamp": 11,
             "validator": 0,
-            "transactions": 5
+            "transactions": 16
           },
           {
             "id": 12,
             "valid": true,
             "timestamp": 12,
             "validator": 0,
-            "transactions": 6
+            "transactions": 12
           },
           {
             "id": 13,
             "valid": true,
             "timestamp": 13,
             "validator": 0,
-            "transactions": 21
+            "transactions": 20
           },
           {
             "id": 14,
-            "valid": false,
+            "valid": true,
             "timestamp": 14,
             "validator": 0,
             "transactions": 19
@@ -296,41 +296,41 @@
             "valid": true,
             "timestamp": 15,
             "validator": 0,
-            "transactions": 11
+            "transactions": 16
           },
           {
             "id": 16,
-            "valid": true,
+            "valid": false,
             "timestamp": 16,
             "validator": 0,
-            "transactions": 16
+            "transactions": 10
           },
           {
             "id": 17,
             "valid": true,
             "timestamp": 17,
             "validator": 0,
-            "transactions": 24
+            "transactions": 25
           },
           {
             "id": 18,
             "valid": true,
             "timestamp": 18,
             "validator": 0,
-            "transactions": 5
+            "transactions": 23
           },
           {
             "id": 19,
             "valid": true,
             "timestamp": 19,
             "validator": 0,
-            "transactions": 11
+            "transactions": 24
           }
         ],
         "performance_metrics": {
-          "avg_block_time": 2.2566629482636578,
-          "throughput_tps": 18,
-          "uptime": 0.956696803808353
+          "avg_block_time": 2.9013556688898334,
+          "throughput_tps": 38,
+          "uptime": 0.9970746608622943
         }
       }
     ],
@@ -359,33 +359,33 @@
       "id": 0,
       "type": "validator",
       "arc": 0,
-      "fuel": 30,
-      "alive": true,
-      "score": 78.0,
-      "performance_trend": -1,
-      "earnings": 464,
-      "blocks_validated": 6
+      "fuel": -1,
+      "alive": false,
+      "score": 74.9,
+      "performance_trend": 1,
+      "earnings": 95,
+      "blocks_validated": -1
     },
     {
       "id": 1,
       "type": "forecaster",
       "arc": 2,
-      "fuel": 36,
-      "alive": true,
-      "score": 55.99999999999999,
+      "fuel": 0,
+      "alive": false,
+      "score": 30.0,
       "performance_trend": -1,
-      "predictions": 33,
-      "accuracy": 0.5599999999999999
+      "predictions": 15,
+      "accuracy": 0.3
     },
     {
       "id": 2,
       "type": "operator",
       "arc": 0,
-      "fuel": 28,
-      "alive": true,
+      "fuel": 0,
+      "alive": false,
       "score": 40.0,
-      "performance_trend": -1,
-      "jobs_done": 13,
+      "performance_trend": 0,
+      "jobs_done": 8,
       "productivity": 0.4
     },
     {
@@ -395,84 +395,84 @@
       "fuel": 0,
       "alive": false,
       "score": 75.0,
-      "performance_trend": 0,
-      "earnings": 142,
+      "performance_trend": -1,
+      "earnings": 77,
       "blocks_validated": 0
     },
     {
       "id": 4,
       "type": "forecaster",
       "arc": 0,
-      "fuel": 9,
-      "alive": true,
+      "fuel": 0,
+      "alive": false,
       "score": 30.0,
-      "performance_trend": 1,
-      "predictions": 11,
+      "performance_trend": 0,
+      "predictions": 13,
       "accuracy": 0.3
     },
     {
       "id": 5,
       "type": "operator",
       "arc": 2,
-      "fuel": 33,
-      "alive": true,
+      "fuel": -1,
+      "alive": false,
       "score": 40.0,
-      "performance_trend": 1,
-      "jobs_done": 15,
+      "performance_trend": -1,
+      "jobs_done": 8,
       "productivity": 0.4
     },
     {
       "id": 6,
       "type": "validator",
       "arc": 0,
-      "fuel": 9,
-      "alive": true,
-      "score": 75.9,
+      "fuel": 0,
+      "alive": false,
+      "score": 75.0,
       "performance_trend": -1,
-      "earnings": 246,
-      "blocks_validated": 1
+      "earnings": 166,
+      "blocks_validated": 0
     },
     {
       "id": 7,
       "type": "forecaster",
       "arc": 2,
-      "fuel": 41,
-      "alive": true,
-      "score": 61.0,
-      "performance_trend": -1,
-      "predictions": 32,
-      "accuracy": 0.61
+      "fuel": 0,
+      "alive": false,
+      "score": 30.0,
+      "performance_trend": 0,
+      "predictions": 11,
+      "accuracy": 0.3
     }
   ],
   "fuel_mainnet": {
-    "liquidity": 19300,
-    "volume_24h": 72343,
-    "bridge_fees": 176
+    "liquidity": 10000,
+    "volume_24h": 94910,
+    "bridge_fees": 330
   },
   "fuel_subnets": [
     {
       "arc_id": 0,
-      "liquidity": 10412,
-      "staked_fuel": 6247.2,
-      "rewards_pool": 1041.2,
-      "transaction_volume": 2729,
+      "liquidity": 60148,
+      "staked_fuel": 36088.799999999996,
+      "rewards_pool": 6014.8,
+      "transaction_volume": 2849,
       "bridge_status": "active"
     },
     {
       "arc_id": 2,
-      "liquidity": 10667,
-      "staked_fuel": 6400.2,
-      "rewards_pool": 1066.7,
-      "transaction_volume": 1804,
+      "liquidity": 60096,
+      "staked_fuel": 36057.6,
+      "rewards_pool": 6009.6,
+      "transaction_volume": 4255,
       "bridge_status": "active"
     }
   ],
-  "fuel_alive": 7,
-  "fuel_dead": 1,
-  "fuel_avg": 26.571428571428573,
+  "fuel_alive": 0,
+  "fuel_dead": 8,
+  "fuel_avg": 0.0,
   "fuel_deaths_this_step": 0,
-  "economic_stress": 0.125,
-  "economic_health": 0.875,
+  "economic_stress": 1.0,
+  "economic_health": 0.0,
   "total_violations": 0,
   "governance_events": [
     {
@@ -501,16 +501,16 @@
     }
   ],
   "system_events": [
-    "\u274c ARC-2 rejected ARC-0's block",
-    "\ud83e\udde0 ARC-0: network_stabilization",
-    "\ud83e\udde0 ARC-2: network_stabilization",
-    "\ud83c\udfdb\ufe0f Constitutional era advanced to 399",
-    "\ud83d\udea8 Economic crisis triggered: Scheduled economic stress test",
     "\u274c ARC-0 rejected ARC-2's block",
     "\u274c ARC-2 rejected ARC-0's block",
     "\ud83e\udde0 ARC-0: network_stabilization",
     "\ud83e\udde0 ARC-2: network_stabilization",
-    "\ud83c\udfdb\ufe0f Constitutional era advanced to 400"
+    "\ud83c\udfdb\ufe0f Constitutional era advanced to 2377",
+    "\u274c ARC-0 rejected ARC-2's block",
+    "\u274c ARC-2 rejected ARC-0's block",
+    "\ud83e\udde0 ARC-0: emergency_governance_activated; network_stress_response",
+    "\ud83e\udde0 ARC-2: emergency_governance_activated; network_stress_response",
+    "\ud83c\udfdb\ufe0f Constitutional era advanced to 2378"
   ],
   "constitutional_stability": 1.0,
   "total_disputes": 0,
@@ -518,11 +518,11 @@
   "integration_health": 1.0,
   "adam_scores": [
     0,
-    5
+    34
   ],
   "adam_guilt": [
-    0.3,
-    0.3
+    0,
+    0
   ],
   "adam_policies": [
     "emergency_policy",
@@ -531,7 +531,7 @@
   "arc_data": [
     {
       "arc_id": 0,
-      "total_blocks": 400,
+      "total_blocks": 2378,
       "disputed_blocks": 0,
       "last_block_valid": true,
       "current_rule": 0,
@@ -541,7 +541,7 @@
       ],
       "validator_count": 1,
       "recent_validation_failures": 20,
-      "adam_guilt": 0.3,
+      "adam_guilt": 0,
       "adam_policy": "emergency_policy",
       "council_events": 0,
       "blocks": [
@@ -550,14 +550,14 @@
           "valid": true,
           "timestamp": 0,
           "validator": 2,
-          "transactions": 25
+          "transactions": 13
         },
         {
           "id": 1,
           "valid": true,
           "timestamp": 1,
           "validator": 2,
-          "transactions": 5
+          "transactions": 13
         },
         {
           "id": 2,
@@ -571,130 +571,130 @@
           "valid": true,
           "timestamp": 3,
           "validator": 2,
-          "transactions": 25
+          "transactions": 19
         },
         {
           "id": 4,
-          "valid": false,
+          "valid": true,
           "timestamp": 4,
           "validator": 2,
-          "transactions": 6
+          "transactions": 8
         },
         {
           "id": 5,
           "valid": true,
           "timestamp": 5,
           "validator": 2,
-          "transactions": 24
+          "transactions": 20
         },
         {
           "id": 6,
-          "valid": true,
+          "valid": false,
           "timestamp": 6,
           "validator": 2,
-          "transactions": 9
+          "transactions": 23
         },
         {
           "id": 7,
           "valid": true,
           "timestamp": 7,
           "validator": 2,
-          "transactions": 20
+          "transactions": 19
         },
         {
           "id": 8,
           "valid": true,
           "timestamp": 8,
           "validator": 2,
-          "transactions": 15
+          "transactions": 11
         },
         {
           "id": 9,
           "valid": true,
           "timestamp": 9,
           "validator": 2,
-          "transactions": 16
+          "transactions": 12
         },
         {
           "id": 10,
           "valid": true,
           "timestamp": 10,
           "validator": 2,
-          "transactions": 25
+          "transactions": 12
         },
         {
           "id": 11,
           "valid": true,
           "timestamp": 11,
           "validator": 2,
-          "transactions": 24
+          "transactions": 5
         },
         {
           "id": 12,
           "valid": true,
           "timestamp": 12,
           "validator": 2,
-          "transactions": 16
+          "transactions": 23
         },
         {
           "id": 13,
           "valid": true,
           "timestamp": 13,
           "validator": 2,
-          "transactions": 10
+          "transactions": 21
         },
         {
           "id": 14,
-          "valid": false,
+          "valid": true,
           "timestamp": 14,
           "validator": 2,
-          "transactions": 10
+          "transactions": 23
         },
         {
           "id": 15,
           "valid": true,
           "timestamp": 15,
           "validator": 2,
-          "transactions": 10
+          "transactions": 15
         },
         {
           "id": 16,
-          "valid": true,
+          "valid": false,
           "timestamp": 16,
           "validator": 2,
-          "transactions": 11
+          "transactions": 8
         },
         {
           "id": 17,
           "valid": true,
           "timestamp": 17,
           "validator": 2,
-          "transactions": 8
+          "transactions": 20
         },
         {
           "id": 18,
           "valid": true,
           "timestamp": 18,
           "validator": 2,
-          "transactions": 17
+          "transactions": 20
         },
         {
           "id": 19,
           "valid": true,
           "timestamp": 19,
           "validator": 2,
-          "transactions": 8
+          "transactions": 10
         }
       ],
       "performance_metrics": {
-        "avg_block_time": 2.6096220758964166,
-        "throughput_tps": 38,
-        "uptime": 0.9577958108553044
+        "avg_block_time": 2.4502002278621564,
+        "throughput_tps": 27,
+        "uptime": 0.9850275812758275
       }
     },
     {
       "arc_id": 2,
-      "total_blocks": 400,
+      "total_blocks": 2378,
       "disputed_blocks": 1,
       "last_block_valid": true,
       "current_rule": 0,
@@ -704,111 +704,111 @@
       ],
       "validator_count": 1,
       "recent_validation_failures": 20,
-      "adam_guilt": 0.3,
+      "adam_guilt": 0,
       "adam_policy": "emergency_policy",
-      "council_events": 5,
+      "council_events": 34,
       "blocks": [
         {
           "id": 0,
           "valid": true,
           "timestamp": 0,
           "validator": 0,
-          "transactions": 13
+          "transactions": 12
         },
         {
           "id": 1,
           "valid": true,
           "timestamp": 1,
           "validator": 0,
-          "transactions": 5
+          "transactions": 7
         },
         {
           "id": 2,
           "valid": true,
           "timestamp": 2,
           "validator": 0,
-          "transactions": 19
+          "transactions": 7
         },
         {
           "id": 3,
           "valid": true,
           "timestamp": 3,
           "validator": 0,
-          "transactions": 15
+          "transactions": 13
         },
         {
           "id": 4,
-          "valid": false,
+          "valid": true,
           "timestamp": 4,
           "validator": 0,
-          "transactions": 24
+          "transactions": 25
         },
         {
           "id": 5,
           "valid": true,
           "timestamp": 5,
           "validator": 0,
-          "transactions": 14
+          "transactions": 19
         },
         {
           "id": 6,
-          "valid": true,
+          "valid": false,
           "timestamp": 6,
           "validator": 0,
-          "transactions": 11
+          "transactions": 16
         },
         {
           "id": 7,
           "valid": true,
           "timestamp": 7,
           "validator": 0,
-          "transactions": 21
+          "transactions": 11
         },
         {
           "id": 8,
           "valid": true,
           "timestamp": 8,
           "validator": 0,
-          "transactions": 19
+          "transactions": 17
         },
         {
           "id": 9,
           "valid": true,
           "timestamp": 9,
           "validator": 0,
-          "transactions": 17
+          "transactions": 8
         },
         {
           "id": 10,
           "valid": true,
           "timestamp": 10,
           "validator": 0,
-          "transactions": 12
+          "transactions": 14
         },
         {
           "id": 11,
           "valid": true,
           "timestamp": 11,
           "validator": 0,
-          "transactions": 5
+          "transactions": 16
         },
         {
           "id": 12,
           "valid": true,
           "timestamp": 12,
           "validator": 0,
-          "transactions": 6
+          "transactions": 12
         },
         {
           "id": 13,
           "valid": true,
           "timestamp": 13,
           "validator": 0,
-          "transactions": 21
+          "transactions": 20
         },
         {
           "id": 14,
-          "valid": false,
+          "valid": true,
           "timestamp": 14,
           "validator": 0,
           "transactions": 19
@@ -818,51 +818,50 @@
           "valid": true,
           "timestamp": 15,
           "validator": 0,
-          "transactions": 11
+          "transactions": 16
         },
         {
           "id": 16,
-          "valid": true,
+          "valid": false,
           "timestamp": 16,
           "validator": 0,
-          "transactions": 16
+          "transactions": 10
         },
         {
           "id": 17,
           "valid": true,
           "timestamp": 17,
           "validator": 0,
-          "transactions": 24
+          "transactions": 25
         },
         {
           "id": 18,
           "valid": true,
           "timestamp": 18,
           "validator": 0,
-          "transactions": 5
+          "transactions": 23
         },
         {
           "id": 19,
           "valid": true,
           "timestamp": 19,
           "validator": 0,
-          "transactions": 11
+          "transactions": 24
         }
       ],
       "performance_metrics": {
-        "avg_block_time": 2.2566629482636578,
-        "throughput_tps": 18,
-        "uptime": 0.956696803808353
+        "avg_block_time": 2.9013556688898334,
+        "throughput_tps": 38,
+        "uptime": 0.9970746608622943
       }
     }
   ],
   "events": [
-    "\ud83d\udea8 Economic crisis triggered: Scheduled economic stress test",
     "\u274c ARC-0 rejected ARC-2's block",
     "\u274c ARC-2 rejected ARC-0's block",
-    "\ud83e\udde0 ARC-0: network_stabilization",
-    "\ud83e\udde0 ARC-2: network_stabilization",
-    "\ud83c\udfdb\ufe0f Constitutional era advanced to 400"
+    "\ud83e\udde0 ARC-0: emergency_governance_activated; network_stress_response",
+    "\ud83e\udde0 ARC-2: emergency_governance_activated; network_stress_response",
+    "\ud83c\udfdb\ufe0f Constitutional era advanced to 2378"
   ],
   "validation_results": {
     "0\u21922": {
@@ -874,7 +873,7 @@
       "primary_valid": true,
       "structure_valid": false,
       "consensus_valid": true,
-      "timestamp": 400
+      "timestamp": 2378
     },
     "2\u21920": {
       "valid": false,
@@ -885,7 +884,7 @@
       "primary_valid": true,
       "structure_valid": false,
       "consensus_valid": true,
-      "timestamp": 400
+      "timestamp": 2378
     }
   }
 }
