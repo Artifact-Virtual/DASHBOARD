@@ -13,6 +13,7 @@ import ResearchPost from "./pages/ResearchPost";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import SystemMap from "./pages/SystemMap";
+import ARCxToken from "./pages/ARCxToken";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/research" element={<Research />} />
             <Route path="/research/:slug" element={<ResearchPost />} />
+            <Route path="/arcx" element={<ARCxToken />} />
             {/* <Route path="/api" element={<API />} /> */}
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/systemmap" element={<SystemMap />} />

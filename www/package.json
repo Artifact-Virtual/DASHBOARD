@@ -43,8 +43,10 @@
     "@react-three/drei": "^10.6.1",
     "@react-three/fiber": "^9.2.0",
     "@react-three/postprocessing": "^3.0.4",
-    "@tanstack/react-query": "^5.56.2",
+    "@tanstack/react-query": "^5.84.1",
     "@types/three": "^0.177.0",
+    "@walletconnect/modal": "^2.7.0",
+    "@web3modal/wagmi": "^5.1.11",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
@@ -67,6 +69,8 @@
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.177.0",
     "three-stdlib": "^2.36.0",
+    "viem": "^2.33.2",
+    "wagmi": "^2.16.1",
     "zod": "^3.23.8"
   },
   "engines": {

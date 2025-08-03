@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Brain, GitBranch, Lock, Network, Atom, Zap, Layers } from 'lucide-react';
-import Navigation from '../components/Navigation';
 import PatternLines from '../components/PatternLines';
 import Footer from '../components/Footer';
 
@@ -324,7 +323,6 @@ const Research = () => {
     <div className="min-h-screen bg-black text-white relative overflow-hidden font-precision">
       <PatternLines />
       <div className="relative z-10">
-        <Navigation />
         {/* Hero Section */}
         <section className="relative pt-32 pb-20 px-8">
           <div className="max-w-7xl mx-auto text-center">

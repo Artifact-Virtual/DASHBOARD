@@ -1,8 +1,14 @@
-
 import { Network, Terminal } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 const Navigation = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <nav className="relative z-50 w-full py-6 px-8">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
@@ -19,7 +25,7 @@ const Navigation = () => {
             VIRTUAL
           </div>
         </Link>
-        
+
         <div className="hidden md:flex items-center space-x-8">
           <a href="#architecture" className="text-white/80 hover:text-white transition-colors duration-300 relative group font-light tracking-wide">
             Platform
@@ -43,10 +49,14 @@ const Navigation = () => {
             Deploy
           </button>
         </div>
-        
+
         {/* Mobile menu button */}
         <div className="md:hidden">
-          <button className="text-white/80 hover:text-white" aria-label="Open menu">
+          <button
+            className="text-white/80 hover:text-white"
+            aria-label="Toggle menu"
+            onClick={toggleSidebar}
+          >
             <div className="w-6 h-6 flex flex-col justify-center space-y-1">
               <div className="h-px bg-current w-full" />
               <div className="h-px bg-current w-full" />
@@ -55,6 +65,40 @@ const Navigation = () => {
           </button>
         </div>
       </div>
+
+      {/* Sidebar for mobile */}
+      {isSidebarOpen && (
+        <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-90 z-40 flex flex-col items-center space-y-6 py-8">
+          <button
+            className="absolute top-4 right-4 text-white text-2xl"
+            aria-label="Close menu"
+            onClick={toggleSidebar}
+          >
+            &times;
+          </button>
+          <Link to="/" className="text-white text-lg" onClick={toggleSidebar}>
+            Home
+          </Link>
+          <a href="#architecture" className="text-white text-lg" onClick={toggleSidebar}>
+            Platform
+          </a>
+          <Link to="/research" className="text-white text-lg" onClick={toggleSidebar}>
+            Research
+          </Link>
+          <a href="#" className="text-white text-lg" onClick={toggleSidebar}>
+            Documentation
+          </a>
+          <a
+            href="https://github.com/amuzetnoM/artifactvirtual"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white text-lg"
+            onClick={toggleSidebar}
+          >
+            GitHub
+          </a>
+        </div>
+      )}
     </nav>
   );
 };

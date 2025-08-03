@@ -1,0 +1,68 @@
+/* Enhanced animations and styles for Index page */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% { 
+    background-position: 0% 50%; 
+  }
+  50% { 
+    background-position: 100% 50%; 
+  }
+}
+
+.fade-in-section {
+  opacity: 0;
+  animation: fadeInUp 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.arc0-welcome {
+  font-family: 'Inter', 'JetBrains Mono', 'SF Mono', 'monospace', system-ui, sans-serif;
+  font-weight: 200;
+  letter-spacing: 0.2em;
+  background: linear-gradient(135deg, #fff 0%, #a3e635 50%, #06b6d4 100%);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(255,255,255,0.1));
+  transition: all 0.5s ease;
+}
+
+.arc0-welcome:hover {
+  letter-spacing: 0.25em;
+  filter: drop-shadow(0 0 30px rgba(255,255,255,0.2));
+  transform: scale(1.02);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.4);
+}

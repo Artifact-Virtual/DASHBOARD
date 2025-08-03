@@ -45,9 +45,13 @@ const FloatingSidebar: React.FC = () => {
 
   useEffect(() => {
     if (isMobile) return;
+    
     let timer: NodeJS.Timeout | null = null;
-    if (!isVisible || isHovering) return;
-    timer = setTimeout(() => setIsVisible(false), 3000);
+    
+    if (isVisible && !isHovering) {
+      timer = setTimeout(() => setIsVisible(false), 3000);
+    }
+    
     return () => {
       if (timer) clearTimeout(timer);
     };
@@ -70,6 +74,7 @@ const FloatingSidebar: React.FC = () => {
     if (path === '/') setActiveItem('home');
     else if (path === '/blog' || path.startsWith('/blog/')) setActiveItem('blog');
     else if (path === '/research' || path.startsWith('/research/')) setActiveItem('research');
+    else if (path === '/arcx') setActiveItem('arcx');
     else if (path === '/dashboard') setActiveItem('dashboard');
     else setActiveItem('');
   }, [location.pathname]);
@@ -95,7 +100,7 @@ const FloatingSidebar: React.FC = () => {
     { id: 'home', icon: Home, label: 'Home', route: '/' },
     { id: 'blog', icon: BookOpen, label: 'Blog', route: '/blog' },
     { id: 'research', icon: FileText, label: 'Research', route: '/research' },
-    { id: 'arcx', icon: Coins, label: 'ARCx Token', action: () => window.open('https://artifact-virtual.github.io/arcx_token/', '_blank') },
+    { id: 'arcx', icon: Coins, label: 'ARCx Token', route: '/arcx' },
     { id: 'dashboard', icon: Cpu, label: 'Dashboard', route: '/dashboard' },
     { id: 'quantum', icon: Atom, label: 'Quantum Engine', href: '#quantum' },
     {

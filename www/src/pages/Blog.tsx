@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Navigation from '../components/Navigation';
 import PatternLines from '../components/PatternLines';
 import Footer from '../components/Footer';
 
@@ -46,7 +45,6 @@ const Blog = () => {
       <div className="min-h-screen bg-black text-white relative overflow-hidden font-precision">
         <PatternLines />
         <div className="relative z-10">
-          <Navigation />
           <div className="flex items-center justify-center min-h-[50vh]">
             <div className="text-white/60 font-light tracking-wide">Loading...</div>
           </div>
@@ -60,8 +58,6 @@ const Blog = () => {
       <PatternLines />
       
       <div className="relative z-10">
-        <Navigation />
-        
         <main className="max-w-4xl mx-auto px-8 py-16">
           <div className="mb-16">
             <h1 className="text-5xl md:text-7xl font-thin tracking-wider mb-6">
