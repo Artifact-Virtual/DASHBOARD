@@ -96,66 +96,54 @@ const ARCxToken = () => {
   return (
     <div className="min-h-screen bg-black text-white font-precision">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-        {/* Header */}
-        <div className="text-left mb-16 border-b border-white/10 pb-12">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-6">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <h1 className="text-4xl sm:text-5xl md:text-7xl font-thin tracking-wider">
-                ARCx TOKEN
-              </h1>
-              <div className="px-4 py-2 border border-blue-500/30 bg-blue-500/10 backdrop-blur-sm">
-                <span className="text-blue-400 font-light tracking-wide text-sm">GENESIS • BASE • VERIFIED</span>
-              </div>
-            </div>
-            <div className="absolute right-8 mt-20 flex flex-col items-end gap-2 z-30" style={{ top: '3.5rem' }}>
-              <span className="text-xs font-light tracking-widest text-white/40 uppercase mb-1">ARCx Token Pages</span>
-              <div className="flex flex-col gap-2 text-sm font-light tracking-wide w-44">
-                <a 
-                  href="https://artifact-virtual.github.io/arcx_token/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 border border-white/20 text-white hover:bg-white/10 transition-colors w-full text-right"
-                >
-                  Overview
-                </a>
-                <a 
-                  href="https://artifact-virtual.github.io/arcx_token/transparency.html" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 border border-blue-500/20 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors w-full text-right"
-                >
-                  Transparency
-                </a>
-                <a 
-                  href="https://artifact-virtual.github.io/arcx_token/documentation.html" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 border border-white/20 text-white hover:bg-white/10 transition-colors w-full text-right"
-                >
-                  Documentation
-                </a>
-              </div>
-            </div>
-          </div>
-          <p className="text-white/70 font-light tracking-wide text-base sm:text-lg max-w-3xl">
+        {/* Mobile-first: Description at top, then header */}
+        <div className="block md:hidden mb-8">
+          <p className="text-white/80 font-light tracking-wide text-base sm:text-lg max-w-full mb-4">
             Constitutional intelligence funding instrument. Fixed supply ERC20 bootstrapping Arc Protocol development and governance systems.
           </p>
-          <div className="flex flex-wrap items-center gap-4 sm:gap-8 mt-6 text-xs sm:text-sm font-light tracking-wide">
+        </div>
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8 md:mb-16 border-b border-white/10 pb-8 md:pb-12 gap-4 md:gap-0">
+          <div>
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-thin tracking-wider mb-2 md:mb-0">
+              ARCx TOKEN
+            </h1>
+            <div className="block md:hidden mt-2">
+              <span className="text-blue-400 font-light tracking-wide text-xs">GENESIS • BASE • VERIFIED</span>
+            </div>
+          </div>
+          <div className="hidden md:flex items-center gap-4">
+            <div className="px-4 py-2 border border-blue-500/30 bg-blue-500/10 backdrop-blur-sm">
+              <span className="text-blue-400 font-light tracking-wide text-sm">GENESIS • BASE • VERIFIED</span>
+            </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-white/60">LIVE ON BASE</span>
+              <span className="text-white/60 text-xs">LIVE ON BASE</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span className="text-white/60">1M TOTAL SUPPLY</span>
+              <span className="text-white/60 text-xs">1M TOTAL SUPPLY</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span className="text-white/60">0 VULNERABILITIES</span>
+              <span className="text-white/60 text-xs">0 VULNERABILITIES</span>
             </div>
           </div>
         </div>
-
+        {/* Desktop: Description below header */}
+        <div className="hidden md:block mb-8">
+          <p className="text-white/70 font-light tracking-wide text-lg max-w-3xl">
+            Constitutional intelligence funding instrument. Fixed supply ERC20 bootstrapping Arc Protocol development and governance systems.
+          </p>
+        </div>
+        {/* Mobile: Status indicators below description */}
+        <div className="flex md:hidden items-center gap-4 mb-6">
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <span className="text-white/60 text-xs">LIVE ON BASE</span>
+          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+          <span className="text-white/60 text-xs">1M TOTAL SUPPLY</span>
+          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+          <span className="text-white/60 text-xs">0 VULNERABILITIES</span>
+        </div>
         {/* Connection Status Bar */}
         {isConnected && (
           <div className="fixed top-4 right-4 z-50 bg-black border border-white/20 px-4 py-2 sm:px-6 sm:py-3">
