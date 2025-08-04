@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { WalletProvider } from './contexts/WalletContext'
+import { ToastProvider } from './contexts/ToastContext'
 
 console.log('Main.tsx is running');
 console.log('Root element:', document.getElementById("root"));
@@ -11,7 +12,9 @@ try {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <WalletProvider>
-        <App />
+        <ToastProvider>
+          <App />
+        </ToastProvider>
       </WalletProvider>
     </StrictMode>,
   )

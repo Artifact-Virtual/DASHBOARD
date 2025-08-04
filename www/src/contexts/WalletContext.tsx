@@ -107,13 +107,48 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   };
 
   const connectCoinbase = async () => {
-    // Implement Coinbase Wallet connection
-    throw new Error('Coinbase Wallet connection not yet implemented');
+    if (typeof window.ethereum !== 'undefined' && window.ethereum.isCoinbaseWallet) {
+      try {
+        const accounts = await window.ethereum.request({
+          method: 'eth_requestAccounts',
+        });
+        
+        setAddress(accounts[0]);
+        setIsConnected(true);
+        
+        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+        setChainId(parseInt(chainId, 16));
+
+        // Listen for account changes
+        window.ethereum.on('accountsChanged', (accounts: string[]) => {
+          if (accounts.length === 0) {
+            disconnect();
+          } else {
+            setAddress(accounts[0]);
+          }
+        });
+
+        // Listen for chain changes
+        window.ethereum.on('chainChanged', (chainId: string) => {
+          setChainId(parseInt(chainId, 16));
+        });
+      } catch (error) {
+        throw new Error('User rejected the request');
+      }
+    } else {
+      // Fallback to generic wallet connection if Coinbase Wallet not detected
+      await connectMetaMask();
+    }
   };
 
   const connectWalletConnect = async () => {
-    // Implement WalletConnect connection
-    throw new Error('WalletConnect connection not yet implemented');
+    // For now, fallback to MetaMask if WalletConnect not available
+    // In production, implement proper WalletConnect v2
+    try {
+      await connectMetaMask();
+    } catch (error) {
+      throw new Error('WalletConnect not available. Please use MetaMask or another browser wallet.');
+    }
   };
 
   const disconnect = () => {
