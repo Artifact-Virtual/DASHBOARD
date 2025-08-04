@@ -32,6 +32,7 @@ function getSystemTheme() {
   return 'dark';
 }
 
+
 const FloatingSidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,6 +43,7 @@ const FloatingSidebar: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     if (isMobile) return;
@@ -132,9 +134,10 @@ const FloatingSidebar: React.FC = () => {
 
   const logoSrc = '/av-black-logo.png';
 
-  return (
+  // Desktop sidebar
+  const desktopSidebar = (
     <nav
-      className={`fixed left-6 top-1/2 -translate-y-1/2 z-50 flex flex-col items-center space-y-8
+      className={`hidden md:flex fixed left-6 top-1/2 -translate-y-1/2 z-50 flex-col items-center space-y-8
         ${theme === 'light' ? 'bg-white/90 border-black/20' : 'bg-black/90 border-white/10'}
         rounded-3xl py-8 px-3 shadow-2xl border backdrop-blur-lg transition-all duration-500
         min-w-[70px] max-w-[220px]
@@ -238,6 +241,70 @@ const FloatingSidebar: React.FC = () => {
           ${theme === 'light' ? 'from-black/20 to-transparent' : 'from-white/20 to-transparent'}`}
       />
     </nav>
+  );
+
+  // Mobile drawer sidebar
+  const mobileSidebar = (
+    <>
+      {/* Hamburger icon */}
+      <button
+        className="fixed top-4 right-4 z-50 md:hidden flex items-center justify-center w-12 h-12 rounded-full bg-black/80 border border-white/10 shadow-lg"
+        onClick={() => setDrawerOpen(true)}
+        aria-label="Open navigation menu"
+      >
+        <span className="block w-6 h-0.5 bg-white mb-1 rounded" />
+        <span className="block w-6 h-0.5 bg-white mb-1 rounded" />
+        <span className="block w-6 h-0.5 bg-white rounded" />
+      </button>
+      {/* Drawer overlay */}
+      {drawerOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={() => setDrawerOpen(false)} />
+      )}
+      {/* Drawer panel */}
+      <div
+        className={`fixed top-0 right-0 h-full w-64 z-50 bg-black border-l border-white/10 shadow-2xl transform transition-transform duration-300 md:hidden
+          ${drawerOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        style={{ willChange: 'transform' }}
+      >
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+          <img src={logoSrc} alt="Artifact Virtual Logo" className="w-10 h-10 object-contain" />
+          <button
+            className="text-white text-2xl font-bold px-2 py-1 rounded hover:bg-white/10"
+            onClick={() => setDrawerOpen(false)}
+            aria-label="Close navigation menu"
+          >
+            ×
+          </button>
+        </div>
+        <div className="flex flex-col gap-1 px-4 py-6">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeItem === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  handleItemClick(item);
+                  setDrawerOpen(false);
+                }}
+                className={`flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all duration-200 mb-1 last:mb-0
+                  ${isActive ? 'bg-white/10 text-white' : 'hover:bg-white/5 text-white/80'}`}
+              >
+                <Icon className="w-5 h-5" />
+                <span className="text-base font-light tracking-wide">{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+
+  return (
+    <>
+      {desktopSidebar}
+      {mobileSidebar}
+    </>
   );
 };
 

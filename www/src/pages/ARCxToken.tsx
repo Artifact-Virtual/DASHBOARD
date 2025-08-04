@@ -94,29 +94,53 @@ const ARCxToken = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden font-precision">
-      {/* Subtle background gradients for transition theming */}
-      <div className="fixed inset-0 opacity-5">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{animationDelay: '2s'}}></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{animationDelay: '4s'}}></div>
-      </div>
-      
-      <div className="max-w-6xl mx-auto px-8 py-16 relative z-10">
+    <div className="min-h-screen bg-black text-white font-precision">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
         {/* Header */}
         <div className="text-left mb-16 border-b border-white/10 pb-12">
-          <div className="flex items-center gap-4 mb-6">
-            <h1 className="text-5xl md:text-7xl font-thin tracking-wider">
-              ARCx TOKEN
-            </h1>
-            <div className="px-4 py-2 border border-blue-500/30 bg-blue-500/10 backdrop-blur-sm">
-              <span className="text-blue-400 font-light tracking-wide text-sm">GENESIS • BASE • VERIFIED</span>
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-thin tracking-wider">
+                ARCx TOKEN
+              </h1>
+              <div className="px-4 py-2 border border-blue-500/30 bg-blue-500/10 backdrop-blur-sm">
+                <span className="text-blue-400 font-light tracking-wide text-sm">GENESIS • BASE • VERIFIED</span>
+              </div>
+            </div>
+            <div className="absolute right-8 mt-20 flex flex-col items-end gap-2 z-30" style={{ top: '3.5rem' }}>
+              <span className="text-xs font-light tracking-widest text-white/40 uppercase mb-1">ARCx Token Pages</span>
+              <div className="flex flex-col gap-2 text-sm font-light tracking-wide w-44">
+                <a 
+                  href="https://artifact-virtual.github.io/arcx_token/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 border border-white/20 text-white hover:bg-white/10 transition-colors w-full text-right"
+                >
+                  Overview
+                </a>
+                <a 
+                  href="https://artifact-virtual.github.io/arcx_token/transparency.html" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 border border-blue-500/20 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors w-full text-right"
+                >
+                  Transparency
+                </a>
+                <a 
+                  href="https://artifact-virtual.github.io/arcx_token/documentation.html" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 border border-white/20 text-white hover:bg-white/10 transition-colors w-full text-right"
+                >
+                  Documentation
+                </a>
+              </div>
             </div>
           </div>
-          <p className="text-white/70 font-light tracking-wide text-lg max-w-3xl">
+          <p className="text-white/70 font-light tracking-wide text-base sm:text-lg max-w-3xl">
             Constitutional intelligence funding instrument. Fixed supply ERC20 bootstrapping Arc Protocol development and governance systems.
           </p>
-          <div className="flex items-center gap-8 mt-6 text-sm font-light tracking-wide">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-8 mt-6 text-xs sm:text-sm font-light tracking-wide">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               <span className="text-white/60">LIVE ON BASE</span>
@@ -134,13 +158,13 @@ const ARCxToken = () => {
 
         {/* Connection Status Bar */}
         {isConnected && (
-          <div className="fixed top-8 right-8 z-50 bg-black border border-white/20 px-6 py-3">
-            <div className="flex items-center gap-4">
-              <span className="text-white/60 font-light tracking-wide text-sm uppercase">Connected</span>
-              <span className="text-white font-light tracking-wide">{formatAddress(address || '')}</span>
+          <div className="fixed top-4 right-4 z-50 bg-black border border-white/20 px-4 py-2 sm:px-6 sm:py-3">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <span className="text-white/60 font-light tracking-wide text-xs sm:text-sm uppercase">Connected</span>
+              <span className="text-white font-light tracking-wide text-xs sm:text-sm">{formatAddress(address || '')}</span>
               <button
                 onClick={disconnectWallet}
-                className="ml-4 text-white/60 hover:text-white font-light tracking-wide text-sm transition-colors"
+                className="ml-2 sm:ml-4 text-white/60 hover:text-white font-light tracking-wide text-xs sm:text-sm transition-colors"
               >
                 DISCONNECT
               </button>
@@ -151,22 +175,22 @@ const ARCxToken = () => {
         {/* Main Content - Everything secured behind wallet connection */}
         {!isConnected ? (
           <div className="max-w-4xl mx-auto text-center">
-            <div className="border border-white/10 p-12 backdrop-blur-sm bg-white/5">
+            <div className="border border-white/10 p-12">
               <h2 className="text-3xl font-thin tracking-wide mb-8">
                 Secure Wallet Connection Required
               </h2>
               <p className="text-white/70 font-light tracking-wide mb-12 max-w-2xl mx-auto">
                 Access to ARCx vesting dashboard, allocation details, and community governance requires secure wallet authentication. All features are wallet-gated for your security.
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
                 {supportedWallets.map((wallet) => (
                   <button
                     key={wallet.id}
                     onClick={() => connectWallet(wallet.id)}
                     disabled={isConnecting}
-                    className="w-full text-left border border-white/10 px-8 py-6 text-white bg-black/50 backdrop-blur-sm hover:bg-white/5 hover:border-white/20 transition-all font-light tracking-wide group"
+                    className="w-full text-left border border-white/10 px-4 sm:px-8 py-4 sm:py-6 text-white bg-black/50 backdrop-blur-sm hover:bg-white/5 hover:border-white/20 transition-all font-light tracking-wide group"
                   >
-                    <div className="text-lg font-light tracking-wide group-hover:text-blue-400 transition-colors">
+                    <div className="text-base sm:text-lg font-light tracking-wide group-hover:text-blue-400 transition-colors">
                       {wallet.name}
                     </div>
                     {isConnecting && selectedWallet === wallet.id && (
@@ -189,21 +213,21 @@ const ARCxToken = () => {
             <div className="space-y-16">
               {/* Token Overview Section */}
               <div>
-                <h2 className="text-3xl font-thin tracking-wide mb-8">Token Overview</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-white/10 backdrop-blur-sm bg-white/5">
-                  <div className="px-8 py-6 border-r border-white/10 last:border-r-0">
-                    <div className="text-white/50 font-light tracking-wide text-sm uppercase mb-2">Total Supply</div>
-                    <div className="text-2xl font-light tracking-wide mb-1">{vestingData.totalSupply} ARCx</div>
+                <h2 className="text-2xl sm:text-3xl font-thin tracking-wide mb-6 sm:mb-8">Token Overview</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-white/10">
+                  <div className="px-4 sm:px-8 py-4 sm:py-6 border-b md:border-b-0 md:border-r border-white/10 last:border-r-0 last:border-b-0">
+                    <div className="text-white/50 font-light tracking-wide text-xs sm:text-sm uppercase mb-2">Total Supply</div>
+                    <div className="text-xl sm:text-2xl font-light tracking-wide mb-1">{vestingData.totalSupply} ARCx</div>
                     <div className="text-white/40 font-light tracking-wide text-xs">Fixed Supply • No Inflation</div>
                   </div>
-                  <div className="px-8 py-6 border-r border-white/10 last:border-r-0">
-                    <div className="text-white/50 font-light tracking-wide text-sm uppercase mb-2">Network</div>
-                    <div className="text-2xl font-light tracking-wide mb-1">{vestingData.network}</div>
+                  <div className="px-4 sm:px-8 py-4 sm:py-6 border-b md:border-b-0 md:border-r border-white/10 last:border-r-0 last:border-b-0">
+                    <div className="text-white/50 font-light tracking-wide text-xs sm:text-sm uppercase mb-2">Network</div>
+                    <div className="text-xl sm:text-2xl font-light tracking-wide mb-1">{vestingData.network}</div>
                     <div className="text-green-400 font-light tracking-wide text-xs">✓ Live & Verified</div>
                   </div>
-                  <div className="px-8 py-6">
-                    <div className="text-white/50 font-light tracking-wide text-sm uppercase mb-2">Security</div>
-                    <div className="text-2xl font-light tracking-wide mb-1">{vestingData.vulnerabilities} Vulnerabilities</div>
+                  <div className="px-4 sm:px-8 py-4 sm:py-6">
+                    <div className="text-white/50 font-light tracking-wide text-xs sm:text-sm uppercase mb-2">Security</div>
+                    <div className="text-xl sm:text-2xl font-light tracking-wide mb-1">{vestingData.vulnerabilities} Vulnerabilities</div>
                     <div className="text-blue-400 font-light tracking-wide text-xs">A+ Audit Rating</div>
                   </div>
                 </div>
@@ -212,7 +236,7 @@ const ARCxToken = () => {
               {/* Token Allocation */}
               <div>
                 <h2 className="text-3xl font-thin tracking-wide mb-8">Token Allocation</h2>
-                <div className="space-y-0 border border-white/10 backdrop-blur-sm bg-white/5">
+                <div className="space-y-0 border border-white/10">
                   {allocationData.map((allocation, index) => (
                     <div key={allocation.category} className="flex items-center justify-between px-8 py-6 border-b border-white/10 last:border-b-0 group hover:bg-white/5 transition-colors">
                       <div className="flex items-center gap-4">
@@ -234,7 +258,7 @@ const ARCxToken = () => {
               {/* Vesting Information */}
               <div>
                 <h2 className="text-3xl font-thin tracking-wide mb-8">Core Team Vesting</h2>
-                <div className="border border-white/10 p-8 backdrop-blur-sm bg-white/5">
+                <div className="border border-white/10 p-8">
                   <div className="grid md:grid-cols-2 gap-12 mb-8">
                     <div>
                       <div className="text-white/50 font-light tracking-wide text-sm uppercase mb-2">Cliff Period</div>
@@ -275,7 +299,7 @@ const ARCxToken = () => {
               {/* Contract Information */}
               <div>
                 <h2 className="text-3xl font-thin tracking-wide mb-8">Contract Information</h2>
-                <div className="grid md:grid-cols-2 gap-0 border border-white/10 backdrop-blur-sm bg-white/5">
+                <div className="grid md:grid-cols-2 gap-0 border border-white/10">
                   <div className="px-8 py-6 border-r border-white/10 last:border-r-0">
                     <div className="text-white/50 font-light tracking-wide text-sm uppercase mb-4">Token Contract</div>
                     <div className="space-y-2">
@@ -318,7 +342,7 @@ const ARCxToken = () => {
               </div>
 
               {/* Community Logo Voting System */}
-              <div className="border border-white/10 p-8 backdrop-blur-sm bg-white/5">
+              <div className="border border-white/10 p-8">
                 <h2 className="text-3xl font-thin tracking-wide mb-8">Community Governance</h2>
                 <div className="mb-6">
                   <h3 className="text-xl font-light tracking-wide mb-4">ARCx Logo Community Voting</h3>

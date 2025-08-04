@@ -45,6 +45,60 @@ const Index = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Horizontal scroll functionality
+  useEffect(() => {
+    const container = horizontalRef.current;
+    if (!container) return;
+
+    const handleHorizontalScroll = (e: WheelEvent) => {
+      const rect = container.getBoundingClientRect();
+      const isInSection = rect.top <= 0 && rect.bottom >= window.innerHeight;
+      
+      if (isInSection && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        e.preventDefault();
+        const newIndex = e.deltaX > 0 ? 
+          Math.min(1, horizontalIndex + 1) : 
+          Math.max(0, horizontalIndex - 1);
+        
+        if (newIndex !== horizontalIndex) {
+          setHorizontalIndex(newIndex);
+          const wrapper = container.querySelector('.horizontal-scroll-wrapper') as HTMLElement;
+          if (wrapper) {
+            wrapper.style.transform = `translateX(-${newIndex * 100}%)`;
+          }
+        }
+      }
+    };
+
+    const handleKeydown = (e: KeyboardEvent) => {
+      const rect = container.getBoundingClientRect();
+      const isInSection = rect.top <= 0 && rect.bottom >= window.innerHeight;
+      
+      if (isInSection && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+        e.preventDefault();
+        const newIndex = e.key === 'ArrowRight' ? 
+          Math.min(1, horizontalIndex + 1) : 
+          Math.max(0, horizontalIndex - 1);
+        
+        if (newIndex !== horizontalIndex) {
+          setHorizontalIndex(newIndex);
+          const wrapper = container.querySelector('.horizontal-scroll-wrapper') as HTMLElement;
+          if (wrapper) {
+            wrapper.style.transform = `translateX(-${newIndex * 100}%)`;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('wheel', handleHorizontalScroll, { passive: false });
+    window.addEventListener('keydown', handleKeydown);
+    
+    return () => {
+      window.removeEventListener('wheel', handleHorizontalScroll);
+      window.removeEventListener('keydown', handleKeydown);
+    };
+  }, [horizontalIndex]);
+
   // Horizontal scrolling for the technical showcase section
   useEffect(() => {
     const handleHorizontalScroll = (e: WheelEvent) => {
@@ -122,52 +176,45 @@ const Index = () => {
             </h1>
           </div>
 
-          {/* Interactive commit statement */}
-          <div className="text-center group cursor-pointer">
+          {/* Interactive commit statement - now scrolls to welcome section */}
+          <div
+            className="text-center group cursor-pointer"
+            onClick={() => {
+              if (welcomeRef.current) {
+                (welcomeRef.current as HTMLElement).scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+          >
             <span className="text-sm font-light text-white tracking-widest group-hover:text-cyan-400 transition-colors duration-300">
               commit.
               <span className={`inline-block w-2 h-4 ml-1 bg-white group-hover:bg-cyan-400 transition-all duration-100 ${showCursor ? 'opacity-100' : 'opacity-0'}`} />
             </span>
           </div>
-
-          {/* Subtle scroll hint */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-            <span className="text-xs font-light text-white/30 tracking-widest uppercase">
-              SCROLL TO ENTER
-            </span>
-          </div>
         </div>
       </section>
 
-      {/* Enhanced Welcome Section with Subtle Animations */}
-      <section ref={welcomeRef} className="w-full min-h-screen flex items-center justify-center relative">
-        {/* Subtle background animations */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-          <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{animationDelay: '2s'}}></div>
-          <div className="absolute bottom-1/4 left-1/3 w-64 h-64 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{animationDelay: '4s'}}></div>
-        </div>
-        
-        <div className="text-center relative z-10">
-          <h1 className="text-5xl md:text-8xl font-thin tracking-ultra-wide text-center select-none text-white brightness-110">
+      {/* Welcome Section - Clean, no background */}
+      <section ref={welcomeRef} className="w-full min-h-screen flex items-center justify-center relative bg-black">
+        <div className="text-center w-full">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-thin tracking-ultra-wide text-center select-none text-white brightness-110">
             WELCOME TO ARC:0
           </h1>
         </div>
       </section>
 
-      {/* Technical Showcase Section - Horizontal Scroll */}
-      <section ref={horizontalRef} className="w-full min-h-screen relative">
+      {/* Technical Section - Only SystemMap3D and Live Simulation, no backgrounds */}
+      <section ref={horizontalRef} className="w-full min-h-screen relative bg-black">
         <div className="sticky top-0 h-screen overflow-hidden">
           <div 
             className="flex h-full transition-transform duration-700 ease-in-out"
             style={{ transform: `translateX(-${horizontalIndex * 100}vw)` }}
           >
             {/* System Map */}
-            <div className="flex-none w-screen h-full flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black border-r border-white/10">
-              <div className="text-center">
-                <h2 className="text-4xl md:text-6xl font-thin tracking-wide mb-8 text-white">SYSTEM ARCHITECTURE</h2>
+            <div className="flex-none w-screen h-full flex items-center justify-center">
+              <div className="text-center w-full">
+                <h2 className="text-4xl md:text-6xl font-thin tracking-wide mb-8 text-white">System Architecture</h2>
                 <p className="text-white/60 font-light tracking-wide max-w-2xl mx-auto mb-12">
-                  Interactive visualization of the Artifact Virtual ecosystem components and their interconnections.
+                  Radial architecture showing the interconnected components of the Artifact Virtual research framework
                 </p>
                 <div className="w-full max-w-6xl mx-auto">
                   <SystemMap3D />
@@ -175,23 +222,9 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Research Capabilities */}
-            <div className="flex-none w-screen h-full flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900 border-r border-white/10">
-              <div className="w-full max-w-7xl mx-auto px-8">
-                <ResearchCapabilities />
-              </div>
-            </div>
-
-            {/* Technical Specifications */}
-            <div className="flex-none w-screen h-full flex items-center justify-center bg-gradient-to-br from-black via-gray-800 to-black border-r border-white/10">
-              <div className="w-full max-w-7xl mx-auto px-8">
-                <TechnicalSpecs />
-              </div>
-            </div>
-
-            {/* System Simulation */}
-            <div className="flex-none w-screen h-full flex items-center justify-center bg-gradient-to-br from-gray-800 via-black to-gray-900">
-              <div className="text-center">
+            {/* Live Simulation */}
+            <div className="flex-none w-screen h-full flex items-center justify-center">
+              <div className="text-center w-full">
                 <h2 className="text-4xl md:text-6xl font-thin tracking-wide mb-8 text-white">LIVE SIMULATION</h2>
                 <p className="text-white/60 font-light tracking-wide max-w-2xl mx-auto mb-12">
                   Real-time system simulation and network activity monitoring.
@@ -200,14 +233,13 @@ const Index = () => {
               </div>
             </div>
           </div>
-          
           {/* Horizontal Navigation Indicators */}
           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-3">
-            {[0, 1, 2, 3].map((index) => (
+            {[0, 1].map((index) => (
               <button
                 key={index}
                 onClick={() => setHorizontalIndex(index)}
-                className={`w-2 h-2 transition-all duration-300 ${
+                className={`w-2 h-2 transition-all duration-300 rounded-full ${
                   horizontalIndex === index 
                     ? 'bg-white scale-125' 
                     : 'bg-white/30 hover:bg-white/60'
@@ -215,16 +247,10 @@ const Index = () => {
               />
             ))}
           </div>
-          
-          {/* Scroll Instructions */}
-          <div className="absolute top-8 right-8 text-white/40 font-light tracking-wide text-sm">
-            <div className="text-right">
-              <div className="mb-1">HORIZONTAL SCROLL</div>
-              <div className="text-xs">← → or Shift + Scroll</div>
-            </div>
-          </div>
         </div>
       </section>
+
+      {/* Removed redundant/old horizontal side scroll section. Only the new minimal technical section remains. */}
     </div>
   );
 };
