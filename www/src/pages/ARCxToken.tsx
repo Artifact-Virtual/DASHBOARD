@@ -83,7 +83,12 @@ const ARCxToken = () => {
         const isActive = timeLeft > 0;
 
         // Format values using ethers
-        const ethers = (await import('ethers')).ethers;
+        let ethersLib;
+        if (typeof ethers !== 'undefined') {
+          ethersLib = ethers;
+        } else {
+          ethersLib = (await import('ethers')).ethers;
+        }
         const formattedCurrentPrice = ethers.formatEther(currentPrice);
         const formattedTokensRemaining = ethers.formatEther(tokensRemaining);
 
@@ -95,9 +100,8 @@ const ARCxToken = () => {
         });
 
                 // Update vesting data with real values
-        const ethers = await import('ethers');
-        const priceInEth = parseFloat(ethers.ethers.formatEther(currentPrice));
-        const tokensRemainingFormatted = parseFloat(ethers.ethers.formatEther(tokensRemaining));
+        const priceInEth = parseFloat(ethersLib.formatEther(currentPrice));
+        const tokensRemainingFormatted = parseFloat(ethersLib.formatEther(tokensRemaining));
         
         setVestingData(prev => ({
           ...prev,
