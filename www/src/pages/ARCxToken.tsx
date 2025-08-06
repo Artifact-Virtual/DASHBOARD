@@ -81,7 +81,7 @@ const ARCxToken = () => {
       // Implement actual claim logic here
       // Simulate transaction delay
       await new Promise(resolve => setTimeout(resolve, 2000));
-      showToast('success', 'Tokens Claimed', `Successfully claimed ${vestingData.claimable} ARCx tokens`);
+      showToast('success', 'Tokens Claimed', `Successfully claimed ${vestingData.userClaimable} ARCx tokens`);
     } catch (error) {
       console.error('Claim failed:', error);
       showToast('error', 'Claim Failed', 'Failed to claim tokens. Please try again.');
