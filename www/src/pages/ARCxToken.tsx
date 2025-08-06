@@ -162,36 +162,36 @@ const ARCxToken = () => {
           <div className="max-w-4xl mx-auto text-center">
             <div className="border border-white/10 p-12">
               <h2 className="text-3xl font-thin tracking-wide mb-8">
-                🔴 DUTCH AUCTION LIVE - Secure Wallet Required
+                Shhh. The Chain Has Awoken.
               </h2>
               <p className="text-white/70 font-light tracking-wide mb-12 max-w-2xl mx-auto">
-                <span className="text-red-400 font-medium">URGENT:</span> Dutch auction is LIVE for the next 72 hours. Secure wallet authentication required to participate in ARCx token sale and access vesting dashboard.
+                Welcome to ARCX — the first constitutional chain. Only 777 genesis validators will hold the first-rule access. MetaMask connection required for secure access to the Dutch auction and vesting dashboard.
               </p>
               <div className="flex justify-center mb-8">
                 <button
                   onClick={connectWallet}
                   disabled={isConnecting}
-                  className="px-12 py-6 text-xl font-light tracking-wide border border-red-500/30 bg-gradient-to-r from-red-500/10 to-red-600/10 hover:from-red-500/20 hover:to-red-600/20 hover:border-red-400/50 transition-all text-white backdrop-blur-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-12 py-6 text-xl font-light tracking-wide border border-white/30 bg-gradient-to-r from-purple-500/10 to-blue-600/10 hover:from-purple-500/20 hover:to-blue-600/20 hover:border-white/50 transition-all text-white backdrop-blur-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isConnecting ? (
                     <span className="flex items-center gap-3">
-                      <div className="w-5 h-5 border-2 border-red-400 border-t-transparent rounded-full animate-spin"></div>
-                      Connecting Wallet...
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Awakening Connection...
                     </span>
                   ) : (
                     <span className="flex items-center gap-3">
-                      <div className="w-5 h-5 bg-red-500 rounded-full animate-pulse"></div>
-                      Connect Wallet
+                      <div className="w-5 h-5 bg-blue-500 rounded-full animate-pulse"></div>
+                      Connect MetaMask
                     </span>
                   )}
                 </button>
               </div>
-              <div className="mt-12 p-6 border border-red-500/20 bg-red-500/5 text-white/60 font-light tracking-wide text-sm backdrop-blur-sm">
+              <div className="mt-12 p-6 border border-blue-500/20 bg-blue-500/5 text-white/60 font-light tracking-wide text-sm backdrop-blur-sm">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                  <span className="text-red-400 font-light tracking-wide">LIVE AUCTION SECURITY</span>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                  <span className="text-blue-400 font-light tracking-wide">CONSTITUTIONAL ACCESS</span>
                 </div>
-                MetaMask required for secure Dutch auction participation. Never share private keys. All transactions secured on Base Mainnet. Auction ends in ~72 hours.
+                MetaMask-only security protocol. No other wallets supported for maximum security. Participate in the live Dutch auction ending in ~72 hours.
               </div>
             </div>
           </div>
