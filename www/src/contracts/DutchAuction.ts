@@ -73,7 +73,8 @@ export class DutchAuctionContract {
   // Purchase tokens
   async purchaseTokens(tokenAmount: string, maxPricePerToken: string): Promise<ethers.ContractTransaction> {
     try {
-      const contractWithSigner = this.contract.connect(this.signer);
+      const signer = this.provider.getSigner();
+      const contractWithSigner = this.contract.connect(signer);
       const currentPrice = await this.getCurrentPrice();
       
       // Safety check: ensure current price doesn't exceed user's max price

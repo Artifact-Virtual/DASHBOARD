@@ -3,6 +3,7 @@ import { useWallet } from '../contexts/WalletContext';
 import { useToast } from '../contexts/ToastContext';
 import { LogoVotingProvider } from '../contexts/LogoVotingContext';
 import LogoVoting from '../components/LogoVoting';
+import { SecurePurchaseComponent } from '../components/SecurePurchase';
 
 const ARCxToken = () => {
   const { isConnected, address, connect, disconnect } = useWallet();
@@ -253,6 +254,16 @@ const ARCxToken = () => {
                   </div>
                   Price decreases over 72 hours from $0.20 to $0.05. Early participants get tier-based bonuses. Anti-whale protection active.
                 </div>
+              </div>
+
+              {/* Secure Purchase Interface */}
+              <div>
+                <h2 className="text-3xl font-thin tracking-wide mb-8">Secure Token Purchase</h2>
+                <SecurePurchaseComponent 
+                  contractAddress={vestingData.dutchAuctionAddress}
+                  maxTokensPerUser="10000"
+                  minPurchaseAmount="100"
+                />
               </div>
 
               {/* Token Overview Section */}

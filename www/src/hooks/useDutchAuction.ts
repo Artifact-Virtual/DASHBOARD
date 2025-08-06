@@ -1,5 +1,6 @@
 // React Hook for Dutch Auction Integration
 import React, { useState, useEffect, useCallback } from 'react';
+import { ethers } from 'ethers';
 import { useWallet } from '../contexts/WalletContext';
 import { DutchAuctionContract } from '../contracts/DutchAuction';
 
@@ -17,7 +18,7 @@ export const useDutchAuction = (contractAddress: string) => {
   useEffect(() => {
     if (isConnected && window.ethereum) {
       try {
-        const provider = new window.ethereum.providers.Web3Provider(window.ethereum);
+        const provider = new ethers.providers.Web3Provider(window.ethereum as any);
         const contract = new DutchAuctionContract(provider, contractAddress);
         setAuctionContract(contract);
       } catch (err) {
