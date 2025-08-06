@@ -4,6 +4,8 @@ import { useToast } from '../contexts/ToastContext';
 import { LogoVotingProvider } from '../contexts/LogoVotingContext';
 import LogoVoting from '../components/LogoVoting';
 import { SecurePurchaseComponent } from '../components/SecurePurchase';
+import DutchAuction from '../components/DutchAuction';
+import DutchAuctionABI from '../contracts/DutchAuctionABI.json';
 
 const ARCxToken = () => {
   const { isConnected, address, connect, disconnect } = useWallet();
@@ -224,17 +226,15 @@ const ARCxToken = () => {
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <a 
-                    href={`https://basescan.org/address/${vestingData.dutchAuctionAddress}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 px-6 py-3 border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 transition-all text-red-400 font-light tracking-wide"
-                  >
-                    <span>Participate in Auction</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </a>
+                  {/* Dutch Auction Bid Component - Plug and Play */}
+                  {/* TODO: Replace AUCTION_ABI below with your actual ABI import or JSON */}
+                  {typeof window !== 'undefined' && (
+                    <DutchAuction 
+                      auctionAddress={vestingData.dutchAuctionAddress}
+                      auctionAbi={DutchAuctionABI}
+                    />
+                  )}
+                  {/* Keep Smart Airdrop link for now */}
                   <a 
                     href={`https://basescan.org/address/${vestingData.smartAirdropAddress}`}
                     target="_blank"
