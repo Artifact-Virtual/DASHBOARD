@@ -82,20 +82,29 @@ const ARCxToken = () => {
         const timeLeft = Math.max(0, endTime - now);
         const isActive = timeLeft > 0;
 
+        // Format values using ethers
+        const ethers = (await import('ethers')).ethers;
+        const formattedCurrentPrice = ethers.formatEther(currentPrice);
+        const formattedTokensRemaining = ethers.formatEther(tokensRemaining);
+
         setAuctionData({
-          currentPrice: (await import('ethers')).ethers.formatEther(currentPrice),
+          currentPrice: formattedCurrentPrice,
           endTime: endTime,
-          tokensRemaining: (await import('ethers')).ethers.formatEther(tokensRemaining),
+          tokensRemaining: formattedTokensRemaining,
           isActive
         });
 
-        // Update vesting data with real values
+                // Update vesting data with real values
+        const ethers = await import('ethers');
+        const priceInEth = parseFloat(ethers.ethers.formatEther(currentPrice));
+        const tokensRemainingFormatted = parseFloat(ethers.ethers.formatEther(tokensRemaining));
+        
         setVestingData(prev => ({
           ...prev,
           auctionStatus: isActive ? 'LIVE' : 'ENDED',
           auctionTimeRemaining: timeLeft > 0 ? `${Math.floor(timeLeft / 3600)}h ${Math.floor((timeLeft % 3600) / 60)}m` : 'ENDED',
-          currentPrice: `$${(parseFloat((await import('ethers')).ethers.formatEther(currentPrice)) * 3000).toFixed(4)}`, // Assuming ETH = $3000
-          auctionTokensAvailable: parseFloat((await import('ethers')).ethers.formatEther(tokensRemaining)).toFixed(0)
+          currentPrice: `$${(priceInEth * 3000).toFixed(4)}`, // Assuming ETH = $3000
+          auctionTokensAvailable: tokensRemainingFormatted.toFixed(0)
         }));
 
       } catch (error) {
@@ -308,25 +317,12 @@ const ARCxToken = () => {
                   </div>
                   <div className="flex flex-col sm:flex-row gap-4">
                     {/* Dutch Auction Bid Component - Plug and Play */}
-                    {/* TODO: Replace AUCTION_ABI below with your actual ABI import or JSON */}
                     {typeof window !== 'undefined' && (
                       <DutchAuction 
                         auctionAddress={vestingData.dutchAuctionAddress}
                         auctionAbi={DutchAuctionABI}
                       />
                     )}
-                    {/* Keep Smart Airdrop link for now */}
-                    <a 
-                      href={`https://basescan.org/address/${vestingData.smartAirdropAddress}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 px-6 py-3 border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 transition-all text-blue-400 font-light tracking-wide"
-                    >
-                      <span>Smart Airdrop</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </a>
                   </div>
                   <div className="mt-6 p-4 border border-orange-500/20 bg-orange-500/5 text-white/70 font-light tracking-wide text-sm">
                     <div className="flex items-center gap-2 mb-2">
@@ -345,6 +341,18 @@ const ARCxToken = () => {
                       auctionEndPrice={0.05}
                       className="w-full"
                     />
+                  </div>
+                </div>
+
+                {/* SMART AIRDROP - MERIT-BASED SECTION - TEMPORARILY DISABLED FOR DEBUGGING */}
+                <div className="border-2 border-indigo-500/50 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 p-8 backdrop-blur-sm">
+                  <div className="text-center">
+                    <h2 className="text-2xl font-light tracking-wide text-indigo-400 mb-4">
+                      Smart Airdrop - Coming Soon
+                    </h2>
+                    <p className="text-white/70 font-light tracking-wide">
+                      Merit-based airdrop component is being finalized. Check back soon!
+                    </p>
                   </div>
                 </div>
                 {/* ...existing code... */}
