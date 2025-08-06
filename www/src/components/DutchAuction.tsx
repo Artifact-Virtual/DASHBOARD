@@ -20,7 +20,7 @@ export default function DutchAuction({ auctionAddress, auctionAbi }: DutchAuctio
   // Setup provider & contract
   useEffect(() => {
     if (typeof window !== "undefined" && window.ethereum) {
-      const p = new ethers.providers.Web3Provider(window.ethereum);
+      const p = new ethers.BrowserProvider(window.ethereum);
       setProvider(p);
       setContract(new ethers.Contract(auctionAddress, auctionAbi, p));
     }
@@ -32,7 +32,7 @@ export default function DutchAuction({ auctionAddress, auctionAbi }: DutchAuctio
     async function fetchPrice() {
       try {
         const price = await contract.getCurrentPrice();
-        setCurrentPrice(ethers.utils.formatEther(price));
+        setCurrentPrice(ethers.formatEther(price));
       } catch (err) {
         setCurrentPrice("-");
       }
@@ -46,7 +46,7 @@ export default function DutchAuction({ auctionAddress, auctionAbi }: DutchAuctio
     try {
       const signer = await provider.getSigner();
       const c = contract.connect(signer);
-      const tx = await c.bid({ value: ethers.utils.parseEther(bidAmount) });
+      const tx = await c.bid({ value: ethers.parseEther(bidAmount) });
       await tx.wait();
       setTxStatus("success");
     } catch (err) {
