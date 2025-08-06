@@ -7,14 +7,13 @@ import LogoVoting from '../components/LogoVoting';
 const ARCxToken = () => {
   const { isConnected, address, connect, disconnect } = useWallet();
   const { showToast } = useToast();
-  const [selectedWallet, setSelectedWallet] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
   const [showPublicSale, setShowPublicSale] = useState(false);
 
-  // Real tokenomics data from transparency portal
+  // Real tokenomics data from transparency portal (LIVE DUTCH AUCTION)
   const [vestingData, setVestingData] = useState({
     totalSupply: '1,000,000',
-    currentSupply: '1,000,000',
+    currentSupply: '850,000', // 800K allocated + 50K unallocated
     maxSupply: '1,000,000',
     userAllocated: '0', // Will be fetched from contract
     userVested: '0',
@@ -26,44 +25,42 @@ const ARCxToken = () => {
     contractAddress: '0xA4093669DAFbD123E37d52e0939b3aB3C2272f44',
     vestingContract: '0xEEc0298bE76C9C3224eA05a34687C1a1134d550B',
     treasurySafe: '0x8F8fdBFa1AF9f53973a7003CbF26D854De9b2f38',
+    dutchAuctionAddress: '0xD788D9ac56c754cb927771eBf058966bA8aB734D',
+    smartAirdropAddress: '0x79166AbC8c17017436263BcE5f76DaB1c3dEa195',
     network: 'Base Mainnet',
-    vulnerabilities: '0'
+    vulnerabilities: '0',
+    auctionStatus: 'LIVE',
+    auctionTimeRemaining: '~70 hours',
+    currentPrice: '~$0.15', // Dynamic pricing
+    auctionTokensAvailable: '100,000'
   });
 
-  // Real allocation data from transparency portal
+  // Real allocation data from transparency portal (LIVE DUTCH AUCTION)
   const allocationData = [
-    { category: 'Ecosystem Fund', amount: '250,000', percentage: '25%', status: 'Full Transparency', color: 'from-blue-500 to-cyan-500' },
-    { category: 'Core Team & Developers', amount: '200,000', percentage: '20%', status: 'MVC Contract', color: 'from-purple-500 to-pink-500' },
-    { category: 'Public Sale', amount: '200,000', percentage: '20%', status: 'Full Transparency', color: 'from-green-500 to-emerald-500' },
-    { category: 'Community & Airdrop', amount: '150,000', percentage: '15%', status: 'Full Transparency', color: 'from-yellow-500 to-orange-500' },
-    { category: 'Strategic Partners', amount: '100,000', percentage: '10%', status: 'Treasury Managed', color: 'from-red-500 to-rose-500' },
-    { category: 'Treasury Reserve', amount: '100,000', percentage: '10%', status: 'Full Transparency', color: 'from-indigo-500 to-blue-500' },
+    { category: 'Core Team & Developers', amount: '200,000', percentage: '20%', status: 'MVC Contract Active', color: 'from-purple-500 to-pink-500' },
+    { category: 'Ecosystem Fund', amount: '200,000', percentage: '20%', status: 'MVC Contract Active', color: 'from-blue-500 to-cyan-500' },
+    { category: 'Treasury Operations', amount: '300,000', percentage: '30%', status: 'Multisig Controlled', color: 'from-green-500 to-emerald-500' },
+    { category: 'Reserve Fund', amount: '100,000', percentage: '10%', status: 'Treasury Allocated', color: 'from-yellow-500 to-orange-500' },
+    { category: 'Dutch Auction LIVE', amount: '100,000', percentage: '10%', status: '🔴 ACTIVE SALE', color: 'from-red-500 to-rose-500' },
+    { category: 'Smart Airdrop', amount: '50,000', percentage: '5%', status: 'Merit-Based', color: 'from-indigo-500 to-blue-500' },
+    { category: 'Future Allocation', amount: '50,000', percentage: '5%', status: 'Unallocated', color: 'from-gray-500 to-slate-500' },
   ];
 
   // Active tab state
   const [activeTab, setActiveTab] = useState('overview');
 
-  const supportedWallets = [
-    { id: 'metamask', name: 'MetaMask' },
-    { id: 'coinbase', name: 'Coinbase Wallet' },
-    { id: 'walletconnect', name: 'WalletConnect' },
-    { id: 'rainbow', name: 'Rainbow' },
-  ];
-
-  const connectWallet = async (walletType: string) => {
+  const connectWallet = async () => {
     setIsConnecting(true);
-    setSelectedWallet(walletType);
     
     try {
-      await connect(walletType);
-      showToast('success', 'Wallet Connected', `Successfully connected to ${walletType}`);
-      console.log(`Connected to ${walletType}`);
+      await connect('metamask'); // Only MetaMask for security
+      showToast('success', 'Wallet Connected', 'Successfully connected to MetaMask');
+      console.log('Connected to MetaMask');
     } catch (error) {
       console.error('Wallet connection failed:', error);
-      showToast('error', 'Connection Failed', `Failed to connect to ${walletType}. Please try again.`);
+      showToast('error', 'Connection Failed', 'Failed to connect wallet. Please ensure MetaMask is installed and try again.');
     } finally {
       setIsConnecting(false);
-      setSelectedWallet('');
     }
   };
 
@@ -165,40 +162,99 @@ const ARCxToken = () => {
           <div className="max-w-4xl mx-auto text-center">
             <div className="border border-white/10 p-12">
               <h2 className="text-3xl font-thin tracking-wide mb-8">
-                Secure Wallet Connection Required
+                🔴 DUTCH AUCTION LIVE - Secure Wallet Required
               </h2>
               <p className="text-white/70 font-light tracking-wide mb-12 max-w-2xl mx-auto">
-                Access to ARCx vesting dashboard, allocation details, and community governance requires secure wallet authentication. All features are wallet-gated for your security.
+                <span className="text-red-400 font-medium">URGENT:</span> Dutch auction is LIVE for the next 72 hours. Secure wallet authentication required to participate in ARCx token sale and access vesting dashboard.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
-                {supportedWallets.map((wallet) => (
-                  <button
-                    key={wallet.id}
-                    onClick={() => connectWallet(wallet.id)}
-                    disabled={isConnecting}
-                    className="w-full text-left border border-white/10 px-4 sm:px-8 py-4 sm:py-6 text-white bg-black/50 backdrop-blur-sm hover:bg-white/5 hover:border-white/20 transition-all font-light tracking-wide group"
-                  >
-                    <div className="text-base sm:text-lg font-light tracking-wide group-hover:text-blue-400 transition-colors">
-                      {wallet.name}
-                    </div>
-                    {isConnecting && selectedWallet === wallet.id && (
-                      <span className="text-xs text-blue-400 font-light tracking-wide">Connecting...</span>
-                    )}
-                  </button>
-                ))}
+              <div className="flex justify-center mb-8">
+                <button
+                  onClick={connectWallet}
+                  disabled={isConnecting}
+                  className="px-12 py-6 text-xl font-light tracking-wide border border-red-500/30 bg-gradient-to-r from-red-500/10 to-red-600/10 hover:from-red-500/20 hover:to-red-600/20 hover:border-red-400/50 transition-all text-white backdrop-blur-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isConnecting ? (
+                    <span className="flex items-center gap-3">
+                      <div className="w-5 h-5 border-2 border-red-400 border-t-transparent rounded-full animate-spin"></div>
+                      Connecting Wallet...
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-3">
+                      <div className="w-5 h-5 bg-red-500 rounded-full animate-pulse"></div>
+                      Connect Wallet
+                    </span>
+                  )}
+                </button>
               </div>
-              <div className="mt-12 p-6 border border-blue-500/20 bg-blue-500/5 text-white/60 font-light tracking-wide text-sm backdrop-blur-sm">
+              <div className="mt-12 p-6 border border-red-500/20 bg-red-500/5 text-white/60 font-light tracking-wide text-sm backdrop-blur-sm">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  <span className="text-blue-400 font-light tracking-wide">SECURITY NOTICE</span>
+                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                  <span className="text-red-400 font-light tracking-wide">LIVE AUCTION SECURITY</span>
                 </div>
-                Only connect wallets you trust and control. Never share private keys or seed phrases. All transactions are secured on Base Mainnet.
+                MetaMask required for secure Dutch auction participation. Never share private keys. All transactions secured on Base Mainnet. Auction ends in ~72 hours.
               </div>
             </div>
           </div>
         ) : (
           <LogoVotingProvider adminWallets={[address?.toLowerCase() || ""]}>
             <div className="space-y-16">
+              {/* 🔴 LIVE DUTCH AUCTION - URGENT SECTION */}
+              <div className="border-2 border-red-500/50 bg-gradient-to-r from-red-500/10 to-red-600/10 p-8 backdrop-blur-sm">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+                  <h2 className="text-3xl font-thin tracking-wide text-red-400">🔴 DUTCH AUCTION LIVE</h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                  <div className="text-center">
+                    <div className="text-white/50 font-light tracking-wide text-sm uppercase mb-2">Status</div>
+                    <div className="text-xl font-light tracking-wide text-red-400">{vestingData.auctionStatus}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-white/50 font-light tracking-wide text-sm uppercase mb-2">Time Remaining</div>
+                    <div className="text-xl font-light tracking-wide">{vestingData.auctionTimeRemaining}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-white/50 font-light tracking-wide text-sm uppercase mb-2">Current Price</div>
+                    <div className="text-xl font-light tracking-wide text-green-400">{vestingData.currentPrice}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-white/50 font-light tracking-wide text-sm uppercase mb-2">Available</div>
+                    <div className="text-xl font-light tracking-wide">{vestingData.auctionTokensAvailable} ARCx</div>
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <a 
+                    href={`https://basescan.org/address/${vestingData.dutchAuctionAddress}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 px-6 py-3 border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 transition-all text-red-400 font-light tracking-wide"
+                  >
+                    <span>Participate in Auction</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                  <a 
+                    href={`https://basescan.org/address/${vestingData.smartAirdropAddress}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 px-6 py-3 border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 transition-all text-blue-400 font-light tracking-wide"
+                  >
+                    <span>Smart Airdrop</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+                <div className="mt-6 p-4 border border-orange-500/20 bg-orange-500/5 text-white/70 font-light tracking-wide text-sm">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                    <span className="text-orange-400 font-light tracking-wide">PRICE DISCOVERY</span>
+                  </div>
+                  Price decreases over 72 hours from $0.20 to $0.05. Early participants get tier-based bonuses. Anti-whale protection active.
+                </div>
+              </div>
+
               {/* Token Overview Section */}
               <div>
                 <h2 className="text-2xl sm:text-3xl font-thin tracking-wide mb-6 sm:mb-8">Token Overview</h2>
