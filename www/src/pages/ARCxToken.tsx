@@ -198,11 +198,11 @@ const ARCxToken = () => {
         ) : (
           <LogoVotingProvider adminWallets={[address?.toLowerCase() || ""]}>
             <div className="space-y-16">
-              {/* 🔴 LIVE DUTCH AUCTION - URGENT SECTION */}
+              {/* LIVE DUTCH AUCTION - URGENT SECTION */}
               <div className="border-2 border-red-500/50 bg-gradient-to-r from-red-500/10 to-red-600/10 p-8 backdrop-blur-sm">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
-                  <h2 className="text-3xl font-thin tracking-wide text-red-400">🔴 DUTCH AUCTION LIVE</h2>
+                  <h2 className="text-3xl font-thin tracking-wide text-red-400">DUTCH AUCTION LIVE</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                   <div className="text-center">
