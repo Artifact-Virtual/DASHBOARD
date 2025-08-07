@@ -101,6 +101,7 @@ const FloatingSidebar: React.FC = () => {
     { id: 'home', icon: Home, label: 'Home', route: '/' },
     { id: 'blog', icon: BookOpen, label: 'Blog', route: '/blog' },
     { id: 'research', icon: FileText, label: 'Research', route: '/research' },
+    { id: 'arcx', icon: Coins, label: 'ARCx Token', action: () => window.open('https://artifact-virtual.github.io/arcx_token/', '_blank') },
     { id: 'dashboard', icon: Cpu, label: 'Dashboard', route: '/dashboard' },
     { id: 'quantum', icon: Atom, label: 'Quantum Engine', href: '#quantum' },
     {
