@@ -1,109 +1,179 @@
-import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
-import "@fontsource/orbitron/variable.css"; // glyph-like font
+import { motion, useMotionValue, useTransform } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+
+// NOTE: This build is GH Pages friendly:
+//  - No asset imports (all SVG inline)
+//  - No env vars like process.env.PUBLIC_URL
+//  - Avoids object state initialization edge-cases in some sandboxes
+//  - Guards all browser APIs inside effects
 
 export default function ArtifactLanding() {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  // --- SAFE STATE (numbers only to avoid object-init quirks) ---
+  const [vw, setVw] = useState(0);
+  const [vh, setVh] = useState(0);
+  const [mx, setMx] = useState(0);
+  const [my, setMy] = useState(0);
+  const rootRef = useRef(null);
 
   useEffect(() => {
-    const handleMouseMove = (e) => setMousePos({ x: e.clientX, y: e.clientY });
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    // Initialize viewport when running in the browser
+    const setSize = () => {
+      setVw(window.innerWidth || 0);
+      setVh(window.innerHeight || 0);
+    };
+    setSize();
+    window.addEventListener("resize", setSize);
+
+    // Pointer tracking (passive for perf)
+    const onMove = (e) => {
+      setMx(e.clientX || 0);
+      setMy(e.clientY || 0);
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", setSize);
+      window.removeEventListener("mousemove", onMove);
+    };
   }, []);
 
-  const calcTransform = (depth) => {
-    const x = (mousePos.x / window.innerWidth - 0.5) * depth;
-    const y = (mousePos.y / window.innerHeight - 0.5) * depth;
-    return `rotateX(${-y}deg) rotateY(${x}deg)`;
+  // Derived deltas (no window reads during render)
+  const cx = vw ? vw / 2 : 0;
+  const cy = vh ? vh / 2 : 0;
+  const dx = mx - cx;
+  const dy = my - cy;
+
+  // Helpers (pure functions are exported below for tests)
+  const parallaxStr = (depth = 1) => {
+    const { px, py } = calcParallax(dx, dy, depth);
+    return `translate3d(${px}px, ${py}px, 0)`;
+  };
+  const tiltStr = (depth = 1) => {
+    const { rx, ry } = calcTilt(dy, dx, depth); // rx depends on dy, ry on dx
+    return `rotateX(${rx}deg) rotateY(${ry}deg)`;
   };
 
-  // GH Pages–safe asset resolver (works at root or /repo-name/)
-  const assetUrl = (path) => {
-    const viteBase =
-      typeof import !== "undefined" && typeof import.meta !== "undefined"
-        ? import.meta.env?.BASE_URL
-        : undefined;
-    const craBase =
-      typeof process !== "undefined" ? process?.env?.PUBLIC_URL : undefined;
-    const domBase =
-      typeof document !== "undefined"
-        ? document.querySelector("base")?.getAttribute("href")
-        : undefined;
-    const base = viteBase || craBase || domBase || "/";
-    return base.replace(/\/?$/, "/") + path.replace(/^\//, "");
-  };
+  // Framer Motion glow intensity based on pointer distance
+  const mvX = useMotionValue(0);
+  const mvY = useMotionValue(0);
+  useEffect(() => {
+    mvX.set(dx);
+    mvY.set(dy);
+  }, [dx, dy, mvX, mvY]);
+  const glow = useTransform([mvX, mvY], ([x, y]) => {
+    const m = Math.min(1, Math.hypot(x, y) / 600);
+    return `0 0 ${40 + 60 * m}px rgba(255, 102, 0, ${0.25 + m * 0.35})`;
+  });
 
   return (
-    <div className="bg-[#0e0a0a] text-white min-h-screen font-[Orbitron] overflow-hidden relative">
-      {/* NAV */}
-      <header className="flex justify-between items-center px-8 py-6 uppercase text-xs tracking-widest">
-        <nav className="flex gap-6">
-          {["Discord", "X.com", "Docs", "Blog"].map((item) => (
+    <div
+      ref={rootRef}
+      className="min-h-screen bg-[#0b0a0a] text-white overflow-hidden font-[ui-monospace,monospace]"
+      style={{ letterSpacing: "0.04em" }}
+    >
+      {/* Header */}
+      <header className="flex justify-between items-center px-6 py-5 uppercase text-[11px] tracking-[.25em]">
+        <nav className="flex gap-6 opacity-80">
+          {["Discord", "X.com", "Docs", "Blog"].map((label) => (
             <motion.a
-              key={item}
+              key={label}
               href="#"
-              className="transition-colors"
-              whileHover={{ scale: 1.1, color: "#ff6600" }}
+              whileHover={{ scale: 1.06, color: "#ff6600" }}
+              className="transition-transform"
             >
-              {item}
+              {label}
             </motion.a>
           ))}
         </nav>
-        <img
-          src={assetUrl("assets/av-white-logo.png")}
-          alt="Artifact Virtual"
-          className="h-8"
-        />
-        <motion.a
-          href="#"
-          className="transition-colors"
-          whileHover={{ scale: 1.1, color: "#ff6600" }}
-        >
+
+        {/* Inline SVG so GitHub Pages doesn't need image imports */}
+        <AVMark className="h-7 w-auto" />
+
+        <motion.a whileHover={{ scale: 1.06, color: "#ff6600" }} href="#">
           Launch App
         </motion.a>
       </header>
 
+      {/* BACKDROP LAYERS (parallax) */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        {/* warm radial wash */}
+        <motion.div
+          style={{ transform: parallaxStr(0.3) }}
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,102,0,.08)_0%,transparent_60%)] opacity-60"
+        />
+        {/* film grain */}
+        <motion.div
+          style={{ transform: parallaxStr(0.15) }}
+          className="absolute inset-0 mix-blend-screen opacity-20"
+        >
+          <div
+            className="w-full h-full"
+            style={{
+              backgroundImage:
+                "url('data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'120\\' height=\\'120\\'><filter id=\\'n\\'><feTurbulence type=\\'fractalNoise\\' baseFrequency=\\'0.8\\' numOctaves=\\'2\\'/></filter><rect width=\\'100%\\' height=\\'100%\\' filter=\\'url(%23n)\\' opacity=\\'0.6\\' /></svg>')",
+            }}
+          />
+        </motion.div>
+      </div>
+
       {/* HERO */}
-      <div className="relative h-[80vh] flex flex-col justify-center items-center text-center overflow-hidden">
-        {/* 3D central element */}
-        <div className="absolute z-0 perspective-[1000px]">
+      <section className="relative h-[80vh] flex flex-col items-center justify-center text-center">
+        {/* CENTRAL ORB (no rotation; responsive to pointer) */}
+        <motion.div
+          className="relative w-[480px] h-[480px] rounded-full"
+          style={{
+            transform: `${parallaxStr(0.6)} ${tiltStr(1.2)}`,
+            boxShadow: glow,
+            background:
+              "radial-gradient(120% 120% at 50% 35%, rgba(255,140,66,0.15) 0%, rgba(134,40,0,0.18) 35%, rgba(10,6,6,0.0) 60%), radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.0) 60%)",
+            border: "1px solid rgba(255,102,0,0.14)",
+          }}
+        >
+          {/* dotted hemisphere */}
+          <div
+            className="absolute inset-0 rounded-full overflow-hidden"
+            style={{
+              backgroundImage:
+                "radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1px)",
+              backgroundSize: "16px 16px",
+              maskImage:
+                "radial-gradient(120% 120% at 50% 40%, black 45%, transparent 70%)",
+              opacity: 0.12,
+            }}
+          />
+
+          {/* central glyph (ARCx-inspired) */}
           <motion.div
-            className="w-[450px] h-[450px] rounded-full bg-gradient-to-br from-orange-900 to-orange-700 shadow-[0_0_100px_rgba(255,100,0,0.4)] flex items-center justify-center"
-            style={{ transform: calcTransform(15) }}
+            className="absolute inset-0 flex items-center justify-center"
+            whileHover={{ scale: 1.04 }}
           >
-            <div className="w-[300px] h-[300px] bg-[#0e0a0a] rounded-full flex items-center justify-center shadow-inner">
-              <img
-                src={assetUrl("assets/arcx_logo.png")}
-                alt="ARCx Token"
-                className="w-40 h-40 object-contain"
-              />
-            </div>
+            <ArcXGlyph className="w-48 h-48" />
           </motion.div>
-        </div>
+        </motion.div>
 
         <motion.div
-          className="z-10"
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="mt-10"
         >
-          <h1 className="text-4xl md:text-6xl font-bold max-w-2xl leading-snug">
+          <h1 className="text-4xl md:text-6xl font-semibold max-w-3xl leading-tight">
             Command the Future of Digital Civilizations
           </h1>
-          <p className="mt-4 text-gray-300 max-w-lg mx-auto">
+          <p className="mt-4 text-white/70 max-w-xl mx-auto">
             Trade any token at the best rates and get rewarded for holding ARCx
           </p>
           <motion.button
-            whileHover={{ scale: 1.05, boxShadow: "0 0 20px #ff6600" }}
-            className="mt-8 px-8 py-3 rounded-xl bg-orange-800 hover:bg-orange-700 transition-colors shadow-lg"
+            whileHover={{ scale: 1.05, boxShadow: "0 0 22px #ff6600" }}
+            className="mt-8 px-8 py-3 rounded-xl bg-[#5b1f05] hover:bg-[#6c2607] transition-colors"
           >
             Launch Now
           </motion.button>
         </motion.div>
-      </div>
+      </section>
 
       {/* STATS */}
-      <div className="flex flex-wrap justify-center gap-12 py-12 border-t border-orange-900 text-sm">
+      <div className="flex flex-wrap justify-center gap-12 py-12 border-t border-[#2a1009] text-sm">
         {[
           { label: "TVL", value: "$43.97M" },
           { label: "Active Users", value: "200K" },
@@ -112,14 +182,83 @@ export default function ArtifactLanding() {
         ].map((stat) => (
           <motion.div
             key={stat.label}
-            className="text-center cursor-pointer"
             whileHover={{ scale: 1.05, color: "#ff6600" }}
+            className="text-center cursor-pointer"
           >
             <div className="text-xl font-bold">{stat.value}</div>
-            <div className="text-gray-400">{stat.label}</div>
+            <div className="text-white/50">{stat.label}</div>
           </motion.div>
         ))}
+      </div>
+
+      {/* Footer note for GH Pages assets */}
+      <div className="text-center text-[11px] text-white/30 py-6">
+        {/* Add any external images to /public/assets and reference as "/assets/your.png" if you deploy. */}
       </div>
     </div>
   );
 }
+
+// === Inline SVG components (no external assets) ===
+function AVMark({ className = "" }) {
+  return (
+    <svg className={className} viewBox="0 0 120 32" fill="none" aria-label="Artifact Virtual">
+      <path d="M8 28h8l2-6h8l2 6h8L23 4h-6L8 28zm14-14 2 6h-4l2-6z" fill="#fff" />
+      <rect x="62" y="4" width="8" height="24" rx="2" fill="#fff" />
+      <rect x="74" y="4" width="8" height="24" rx="2" fill="#fff" />
+      <rect x="86" y="4" width="8" height="24" rx="2" fill="#fff" />
+      <rect x="98" y="4" width="8" height="24" rx="2" fill="#fff" />
+      <path d="M60 5 h-6 a2 2 0 0 0 -2 2 v18 a2 2 0 0 0 2 2 h6" stroke="#fff" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function ArcXGlyph({ className = "" }) {
+  return (
+    <svg className={className} viewBox="0 0 200 200" aria-label="ARCx">
+      <defs>
+        <radialGradient id="g" cx="50%" cy="50%" r="60%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
+          <stop offset="60%" stopColor="#ffffff" stopOpacity="0.08" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      {/* halo */}
+      <circle cx="100" cy="100" r="96" fill="url(#g)" />
+      {/* stylized X */}
+      <path
+        d="M55 45 L85 45 L100 70 L115 45 L145 45 L118 86 L145 125 L115 125 L100 104 L85 125 L55 125 L82 86 Z"
+        fill="#ffffff"
+      />
+    </svg>
+  );
+}
+
+// ===== Pure helpers + lightweight tests (no DOM access) =====
+export function calcParallax(dx, dy, depth = 1) {
+  return { px: (-dx * depth) / 200, py: (-dy * depth) / 200 };
+}
+export function calcTilt(dy, dx, depth = 1) {
+  return { rx: (dy * depth) / 400, ry: (-dx * depth) / 400 };
+}
+
+// Minimal sanity tests; guarded so they never touch DOM and are safe in browser/SSR.
+(function runSelfTests() {
+  try {
+    const almost = (a, b, eps = 1e-9) => Math.abs(a - b) < eps;
+
+    const p = calcParallax(200, 100, 1);
+    if (!almost(p.px, -1) || !almost(p.py, -0.5)) throw new Error("calcParallax baseline");
+
+    const t = calcTilt(200, 100, 2);
+    if (!almost(t.rx, 1) || !almost(t.ry, -0.5)) throw new Error("calcTilt scaling");
+
+    // Add a second set for depth variance
+    const p2 = calcParallax(-400, -400, 0.5);
+    if (!almost(p2.px, 1) || !almost(p2.py, 1)) throw new Error("calcParallax depth");
+  } catch (e) {
+    // If a test fails, surface it clearly without breaking rendering in production.
+    // eslint-disable-next-line no-console
+    console.error("ArtifactLanding self-tests failed:", e);
+  }
+})();
