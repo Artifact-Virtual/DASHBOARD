@@ -1,16 +1,12 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import "@fontsource/orbitron/variable.css"; // Sleek, glyph-like futuristic font
-import arcxLogo from "./arcx_logo.png";
-import avLogoWhite from "./av-white-logo-removebg-preview.png";
+import "@fontsource/orbitron/variable.css"; // glyph-like font
 
 export default function ArtifactLanding() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-    };
+    const handleMouseMove = (e) => setMousePos({ x: e.clientX, y: e.clientY });
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
@@ -21,40 +17,66 @@ export default function ArtifactLanding() {
     return `rotateX(${-y}deg) rotateY(${x}deg)`;
   };
 
+  // GH Pages–safe asset resolver (works at root or /repo-name/)
+  const assetUrl = (path) => {
+    const viteBase =
+      typeof import !== "undefined" && typeof import.meta !== "undefined"
+        ? import.meta.env?.BASE_URL
+        : undefined;
+    const craBase =
+      typeof process !== "undefined" ? process?.env?.PUBLIC_URL : undefined;
+    const domBase =
+      typeof document !== "undefined"
+        ? document.querySelector("base")?.getAttribute("href")
+        : undefined;
+    const base = viteBase || craBase || domBase || "/";
+    return base.replace(/\/?$/, "/") + path.replace(/^\//, "");
+  };
+
   return (
     <div className="bg-[#0e0a0a] text-white min-h-screen font-[Orbitron] overflow-hidden relative">
+      {/* NAV */}
       <header className="flex justify-between items-center px-8 py-6 uppercase text-xs tracking-widest">
         <nav className="flex gap-6">
-          {['Discord', 'X.com', 'Docs', 'Blog'].map((item) => (
+          {["Discord", "X.com", "Docs", "Blog"].map((item) => (
             <motion.a
-              whileHover={{ scale: 1.1, color: "#ff6600" }}
               key={item}
               href="#"
               className="transition-colors"
+              whileHover={{ scale: 1.1, color: "#ff6600" }}
             >
               {item}
             </motion.a>
           ))}
         </nav>
-        <img src={avLogoWhite} alt="Artifact Virtual Logo" className="h-8" />
+        <img
+          src={assetUrl("assets/av-white-logo.png")}
+          alt="Artifact Virtual"
+          className="h-8"
+        />
         <motion.a
-          whileHover={{ scale: 1.1, color: "#ff6600" }}
           href="#"
           className="transition-colors"
+          whileHover={{ scale: 1.1, color: "#ff6600" }}
         >
           Launch App
         </motion.a>
       </header>
 
+      {/* HERO */}
       <div className="relative h-[80vh] flex flex-col justify-center items-center text-center overflow-hidden">
-        {/* 3D Central Element with ARCx Logo */}
+        {/* 3D central element */}
         <div className="absolute z-0 perspective-[1000px]">
           <motion.div
             className="w-[450px] h-[450px] rounded-full bg-gradient-to-br from-orange-900 to-orange-700 shadow-[0_0_100px_rgba(255,100,0,0.4)] flex items-center justify-center"
             style={{ transform: calcTransform(15) }}
           >
             <div className="w-[300px] h-[300px] bg-[#0e0a0a] rounded-full flex items-center justify-center shadow-inner">
-              <img src={arcxLogo} alt="ARCx Token Logo" className="w-40 h-40 object-contain" />
+              <img
+                src={assetUrl("assets/arcx_logo.png")}
+                alt="ARCx Token"
+                className="w-40 h-40 object-contain"
+              />
             </div>
           </motion.div>
         </div>
@@ -80,12 +102,18 @@ export default function ArtifactLanding() {
         </motion.div>
       </div>
 
+      {/* STATS */}
       <div className="flex flex-wrap justify-center gap-12 py-12 border-t border-orange-900 text-sm">
-        {[{ label: "TVL", value: "$43.97M" }, { label: "Active Users", value: "200K" }, { label: "Cumulative Volume", value: "$2.62B" }, { label: "Cumulative Fees", value: "$2.48M" }].map(stat => (
+        {[
+          { label: "TVL", value: "$43.97M" },
+          { label: "Active Users", value: "200K" },
+          { label: "Cumulative Volume", value: "$2.62B" },
+          { label: "Cumulative Fees", value: "$2.48M" },
+        ].map((stat) => (
           <motion.div
-            whileHover={{ scale: 1.05, color: "#ff6600" }}
-            className="text-center cursor-pointer"
             key={stat.label}
+            className="text-center cursor-pointer"
+            whileHover={{ scale: 1.05, color: "#ff6600" }}
           >
             <div className="text-xl font-bold">{stat.value}</div>
             <div className="text-gray-400">{stat.label}</div>
