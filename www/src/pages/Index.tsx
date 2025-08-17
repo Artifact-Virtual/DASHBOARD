@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import NoiseLinesBackground from '../components/NoiseLinesBackground';
 import TradingViewWidget from '../components/TradingViewWidget';
 import HorizontalScrollPanel from '../components/HorizontalScrollPanel';
+import FloatingTopArrow from '../components/FloatingTopArrow';
 import '../styles/Index.css';
 
 function getSystemTheme() {
@@ -138,6 +139,9 @@ const Index = () => {
       <section className="w-full min-h-screen relative overflow-hidden">
         <HorizontalScrollPanel />
       </section>
+
+      {/* persistent top-center arrow */}
+      <FloatingTopArrow />
     </div>
   );
 };

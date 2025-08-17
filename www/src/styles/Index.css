@@ -282,6 +282,37 @@
   background: linear-gradient(90deg, rgba(0,0,0,0.0) 0%, #000 40%, #000 100%);
 }
 
+/* Floating top-center arrow button */
+.floating-top-arrow {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1200; /* above most UI but below modal overlays */
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+.floating-top-arrow:hover {
+  transform: translateX(-50%) translateY(-2px) scale(1.02);
+  background: rgba(0,0,0,0.75);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+}
+.floating-top-arrow svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
 /* Outer-edge animations: subtle pulse/glow pushed to the far outside edges */
 @keyframes outerEdgePulseLeft {
   0% { transform: translateX(0); opacity: 0.9; }
