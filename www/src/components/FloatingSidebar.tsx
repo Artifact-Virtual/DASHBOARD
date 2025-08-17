@@ -10,6 +10,7 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAccount } from 'wagmi';
 
 interface NavItem {
   id: string;
@@ -34,6 +35,7 @@ function getSystemTheme() {
 const FloatingSidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { address, isConnected } = useAccount();
   const [activeItem, setActiveItem] = useState('home');
   const [isExpanded, setIsExpanded] = useState(false);
   const [glitch, setGlitch] = useState(false);
@@ -94,6 +96,9 @@ const FloatingSidebar: React.FC = () => {
       window.removeEventListener('resize', checkMobile);
     };
   }, []);
+
+  // Hide sidebar entirely until wallet is connected
+  if (!isConnected) return null;
 
   const navItems: NavItem[] = [
     { id: 'home', icon: Home, label: 'Home', route: '/' },
