@@ -81,33 +81,30 @@ const TopRightConnect: React.FC = () => {
         {open && (
           <div className="absolute right-0 mt-2 w-56 bg-black/90 border border-white/10 rounded-2xl shadow-2xl p-3 backdrop-blur-md text-white">
             {isConnected ? (
-              <div className="flex flex-col gap-2 min-w-0">
-                <div className="flex items-center gap-3 mb-2">
+              <div className="flex flex-col gap-2 min-w-0 w-full max-w-xs sm:max-w-sm">
+                <div className="flex items-center gap-2 w-full">
                   {/* Profile Icon */}
-                  <span className="w-10 h-10 rounded-full bg-gradient-to-br from-white/80 to-black/80 flex items-center justify-center">
-                    <svg width="28" height="28" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <span className="w-9 h-9 rounded-full bg-gradient-to-br from-white/80 to-black/80 flex items-center justify-center flex-shrink-0">
+                    <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <rect x="2" y="2" width="16" height="16" rx="5" fill="#fff" fillOpacity="0.12" />
                       <path d="M6 14L10 6L14 14" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
                       <circle cx="10" cy="10" r="9" stroke="#fff" strokeWidth="1.2" opacity="0.3"/>
                     </svg>
                   </span>
-                  <div className="flex flex-col min-w-0">
-                    <span className="font-semibold text-base text-white truncate"><Name /></span>
-                    <span className="text-xs text-white/70 font-mono truncate" title={address}>{short(address)}</span>
+                  <div className="flex flex-col min-w-0 flex-1">
+                    <span className="font-semibold text-base text-white truncate leading-tight"><Name /></span>
+                    <span className="text-xs text-white/70 font-mono truncate leading-tight" title={address}>{short(address)}</span>
                   </div>
-                </div>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="font-mono text-xs text-white/80 truncate" title={address}>{address}</span>
                   <button
-                    className="ml-1 px-2 py-1 rounded bg-white/10 text-xs text-white/80 hover:bg-white/20"
+                    className="ml-2 px-2 py-1 rounded bg-white/10 text-xs text-white/80 hover:bg-white/20 flex-shrink-0"
                     onClick={() => {navigator.clipboard.writeText(address || '');}}
                     title="Copy address"
                   >Copy</button>
                 </div>
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 w-full">
                   <EthBalance className="text-xs text-white/80" />
                 </div>
-                <button onClick={() => disconnect()} className="px-3 py-2 rounded bg-white/5 mt-1">Disconnect</button>
+                <button onClick={() => disconnect()} className="px-3 py-2 rounded bg-white/5 mt-1 w-full">Disconnect</button>
               </div>
             ) : (
               <div className="flex flex-col gap-2">
