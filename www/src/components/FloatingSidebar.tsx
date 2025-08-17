@@ -99,10 +99,9 @@ const FloatingSidebar: React.FC = () => {
 
   const navItems: NavItem[] = [
     { id: 'home', icon: Home, label: 'Home', route: '/' },
+    { id: 'swap', icon: Coins, label: 'Swap', route: '/swap' },
     { id: 'blog', icon: BookOpen, label: 'Blog', route: '/blog' },
     { id: 'research', icon: FileText, label: 'Research', route: '/research' },
-  // Use internal route so the sidebar links to the in-app ARCx page instead of an external (possibly broken) URL
-  { id: 'arcx', icon: Coins, label: 'ARCx Token', route: '/arcx' },
     { id: 'dashboard', icon: Cpu, label: 'Dashboard', route: '/dashboard' },
     { id: 'quantum', icon: Atom, label: 'Quantum Engine', href: '#quantum' },
     {
