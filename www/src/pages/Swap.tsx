@@ -252,6 +252,12 @@ const Swap: React.FC = () => {
                   <span className="text-red-400 text-xs">{swapError}</span>
                 </div>
               )}
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-400">DEX Source</span>
+                <span className="text-blue-400 text-xs">
+                  {fromAmount && toAmount ? 'Uniswap V3 + 0x API' : 'Multi-DEX'}
+                </span>
+              </div>
             </div>
 
             {/* Connect Wallet / Swap Button */}
@@ -286,7 +292,12 @@ const Swap: React.FC = () => {
 
             {/* Powered by notice */}
             <div className="text-center text-xs text-gray-500 mt-4">
-              Powered by ARCx Protocol • Base Network
+              Real DEX Integration • Uniswap V3 + 0x Protocol • Base Network
+            </div>
+            
+            {/* DEX Source Info */}
+            <div className="text-center text-xs text-gray-400 mt-2">
+              Live pricing from Uniswap V3 Quoter • Cross-DEX optimization
             </div>
           </div>
         </div>
