@@ -134,26 +134,25 @@ export const useSimpleSwap = () => {
         buyToken: tokenOut.address,
         sellToken: tokenIn.address,
         sellAmount: amountInWei.toString(),
-        slippagePercentage: '0.005', // 0.5%
+        slippagePercentage: '0.005',
       })
 
       const response = await fetch(
-        `https://base.api.0x.org/swap/v1/quote?${params}`,
+        `https://api.0x.org/swap/v1/quote?${params}`,
         {
           headers: {
-            '0x-api-key': process.env.REACT_APP_0X_API_KEY || 'demo-key',
             'Content-Type': 'application/json',
           },
         }
       )
 
       if (!response.ok) {
-        throw new Error(`0x API error: ${response.status}`)
+        throw new Error(`API error: ${response.status}`)
       }
 
       return await response.json()
     } catch (error) {
-      console.error('0x API error:', error)
+      console.error('Quote error:', error)
       return null
     }
   }, [])
