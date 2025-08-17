@@ -1,3 +1,12 @@
+/* Guarantee sidebar floats and is not affected by parent transforms */
+.sidebar-float {
+  position: fixed !important;
+  left: 1.5rem;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 1000 !important;
+  will-change: transform;
+}
 /* Enhanced animations and styles for Index page */
 @keyframes fadeInUp {
   from {
@@ -32,6 +41,32 @@
 .horizontal-scroll-wrapper {
   display: flex;
   transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.arc-horizontal-wrapper {
+  transform: translateX(var(--tx, 0));
+}
+
+.welcome-scale-wrapper {
+  transform: scale(var(--scale, 1));
+  opacity: var(--opacity, 1);
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* Ensure the animated canvas stays visually behind page content
+   and doesn't create a new stacking context that can clip or bleed text. */
+:root, body, .min-h-screen.relative {
+  /* No transform here — avoid creating a containing block that breaks
+     position:fixed descendants (the sidebar relies on viewport-fixed positioning).
+     Intentionally left empty. */
+}
+
+.arc-animated-bg {
+  /* canvas is positioned full-screen but must be behind everything */
+  z-index: -1 !important;
+  inset: 0;
+  /* Performance hint for the canvas's transform updates */
+  will-change: transform;
 }
 
 .horizontal-scroll-panel {

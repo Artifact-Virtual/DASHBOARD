@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import PatternLines from '../components/PatternLines';
-import SystemMap3D from '../components/SystemMap3D';
-import ResearchCapabilities from '../components/ResearchCapabilities';
-import TechnicalSpecs from '../components/TechnicalSpecs';
+import NoiseLinesBackground from '../components/NoiseLinesBackground';
+import TradingViewWidget from '../components/TradingViewWidget';
 import '../styles/Index.css';
 
 function getSystemTheme() {
@@ -17,9 +15,7 @@ const Index = () => {
   const [showCursor, setShowCursor] = useState(true);
   const [showContent, setShowContent] = useState(false);
   const [scrollY, setScrollY] = useState(0);
-  const [horizontalIndex, setHorizontalIndex] = useState(0);
   const welcomeRef = useRef(null);
-  const horizontalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const listener = (e) => setTheme(e.matches ? 'light' : 'dark');
@@ -45,118 +41,27 @@ const Index = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Horizontal scroll functionality
+  // apply CSS variable for welcome scale transform to avoid inline styles
   useEffect(() => {
-    const container = horizontalRef.current;
-    if (!container) return;
-
-    const handleHorizontalScroll = (e: WheelEvent) => {
-      const rect = container.getBoundingClientRect();
-      const isInSection = rect.top <= 0 && rect.bottom >= window.innerHeight;
-      
-      if (isInSection && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-        e.preventDefault();
-        const newIndex = e.deltaX > 0 ? 
-          Math.min(1, horizontalIndex + 1) : 
-          Math.max(0, horizontalIndex - 1);
-        
-        if (newIndex !== horizontalIndex) {
-          setHorizontalIndex(newIndex);
-          const wrapper = container.querySelector('.horizontal-scroll-wrapper') as HTMLElement;
-          if (wrapper) {
-            wrapper.style.transform = `translateX(-${newIndex * 100}%)`;
-          }
-        }
+    const welcomeSection = welcomeRef.current as HTMLElement;
+    if (welcomeSection) {
+      const wrapper = welcomeSection.querySelector('.welcome-scale-wrapper') as HTMLElement;
+      if (wrapper) {
+        const scale = Math.max(0.5, 1 - scrollY / 1000);
+        const opacity = Math.max(0.3, 1 - scrollY / 800);
+        wrapper.style.setProperty('--scale', scale.toString());
+        wrapper.style.setProperty('--opacity', opacity.toString());
       }
-    };
+    }
+  }, [scrollY])
 
-    const handleKeydown = (e: KeyboardEvent) => {
-      const rect = container.getBoundingClientRect();
-      const isInSection = rect.top <= 0 && rect.bottom >= window.innerHeight;
-      
-      if (isInSection && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-        e.preventDefault();
-        const newIndex = e.key === 'ArrowRight' ? 
-          Math.min(1, horizontalIndex + 1) : 
-          Math.max(0, horizontalIndex - 1);
-        
-        if (newIndex !== horizontalIndex) {
-          setHorizontalIndex(newIndex);
-          const wrapper = container.querySelector('.horizontal-scroll-wrapper') as HTMLElement;
-          if (wrapper) {
-            wrapper.style.transform = `translateX(-${newIndex * 100}%)`;
-          }
-        }
-      }
-    };
-
-    window.addEventListener('wheel', handleHorizontalScroll, { passive: false });
-    window.addEventListener('keydown', handleKeydown);
-    
-    return () => {
-      window.removeEventListener('wheel', handleHorizontalScroll);
-      window.removeEventListener('keydown', handleKeydown);
-    };
-  }, [horizontalIndex]);
-
-  // Horizontal scrolling for the technical showcase section
-  useEffect(() => {
-    const handleHorizontalScroll = (e: WheelEvent) => {
-      const horizontalSection = horizontalRef.current;
-      if (!horizontalSection) return;
-      
-      const rect = horizontalSection.getBoundingClientRect();
-      const isInHorizontalSection = rect.top <= 0 && rect.bottom >= window.innerHeight;
-      
-      if (isInHorizontalSection && (Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey)) {
-        e.preventDefault();
-        const maxIndex = 3; // 4 sections (0-3)
-        const delta = e.shiftKey ? e.deltaY : e.deltaX;
-        if (delta > 0 && horizontalIndex < maxIndex) {
-          setHorizontalIndex(prev => prev + 1);
-        } else if (delta < 0 && horizontalIndex > 0) {
-          setHorizontalIndex(prev => prev - 1);
-        }
-      }
-    };
-
-    const handleKeydown = (e: KeyboardEvent) => {
-      const horizontalSection = horizontalRef.current;
-      if (!horizontalSection) return;
-      
-      const rect = horizontalSection.getBoundingClientRect();
-      const isInHorizontalSection = rect.top <= 0 && rect.bottom >= window.innerHeight;
-      
-      if (isInHorizontalSection && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-        e.preventDefault();
-        const maxIndex = 3;
-        if (e.key === 'ArrowRight' && horizontalIndex < maxIndex) {
-          setHorizontalIndex(prev => prev + 1);
-        } else if (e.key === 'ArrowLeft' && horizontalIndex > 0) {
-          setHorizontalIndex(prev => prev - 1);
-        }
-      }
-    };
-
-    window.addEventListener('wheel', handleHorizontalScroll, { passive: false });
-    window.addEventListener('keydown', handleKeydown);
-    return () => {
-      window.removeEventListener('wheel', handleHorizontalScroll);
-      window.removeEventListener('keydown', handleKeydown);
-    };
-  }, [horizontalIndex]);
 
   const logoSrc = '/av-black-logo.png';
 
   return (
     <div className="min-h-screen relative overflow-y-auto bg-black text-white">
-      {/* Enhanced pattern lines background with parallax */}
-      <div 
-        className="fixed inset-0 z-0 pointer-events-none opacity-40" 
-        style={{ transform: `translateY(${scrollY * 0.5}px)` }}
-      >
-        <PatternLines />
-      </div>
+      {/* Full-screen noise lines background (first section only) */}
+      <NoiseLinesBackground />
 
       {/* Hero Section with Enhanced Animations */}
       <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-8 overflow-hidden">
@@ -193,59 +98,33 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Welcome Section - Clean, no background */}
+      {/* Welcome Section - Scales down on scroll */}
       <section ref={welcomeRef} className="w-full min-h-screen flex items-center justify-center relative bg-black">
-        <div className="text-center w-full">
+        <div 
+          ref={(el) => {
+            if (el) {
+              const scale = Math.max(0.5, 1 - scrollY / 1000);
+              const opacity = Math.max(0.3, 1 - scrollY / 800);
+              (el.style as any).setProperty('--scale', scale);
+              (el.style as any).setProperty('--opacity', opacity);
+            }
+          }}
+          className="text-center w-full welcome-scale-wrapper"
+        >
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-thin tracking-ultra-wide text-center select-none text-white brightness-110">
             WELCOME TO ARC:0
           </h1>
         </div>
       </section>
 
-      {/* Technical Section - Only SystemMap3D and Live Simulation, no backgrounds */}
-      <section ref={horizontalRef} className="w-full min-h-screen relative bg-black">
-        <div className="sticky top-0 h-screen overflow-hidden">
-          <div 
-            className="flex h-full transition-transform duration-700 ease-in-out"
-            style={{ transform: `translateX(-${horizontalIndex * 100}vw)` }}
-          >
-            {/* System Map */}
-            <div className="flex-none w-screen h-full flex items-center justify-center">
-              <div className="text-center w-full">
-                <h2 className="text-4xl md:text-6xl font-thin tracking-wide mb-8 text-white">System Architecture</h2>
-                <p className="text-white/60 font-light tracking-wide max-w-2xl mx-auto mb-12">
-                  Radial architecture showing the interconnected components of the Artifact Virtual research framework
-                </p>
-                <div className="w-full max-w-6xl mx-auto">
-                  <SystemMap3D />
-                </div>
-              </div>
-            </div>
+      
 
-            {/* Live Simulation */}
-            <div className="flex-none w-screen h-full flex items-center justify-center">
-              <div className="text-center w-full">
-                <h2 className="text-4xl md:text-6xl font-thin tracking-wide mb-8 text-white">LIVE SIMULATION</h2>
-                <p className="text-white/60 font-light tracking-wide max-w-2xl mx-auto mb-12">
-                  Real-time system simulation and network activity monitoring.
-                </p>
-                <div className="text-white/40 font-light tracking-wide">System Simulation Loading...</div>
-              </div>
-            </div>
-          </div>
-          {/* Horizontal Navigation Indicators */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-3">
-            {[0, 1].map((index) => (
-              <button
-                key={index}
-                onClick={() => setHorizontalIndex(index)}
-                className={`w-2 h-2 transition-all duration-300 rounded-full ${
-                  horizontalIndex === index 
-                    ? 'bg-white scale-125' 
-                    : 'bg-white/30 hover:bg-white/60'
-                }`}
-              />
-            ))}
+      {/* Trading Section */}
+      <section className="w-full min-h-screen relative bg-black flex items-center justify-center">
+        <div className="text-center w-full max-w-6xl mx-auto px-4">
+          <h2 className="text-4xl md:text-6xl font-thin tracking-wide mb-8 text-white">Live Market Intelligence</h2>
+          <div className="w-full max-w-4xl mx-auto">
+            <TradingViewWidget symbol="BINANCE:BTCUSDT" />
           </div>
         </div>
       </section>

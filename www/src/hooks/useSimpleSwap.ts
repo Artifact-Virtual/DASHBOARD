@@ -43,12 +43,45 @@ const QUOTER_V2_ABI = [
   }
 ] as const
 
+// ERC20 Token ABI for fetching token data
+const ERC20_ABI = [
+  {
+    constant: true,
+    inputs: [],
+    name: 'name',
+    outputs: [{ name: '', type: 'string' }],
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'symbol',
+    outputs: [{ name: '', type: 'string' }],
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'decimals',
+    outputs: [{ name: '', type: 'uint8' }],
+    type: 'function'
+  },
+  {
+    constant: true,
+    inputs: [{ name: '_owner', type: 'address' }],
+    name: 'balanceOf',
+    outputs: [{ name: 'balance', type: 'uint256' }],
+    type: 'function'
+  }
+] as const
+
 export interface Token {
   symbol: string
   name: string
   address: Address
   decimals: number
   icon: string
+  isCustom?: boolean
 }
 
 export const SUPPORTED_TOKENS: Token[] = [
@@ -66,6 +99,132 @@ export const SUPPORTED_TOKENS: Token[] = [
     decimals: 6,
     icon: '💰'
   },
+  {
+    symbol: 'WBTC',
+    name: 'Wrapped Bitcoin',
+    address: '0x1ceA84203673764244E05693e42E6Ace62bE9BA5' as Address,
+    decimals: 8,
+    icon: '₿'
+  },
+  {
+    symbol: 'DAI',
+    name: 'Dai Stablecoin',
+    address: '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb' as Address,
+    decimals: 18,
+    icon: '📊'
+  },
+  {
+    symbol: 'COMP',
+    name: 'Compound',
+    address: '0x9e1028F5F1D5eDE59748FFceE5532509976840E0' as Address,
+    decimals: 18,
+    icon: '🏛️'
+  },
+  {
+    symbol: 'UNI',
+    name: 'Uniswap',
+    address: '0xc3De830EA07524a0761646a6a4e4be0e114a3C83' as Address,
+    decimals: 18,
+    icon: '🦄'
+  },
+  {
+    symbol: 'AERO',
+    name: 'Aerodrome Finance',
+    address: '0x940181a94A35A4569E4529A3CDfB74e38FD98631' as Address,
+    decimals: 18,
+    icon: '✈️'
+  },
+  {
+    symbol: 'BALD',
+    name: 'Bald',
+    address: '0x27D2DECb4bFC9C76F0309b8E88dec3a601Fe25a8' as Address,
+    decimals: 18,
+    icon: '🥚'
+  },
+  {
+    symbol: 'PRIME',
+    name: 'Echelon Prime',
+    address: '0xfA980cEd6895AC314E7dE34Ef1bFAE90a5AdD21b' as Address,
+    decimals: 18,
+    icon: '👑'
+  },
+  {
+    symbol: 'cbETH',
+    name: 'Coinbase Wrapped Staked ETH',
+    address: '0x2Ae3F1Ec7F1F5012CFEab0185bfc7aa3cf0DEc22' as Address,
+    decimals: 18,
+    icon: '🔷'
+  },
+  {
+    symbol: 'USDT',
+    name: 'Tether USD',
+    address: '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2' as Address,
+    decimals: 6,
+    icon: '💵'
+  },
+  {
+    symbol: 'LINK',
+    name: 'Chainlink',
+    address: '0x88Fb150BDc53A65fe94Dea0c9BA0a6dAf8C6e196' as Address,
+    decimals: 18,
+    icon: '🔗'
+  },
+  {
+    symbol: 'DEGEN',
+    name: 'Degen',
+    address: '0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed' as Address,
+    decimals: 18,
+    icon: '🎩'
+  },
+  {
+    symbol: 'TOSHI',
+    name: 'Toshi',
+    address: '0xAC1Bd2486aAf3B5C0fc3Fd868558b082a531B2B4' as Address,
+    decimals: 18,
+    icon: '🐕'
+  },
+  {
+    symbol: 'BRETT',
+    name: 'Brett',
+    address: '0x532f27101965dd16442E59d40670FaF5eBB142E4' as Address,
+    decimals: 18,
+    icon: '🐸'
+  },
+  {
+    symbol: 'HIGHER',
+    name: 'Higher',
+    address: '0x0578d8A44db98B23BF096A382e016e29a5Ce0ffe' as Address,
+    decimals: 18,
+    icon: '📈'
+  },
+  {
+    symbol: 'MOXIE',
+    name: 'Moxie',
+    address: '0x8C9037D1Ef5c6D1f6816278C7AAF5491d24CD527' as Address,
+    decimals: 18,
+    icon: '💫'
+  },
+  {
+    symbol: 'VIRTUAL',
+    name: 'Virtual Protocol',
+    address: '0x0b3e328455c4059EEb9e3f84b5543F74E24e7E1b' as Address,
+    decimals: 18,
+    icon: '🌐'
+  },
+  {
+    symbol: 'AI16Z',
+    name: 'ai16z',
+    address: '0x1d6e98868a65df58172ac44bbfac0ad8a45d9f79' as Address,
+    decimals: 9,
+    icon: '🤖'
+  },
+  {
+    symbol: 'GOAT',
+    name: 'Goatseus Maximus',
+    address: '0x6ac0f7b3b3ed68373bf4e2c8ce6e90b4fd2e7f23' as Address,
+    decimals: 6,
+    icon: '🐐'
+  }
 ]
 
 export interface SwapQuote {
@@ -101,8 +260,126 @@ export const useSimpleSwap = () => {
   const [isSwapping, setIsSwapping] = useState(false)
   const [swapError, setSwapError] = useState<string | null>(null)
   const [lastTransactionHash, setLastTransactionHash] = useState<string | null>(null)
+  const [customTokens, setCustomTokens] = useState<Token[]>([])
+  const [allTokens, setAllTokens] = useState<Token[]>(SUPPORTED_TOKENS)
 
-  // Get real price quote from Uniswap V3
+  // Search and import token by address
+  const importToken = useCallback(async (address: string): Promise<Token | null> => {
+    if (!address || !/^0x[a-fA-F0-9]{40}$/.test(address)) {
+      console.error('Invalid address format')
+      return null
+    }
+
+    try {
+      const tokenAddress = address as Address
+      
+      // Check if token already exists
+      const existingToken = allTokens.find(t => 
+        t.address.toLowerCase() === tokenAddress.toLowerCase()
+      )
+      if (existingToken) {
+        return existingToken
+      }
+
+      // Fetch token data from contract
+      const [name, symbol, decimals] = await Promise.all([
+        fetch(`https://mainnet.base.org`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            method: 'eth_call',
+            params: [{
+              to: tokenAddress,
+              data: '0x06fdde03' // name()
+            }, 'latest'],
+            id: 1,
+            jsonrpc: '2.0'
+          })
+        }).then(r => r.json()).then(r => {
+          if (r.result && r.result !== '0x') {
+            // Decode hex string
+            const hex = r.result.slice(2)
+            const decoded = Buffer.from(hex, 'hex').toString('utf8').replace(/\0/g, '')
+            return decoded || 'Unknown Token'
+          }
+          return 'Unknown Token'
+        }).catch(() => 'Unknown Token'),
+
+        fetch(`https://mainnet.base.org`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            method: 'eth_call',
+            params: [{
+              to: tokenAddress,
+              data: '0x95d89b41' // symbol()
+            }, 'latest'],
+            id: 1,
+            jsonrpc: '2.0'
+          })
+        }).then(r => r.json()).then(r => {
+          if (r.result && r.result !== '0x') {
+            const hex = r.result.slice(2)
+            const decoded = Buffer.from(hex, 'hex').toString('utf8').replace(/\0/g, '')
+            return decoded || 'UNKNOWN'
+          }
+          return 'UNKNOWN'
+        }).catch(() => 'UNKNOWN'),
+
+        fetch(`https://mainnet.base.org`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            method: 'eth_call',
+            params: [{
+              to: tokenAddress,
+              data: '0x313ce567' // decimals()
+            }, 'latest'],
+            id: 1,
+            jsonrpc: '2.0'
+          })
+        }).then(r => r.json()).then(r => {
+          if (r.result && r.result !== '0x') {
+            return parseInt(r.result, 16)
+          }
+          return 18
+        }).catch(() => 18)
+      ])
+
+      const newToken: Token = {
+        symbol: symbol.toUpperCase(),
+        name: name,
+        address: tokenAddress,
+        decimals: decimals,
+        icon: '🪙',
+        isCustom: true
+      }
+
+      // Add to custom tokens
+      setCustomTokens(prev => [...prev, newToken])
+      setAllTokens(prev => [...prev, newToken])
+
+      return newToken
+    } catch (error) {
+      console.error('Failed to import token:', error)
+      return null
+    }
+  }, [allTokens])
+
+  // Search tokens by symbol, name, or address
+  const searchTokens = useCallback((query: string): Token[] => {
+    if (!query.trim()) return allTokens
+
+    const searchTerm = query.toLowerCase().trim()
+    
+    return allTokens.filter(token => 
+      token.symbol.toLowerCase().includes(searchTerm) ||
+      token.name.toLowerCase().includes(searchTerm) ||
+      token.address.toLowerCase().includes(searchTerm)
+    )
+  }, [allTokens])
+
+  // Get price quote from Uniswap V3
   const { data: uniswapQuote } = useReadContract({
     address: CONTRACTS.UNISWAP_QUOTER_V2,
     abi: QUOTER_V2_ABI,
@@ -323,7 +600,8 @@ export const useSimpleSwap = () => {
     swapError,
     
     // Data
-    supportedTokens: SUPPORTED_TOKENS,
+    supportedTokens: allTokens,
+    customTokens,
     uniswapQuote,
     
     // Functions
@@ -333,6 +611,8 @@ export const useSimpleSwap = () => {
     getTokenBySymbol,
     getTokenByAddress,
     getDisplayPrice,
+    importToken,
+    searchTokens,
     
     // Utils
     isConnectedToBase: chainId === 8453,

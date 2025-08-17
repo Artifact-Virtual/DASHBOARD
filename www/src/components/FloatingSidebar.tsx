@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
   Home,
-  Map,
-  Atom,
-  Shield,
-  Brain,
   Coins,
   Github,
   BookOpen,
   FileText,
   Cpu,
+  FlaskConical,
+  MessageCircle,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -103,12 +101,18 @@ const FloatingSidebar: React.FC = () => {
     { id: 'blog', icon: BookOpen, label: 'Blog', route: '/blog' },
     { id: 'research', icon: FileText, label: 'Research', route: '/research' },
     { id: 'dashboard', icon: Cpu, label: 'Dashboard', route: '/dashboard' },
-    { id: 'quantum', icon: Atom, label: 'Quantum Engine', href: '#quantum' },
+    { id: 'alpha', icon: FlaskConical, label: 'Alpha', href: '#alpha' },
     {
       id: 'github',
       icon: Github,
       label: 'GitHub',
       action: () => window.open('https://github.com/amuzetnoM/artifactvirtual', '_blank'),
+    },
+    {
+      id: 'discord',
+      icon: MessageCircle,
+      label: 'Discord',
+      action: () => window.open('https://discord.gg/wwEd9Hjv', '_blank'),
     },
   ];
 
@@ -136,10 +140,10 @@ const FloatingSidebar: React.FC = () => {
   // Desktop sidebar
   const desktopSidebar = (
     <nav
-      className={`hidden md:flex fixed left-6 top-1/2 -translate-y-1/2 z-50 flex-col items-center space-y-8
+      className={`sidebar-float hidden md:flex flex-col items-center space-y-8
         ${theme === 'light' ? 'bg-white/90 border-black/20' : 'bg-black/90 border-white/10'}
         rounded-3xl py-8 px-3 shadow-2xl border backdrop-blur-lg transition-all duration-500
-        min-w-[70px] max-w-[220px]
+        min-w-[70px] max-w-[220px] z-[1000]
         ${isVisible ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-10 pointer-events-none'}`}
       style={{
         boxShadow:

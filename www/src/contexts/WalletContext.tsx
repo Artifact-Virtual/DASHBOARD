@@ -31,6 +31,12 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   // Check if wallet is already connected on app load
   useEffect(() => {
     checkConnection();
+    // Ensure we disconnect listeners and clear connection on page unload
+    const onUnload = () => {
+      disconnect()
+    }
+    window.addEventListener('beforeunload', onUnload)
+    return () => window.removeEventListener('beforeunload', onUnload)
   }, []);
 
   const checkConnection = async () => {
@@ -77,10 +83,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     }
 
     try {
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      });
-      
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       setAddress(accounts[0]);
       setIsConnected(true);
       
@@ -101,9 +104,20 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         setChainId(parseInt(chainId, 16));
       });
 
+      // After connect, request a lightweight signature to verify intent
+      try {
+        const message = 'Sign to confirm wallet connection to Artifact Virtual';
+        await window.ethereum.request({ method: 'personal_sign', params: [message, accounts[0]] });
+      } catch (sigErr) {
+        // If the user declines signature, disconnect to be explicit
+        console.warn('User declined connection signature, disconnecting', sigErr);
+        disconnect();
+        throw new Error('Signature required to connect');
+      }
     } catch (error) {
       throw new Error('User rejected the request');
     }
+
   };
 
   const connectCoinbase = async () => {

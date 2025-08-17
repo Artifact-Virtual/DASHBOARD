@@ -71,18 +71,18 @@ const TopRightConnect: React.FC = () => {
               </div>
             ) : (
               <div className="flex flex-col gap-2">
-                <button onClick={() => handleConnect(connectMetaMask)} className="flex justify-between items-center px-3 py-2 rounded hover:bg-white/5">
+                <button aria-label="Connect MetaMask" onClick={() => handleConnect(connectMetaMask)} className="flex justify-between items-center px-3 py-2 rounded hover:bg-white/5">
                   <span>MetaMask</span>
                   {installed?.metamask && <span className="text-xs text-green-300">Installed</span>}
                 </button>
-                <button onClick={() => handleConnect(connectCoinbase)} className="flex justify-between items-center px-3 py-2 rounded hover:bg-white/5">
+                <button aria-label="Connect Coinbase Wallet" onClick={() => handleConnect(connectCoinbase)} className="flex justify-between items-center px-3 py-2 rounded hover:bg-white/5">
                   <span>Coinbase Wallet</span>
                   {installed?.coinbase && <span className="text-xs text-green-300">Installed</span>}
                 </button>
-                <button onClick={() => handleConnect(connectWalletConnect)} className="flex justify-between items-center px-3 py-2 rounded hover:bg-white/5">
+                <button aria-label="Connect WalletConnect" onClick={() => handleConnect(connectWalletConnect)} className="flex justify-between items-center px-3 py-2 rounded hover:bg-white/5">
                   <span>WalletConnect</span>
                 </button>
-                <button onClick={() => handleConnect(connectInjected)} className="flex justify-between items-center px-3 py-2 rounded hover:bg-white/5">
+                <button aria-label="Connect Injected" onClick={() => handleConnect(connectInjected)} className="flex justify-between items-center px-3 py-2 rounded hover:bg-white/5">
                   <span>Injected</span>
                   {installed?.injected && <span className="text-xs text-green-300">Available</span>}
                 </button>

@@ -90,6 +90,46 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  /* AMOLED skin for pure black backgrounds and bright, high-contrast text */
+  .amoled {
+    --background: 0 0% 0%; /* pure black */
+    --foreground: 0 0% 100%; /* bright white */
+
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 210 100% 50%; /* vivid cyan-ish */
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 210 100% 10%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 6%;
+    --muted-foreground: 0 0% 72%;
+
+    --accent: 180 100% 40%;
+    --accent-foreground: 0 0% 0%;
+
+    --destructive: 0 80% 50%;
+    --destructive-foreground: 0 0% 0%;
+
+    --border: 0 0% 6%;
+    --input: 0 0% 8%;
+    --ring: 180 100% 55%;
+
+    --sidebar-background: 0 0% 0%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 210 100% 40%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 6%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 6%;
+    --sidebar-ring: 180 100% 55%;
+  }
 }
 
 @layer base {
