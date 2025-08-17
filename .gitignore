@@ -19,7 +19,7 @@ Thumbs.db
 
 # Environment files
 .env
-
+.env.local
 
 # SSL certificates and private keys
 ssl/certs/
@@ -60,3 +60,4 @@ coverage/
 # Ignore Python virtual environments
 .venv/
 venv/
+.env.local
