@@ -69,9 +69,260 @@
   will-change: transform;
 }
 
+/* TradingView unfold / rotate animation */
+.tradingview-unfold-wrapper {
+  perspective: 1200px;
+}
+.tradingview-unfold {
+  transform-origin: top center;
+  transform: rotateX(20deg) scaleY(0.9) translateY(12px);
+  opacity: 0;
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 700ms ease-out;
+  will-change: transform, opacity;
+}
+.tradingview-unfold-wrapper .tradingview-unfold {
+  /* trigger on mount */
+  animation: tradingviewUnfold 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes tradingviewUnfold {
+  from {
+    transform: rotateX(35deg) scaleY(0.6) translateY(30px);
+    opacity: 0;
+  }
+  60% {
+    transform: rotateX(8deg) scaleY(1.03) translateY(6px);
+    opacity: 0.9;
+  }
+  to {
+    transform: rotateX(0deg) scaleY(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Tagline styling under sidebar logo */
+.sidebar-tagline {
+  max-width: 160px;
+  line-height: 1.1;
+  text-transform: lowercase;
+  letter-spacing: 0.2px;
+}
+
+/* Tagline at the foot of the welcome section */
+.page-foot-tagline {
+  opacity: 0.9;
+  max-width: 720px;
+  margin: 0 auto;
+  color: rgba(255,255,255,0.75);
+}
+
+/* Pin tagline to the bottom of the welcome section */
+.welcome-section-footer {
+  position: relative;
+}
+.welcome-section-footer .page-foot-tagline {
+  position: absolute;
+  bottom: 28px;
+  right: 28px;
+  left: auto;
+  transform: none;
+  text-align: right;
+}
+
+@media (max-width: 1024px) {
+  .welcome-section-footer .page-foot-tagline {
+    bottom: 22px;
+    right: 22px;
+    font-size: 0.95rem;
+    padding: 0 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-section-footer .page-foot-tagline {
+    bottom: 14px;
+    right: 14px;
+    font-size: 0.9rem;
+    padding: 0 0.5rem;
+  }
+}
+
+/* Trading section: vivid purple that leans slightly blue, with a soft blend from black */
+.trading-section {
+  /* OVERHAUL: purple -> blue-leaning base with subtle depth and a soft top blend
+     - Use CSS variables for easy tweaks
+     - Avoid hard bands; use blurred pseudo elements for a flowing transition
+  */
+  --trading-base: #5B21FF; /* vivid purple that leans slightly blue */
+  --trading-deep: #2a0e7a; /* deeper shade for subtle depth */
+
+  background-color: var(--trading-base);
+  /* micro linear overlay for gentle vertical tonal variation (not a band) */
+  background-image: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0.04) 100%);
+  color: #ffffff;
+  transition: background-color 420ms ease-in-out, background-image 420ms ease-in-out;
+
+  /* remove external gap so sections sit flush */
+  margin-top: 0;
+  padding-top: 48px;
+  padding-bottom: 48px;
+
+  position: relative; /* contains pseudo-elements */
+  overflow: hidden;
+}
+
+.trading-section .max-w-6xl {
+  /* ensure content contrasts well */
+  color: #ffffff;
+}
+
+/* Optional subtle separator using a soft gradient — not a hard line */
+.trading-section::before {
+  /* soft, blurred top fade that flows into the section (no hard line) */
+  content: '';
+  position: absolute;
+  top: -90px; /* sits above the section and fades downward */
+  left: -10%;
+  right: -10%;
+  height: 220px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.0) 60%);
+  filter: blur(18px);
+  opacity: 0.85;
+}
+
+.trading-section::after {
+  /* subtle radial sheen to add depth without creating a band */
+  content: '';
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1200px;
+  height: 420px;
+  pointer-events: none;
+  background: radial-gradient(600px 200px at 50% 10%, rgba(255,255,255,0.035), rgba(0,0,0,0) 60%);
+  mix-blend-mode: overlay;
+  opacity: 0.95;
+}
+
+@media (max-width: 1024px) {
+  .trading-section {
+    margin-top: 40px;
+    padding-top: 36px;
+    padding-bottom: 36px;
+  }
+  .trading-section::before {
+    top: -70px;
+    height: 160px;
+    filter: blur(14px);
+    opacity: 0.8;
+  }
+  .trading-section::after {
+    width: 900px;
+    height: 320px;
+  }
+}
+
 .horizontal-scroll-panel {
   flex: 0 0 100%;
   height: 100%;
+}
+
+/* Styles for the new HorizontalScrollPanel component */
+.hs-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  width: 100vw;
+  height: 100vh; /* occupy full viewport height */
+}
+.hs-panel {
+  flex: 0 0 100vw; /* ensure each panel fills the viewport width */
+  min-width: 100vw;
+  height: 100vh; /* panel fills viewport height */
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative; /* contain decorative pseudo-elements */
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.hs-left {
+  /* Left panel: start with pure black on the far left, then transition into cinematic pink tones */
+  background: linear-gradient(90deg,
+    #000 0%, /* pure black at far left (AMOLED) */
+    #000 6%,
+    #ff0f6b 20%,
+    #ff2d95 45%,
+    #ff7ab6 100%
+  );
+}
+.hs-right {
+  /* Right panel: cinematic blue transitioning to pure black at far right */
+  background: linear-gradient(90deg,
+    #00c3ff 0%,
+    #0047ff 65%,
+    #001020 85%,
+    #000 100% /* pure black at far right (AMOLED) */
+  );
+}
+
+/* Black edge panels */
+.hs-black {
+  background: #000;
+}
+.hs-black-left {
+  /* blend from black into pink on the right edge of this panel */
+  background: linear-gradient(90deg, #000 0%, #000 60%, rgba(0,0,0,0.0) 100%);
+}
+.hs-black-right {
+  /* blend from black into blue on the left edge of this panel */
+  background: linear-gradient(90deg, rgba(0,0,0,0.0) 0%, #000 40%, #000 100%);
+}
+
+/* Outer-edge animations: subtle pulse/glow pushed to the far outside edges */
+@keyframes outerEdgePulseLeft {
+  0% { transform: translateX(0); opacity: 0.9; }
+  60% { transform: translateX(-36px); opacity: 0.25; }
+  100% { transform: translateX(-72px); opacity: 0; }
+}
+
+@keyframes outerEdgePulseRight {
+  0% { transform: translateX(0); opacity: 0.9; }
+  60% { transform: translateX(36px); opacity: 0.25; }
+  100% { transform: translateX(72px); opacity: 0; }
+}
+
+/* Leftmost black panel: animated glow at its far left edge */
+.hs-black-left::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -40px; /* start slightly off-canvas to the left */
+  width: 120px;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.0));
+  filter: blur(10px);
+  opacity: 0;
+  animation: outerEdgePulseLeft 3.6s ease-in-out infinite;
+}
+
+/* Rightmost black panel: animated glow at its far right edge */
+.hs-black-right::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -40px; /* start slightly off-canvas to the right */
+  width: 120px;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(270deg, rgba(255,255,255,0.06), rgba(255,255,255,0.0));
+  filter: blur(10px);
+  opacity: 0;
+  animation: outerEdgePulseRight 3.6s ease-in-out infinite;
 }
 
 /* Mobile responsive adjustments */
@@ -106,4 +357,62 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255,255,255,0.4);
+}
+
+/* Unique curved divider between sections 2 and 3 */
+.section-divider-ornate {
+  position: relative;
+  width: 100%;
+  height: 140px; /* visible divider height */
+  overflow: visible;
+  pointer-events: none;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* The 'fill' layer is the lower section color shown through a carved SVG mask */
+.section-divider-ornate .divider-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(91,33,255,1) 0%, rgba(42,14,122,1) 100%); /* matches trading section hues */
+}
+
+/* mask layer: use an inline SVG path as a mask to carve a flowing wave */
+.section-divider-ornate .divider-mask {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 200'><path fill='%23fff' d='M0,32L48,37.3C96,43,192,53,288,69.3C384,85,480,107,576,122.7C672,139,768,149,864,154.7C960,160,1056,160,1152,149.3C1248,139,1344,117,1392,106.7L1440,96L1440,200L1392,200C1344,200,1248,200,1152,200C1056,200,960,200,864,200C768,200,672,200,576,200C480,200,384,200,288,200C192,200,96,200,48,200L0,200Z'/></svg>");
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center top;
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 200'><path fill='%23fff' d='M0,32L48,37.3C96,43,192,53,288,69.3C384,85,480,107,576,122.7C672,139,768,149,864,154.7C960,160,1056,160,1152,149.3C1248,139,1344,117,1392,106.7L1440,96L1440,200L1392,200C1344,200,1248,200,1152,200C1056,200,960,200,864,200C768,200,672,200,576,200C480,200,384,200,288,200C192,200,96,200,48,200L0,200Z'/></svg>");
+  mask-repeat: no-repeat;
+  mask-position: center top;
+}
+
+/* animated shimmer across the divider for subtle motion */
+.section-divider-ornate .divider-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.0) 100%);
+  transform: translateX(-30%);
+  animation: dividerShimmer 6s linear infinite;
+  mix-blend-mode: overlay;
+  opacity: 0.9;
+}
+
+@keyframes dividerShimmer {
+  from { transform: translateX(-30%); }
+  to   { transform: translateX(130%); }
+}
+
+@media (max-width: 768px) {
+  .section-divider-ornate { height: 96px; }
+  .section-divider-ornate .divider-mask { -webkit-mask-size: cover; mask-size: cover; }
+  .hs-container {
+    height: 60vh; /* reduce height on small screens to avoid overflowing viewport */
+  }
+  .hs-panel {
+    height: 60vh;
+  }
 }

@@ -32,7 +32,12 @@ const TradingViewWidget: React.FC<{ symbol?: string; autosize?: boolean }> = ({ 
     }
   }, [symbol, autosize])
 
-  return <div id={`tv-${Math.random().toString(36).slice(2, 9)}`} ref={ref} className="w-full h-96 bg-black/40 rounded-md overflow-hidden" />
+  const id = `tv-${Math.random().toString(36).slice(2, 9)}`
+  return (
+    <div className="tradingview-unfold-wrapper w-full h-96">
+      <div id={id} ref={ref} className="w-full h-full bg-black/40 rounded-md overflow-hidden tradingview-unfold" />
+    </div>
+  )
 }
 
 export default TradingViewWidget

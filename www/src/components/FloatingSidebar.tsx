@@ -111,7 +111,7 @@ const FloatingSidebar: React.FC = () => {
       id: 'github',
       icon: Github,
       label: 'GitHub',
-      action: () => window.open('https://github.com/amuzetnoM/artifactvirtual', '_blank'),
+      action: () => window.open('https://github.com/Artifact-Virtual', '_blank'),
     },
     {
       id: 'discord',
@@ -140,7 +140,7 @@ const FloatingSidebar: React.FC = () => {
     setTimeout(() => setGlitch(false), 500);
   };
 
-  const logoSrc = '/av-black-logo.png';
+  const logoSrc = '/av-black-logo-removebg-preview.png';
 
   // Desktop sidebar
   const desktopSidebar = (

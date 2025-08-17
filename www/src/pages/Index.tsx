@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import NoiseLinesBackground from '../components/NoiseLinesBackground';
 import TradingViewWidget from '../components/TradingViewWidget';
+import HorizontalScrollPanel from '../components/HorizontalScrollPanel';
 import '../styles/Index.css';
 
 function getSystemTheme() {
@@ -99,7 +100,7 @@ const Index = () => {
       </section>
 
       {/* Welcome Section - Scales down on scroll */}
-      <section ref={welcomeRef} className="w-full min-h-screen flex items-center justify-center relative bg-black">
+  <section ref={welcomeRef} className="w-full min-h-screen flex items-center justify-center relative bg-black welcome-section-footer">
         <div 
           ref={(el) => {
             if (el) {
@@ -115,12 +116,16 @@ const Index = () => {
             WELCOME TO ARC:0
           </h1>
         </div>
+        {/* Tagline pinned to the bottom of the welcome section */}
+        <div className="w-full">
+          <p className="page-foot-tagline text-sm text-muted-foreground">at the end of everything, there is a beginning.</p>
+        </div>
       </section>
 
       
 
       {/* Trading Section */}
-      <section className="w-full min-h-screen relative bg-black flex items-center justify-center">
+  <section className="w-full min-h-screen relative trading-section flex items-center justify-center">
         <div className="text-center w-full max-w-6xl mx-auto px-4">
           <h2 className="text-4xl md:text-6xl font-thin tracking-wide mb-8 text-white">Live Market Intelligence</h2>
           <div className="w-full max-w-4xl mx-auto">
@@ -129,7 +134,10 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Removed redundant/old horizontal side scroll section. Only the new minimal technical section remains. */}
+      {/* Horizontal scroll final section */}
+      <section className="w-full min-h-screen relative overflow-hidden">
+        <HorizontalScrollPanel />
+      </section>
     </div>
   );
 };
