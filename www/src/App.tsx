@@ -13,12 +13,13 @@ import ResearchPost from "./pages/ResearchPost";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import SystemMap from "./pages/SystemMap";
-import ARCxToken from "./pages/ARCxToken";
+import EthClient from "./pages/EthClient";
+import AsymmetricShowcase from "./components/design/AsymmetricShowcase";
+import ProfilePage from "./pages/ProfilePage";
+import Swap from "./pages/Swap";
+import TopRightConnect from './components/wallet/TopRightConnect';
 
 const queryClient = new QueryClient();
-
-
-
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -27,6 +28,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <div className="relative w-full min-h-screen overflow-x-hidden">
+          <TopRightConnect />
           <FloatingSidebar />
           <Routes>
             <Route path="/" element={<Index />} />
@@ -34,10 +36,12 @@ const App = () => (
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/research" element={<Research />} />
             <Route path="/research/:slug" element={<ResearchPost />} />
-            <Route path="/arcx" element={<ARCxToken />} />
-            {/* <Route path="/api" element={<API />} /> */}
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/systemmap" element={<SystemMap />} />
+            <Route path="/swap" element={<Swap />} />
+            <Route path="/eth" element={<EthClient />} />
+            <Route path="/design" element={<AsymmetricShowcase />} />
+            <Route path="/profile" element={<ProfilePage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

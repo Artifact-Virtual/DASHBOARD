@@ -1,0 +1,41 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "L:\\worxpace\\website\\contracts\\src\\ProfileRegistry.sol": {
+      "lastModificationDate": 1755426999650,
+      "contentHash": "2d30a98e049a155bdebd3f81fb675b65",
+      "sourceName": "src/ProfileRegistry.sol",
+      "solcConfig": {
+        "version": "0.8.21",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.21"
+      ],
+      "artifacts": [
+        "ProfileRegistry"
+      ]
+    }
+  }
+}
