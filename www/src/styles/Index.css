@@ -1,3 +1,35 @@
+.floating-arrow-animate {
+  transition: opacity 0.5s cubic-bezier(.4,1.6,.6,1), transform 0.5s cubic-bezier(.4,1.6,.6,1);
+}
+.floating-arrow-animate-show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.floating-arrow-animate-hide {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(-24px);
+}
+
+.wallet-address-truncate {
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
+}
+.wallet-profile-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fff 60%, #000 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.25rem;
+}
 /* Guarantee sidebar floats and is not affected by parent transforms */
 .sidebar-float {
   position: fixed !important;
@@ -285,32 +317,35 @@
 /* Floating top-center arrow button */
 .floating-top-arrow {
   position: fixed;
-  top: 14px;
+  top: 18px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1200; /* above most UI but below modal overlays */
-  width: 44px;
-  height: 44px;
+  z-index: 1200;
+  width: 48px;
+  height: 48px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.6);
+  background: linear-gradient(135deg, #1a1a1a 60%, #3f00ff 100%);
   color: #fff;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.06);
-  backdrop-filter: blur(4px);
+  border: none;
+  outline: none;
+  box-shadow: 0 4px 24px 0 rgba(63,0,255,0.12), 0 1.5px 8px 0 rgba(0,0,0,0.18);
+  backdrop-filter: blur(6px);
   cursor: pointer;
-  transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+  font-size: 1.5rem;
+  transition: transform 160ms cubic-bezier(.4,1.6,.6,1), background 160ms, box-shadow 160ms;
 }
 .floating-top-arrow:hover {
-  transform: translateX(-50%) translateY(-2px) scale(1.02);
-  background: rgba(0,0,0,0.75);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+  transform: translateX(-50%) translateY(-2px) scale(1.04);
+  background: linear-gradient(135deg, #2a2a2a 60%, #5B21FF 100%);
+  box-shadow: 0 8px 32px 0 rgba(63,0,255,0.18), 0 2px 12px 0 rgba(0,0,0,0.22);
 }
 .floating-top-arrow svg {
   display: block;
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
 }
 
 /* Outer-edge animations: subtle pulse/glow pushed to the far outside edges */

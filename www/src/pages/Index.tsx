@@ -17,7 +17,20 @@ const Index = () => {
   const [showCursor, setShowCursor] = useState(true);
   const [showContent, setShowContent] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [showArrow, setShowArrow] = useState(false);
   const welcomeRef = useRef(null);
+  const horizontalSectionRef = useRef<HTMLDivElement | null>(null);
+  // Show floating arrow only when horizontal section is in view
+  useEffect(() => {
+    const section = horizontalSectionRef.current;
+    if (!section) return;
+    const observer = new window.IntersectionObserver(
+      ([entry]) => setShowArrow(entry.isIntersecting),
+      { threshold: 0.2 }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const listener = (e) => setTheme(e.matches ? 'light' : 'dark');
@@ -126,22 +139,22 @@ const Index = () => {
       
 
       {/* Trading Section */}
-  <section className="w-full min-h-screen relative trading-section flex items-center justify-center">
+      <section className="w-full min-h-screen relative trading-section flex items-center justify-center">
         <div className="text-center w-full max-w-6xl mx-auto px-4">
           <h2 className="text-4xl md:text-6xl font-thin tracking-wide mb-8 text-white">Live Market Intelligence</h2>
-          <div className="w-full max-w-4xl mx-auto">
+          <div className="w-full max-w-4xl mx-auto" id="tradingview-section">
             <TradingViewWidget symbol="BINANCE:BTCUSDT" />
           </div>
         </div>
       </section>
 
-      {/* Horizontal scroll final section */}
-      <section className="w-full min-h-screen relative overflow-hidden">
+      {/* Horizontal scroll final section with animated floating arrow */}
+      <section ref={horizontalSectionRef} className="w-full min-h-screen relative overflow-hidden">
+        <div className={`fixed top-6 left-1/2 z-50 floating-arrow-animate ${showArrow ? 'floating-arrow-animate-show' : 'floating-arrow-animate-hide'}`}>
+          <FloatingTopArrow scrollTargetId="tradingview-section" />
+        </div>
         <HorizontalScrollPanel />
       </section>
-
-      {/* persistent top-center arrow */}
-      <FloatingTopArrow />
     </div>
   );
 };

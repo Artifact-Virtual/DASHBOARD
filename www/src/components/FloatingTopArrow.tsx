@@ -1,19 +1,17 @@
 import React from 'react';
 
-const FloatingTopArrow: React.FC = () => {
-  const handleClick = () => {
-    try {
-      const hs = document.querySelector('.hs-container') as HTMLElement | null;
-      if (hs && hs.scrollWidth > hs.clientWidth) {
-        // Scroll the horizontal scroller one viewport to the left
-        hs.scrollBy({ left: -window.innerWidth, behavior: 'smooth' });
-        return;
-      }
-    } catch (e) {
-      // fall back to normal page behavior
-    }
+interface FloatingTopArrowProps {
+  scrollTargetId: string;
+}
 
-    // If no horizontal scroller found, scroll page up by one viewport
+const FloatingTopArrow: React.FC<FloatingTopArrowProps> = ({ scrollTargetId }) => {
+  const handleClick = () => {
+    const target = document.getElementById(scrollTargetId);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    // fallback: scroll up one viewport
     window.scrollBy({ top: -window.innerHeight, behavior: 'smooth' });
   };
 
@@ -21,10 +19,9 @@ const FloatingTopArrow: React.FC = () => {
     <button
       className="floating-top-arrow"
       onClick={handleClick}
-      aria-label="Go up one level"
-      title="Up one level"
+      aria-label="Go to TradingView"
+      title="Go to TradingView"
     >
-      {/* Simple upward chevron */}
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
         <path d="M6 15L12 9L18 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
       </svg>

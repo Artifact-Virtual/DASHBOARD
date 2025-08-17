@@ -58,7 +58,21 @@ const TopRightConnect: React.FC = () => {
           onClick={() => setOpen((s) => !s)}
           className="px-4 py-2 rounded-2xl border backdrop-blur-md shadow-lg bg-black/70 border-white/10 text-white flex items-center gap-3"
         >
-          {isConnected ? <span className="font-mono text-sm">{short(address)}</span> : <span>Connect Wallet</span>}
+          {isConnected ? (
+            <>
+              <span className="inline-flex items-center gap-2">
+                {/* Unique monochrome Artifact Virtual SVG icon */}
+                <span className="w-6 h-6 rounded-full bg-gradient-to-br from-white/80 to-black/80 flex items-center justify-center mr-1">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="16" height="16" rx="5" fill="#fff" fillOpacity="0.12" />
+                    <path d="M6 14L10 6L14 14" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
+                    <circle cx="10" cy="10" r="9" stroke="#fff" strokeWidth="1.2" opacity="0.3"/>
+                  </svg>
+                </span>
+                <span className="font-mono text-sm max-w-[90px] truncate block" title={address}>{short(address)}</span>
+              </span>
+            </>
+          ) : <span>Connect Wallet</span>}
           <span className="ml-2 text-xs opacity-70">{isConnected ? 'Connected' : ''}</span>
         </button>
 
@@ -66,7 +80,18 @@ const TopRightConnect: React.FC = () => {
           <div className="absolute right-0 mt-2 w-56 bg-black/90 border border-white/10 rounded-2xl shadow-2xl p-3 backdrop-blur-md text-white">
             {isConnected ? (
               <div className="flex flex-col gap-2">
-                <div className="text-sm">{address}</div>
+                <div className="text-sm font-mono max-w-full truncate" title={address}>
+                  <span className="inline-flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-gradient-to-br from-white/80 to-black/80 flex items-center justify-center mr-1">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="2" width="16" height="16" rx="5" fill="#fff" fillOpacity="0.12" />
+                        <path d="M6 14L10 6L14 14" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
+                        <circle cx="10" cy="10" r="9" stroke="#fff" strokeWidth="1.2" opacity="0.3"/>
+                      </svg>
+                    </span>
+                    {short(address)}
+                  </span>
+                </div>
                 <button onClick={() => disconnect()} className="px-3 py-2 rounded bg-white/5">Disconnect</button>
               </div>
             ) : (
