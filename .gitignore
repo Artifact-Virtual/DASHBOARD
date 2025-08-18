@@ -30,6 +30,7 @@ ssl/certs/
 *.pid
 /tmp/
 /temp/
+.vs/*
 
 # Python virtual environments
 .venv/
