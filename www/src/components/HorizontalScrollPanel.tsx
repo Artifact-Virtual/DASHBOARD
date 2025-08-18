@@ -1,3 +1,4 @@
+import '../styles/PanelHero.css';
 import React, { useEffect, useRef } from 'react';
 
 const HorizontalScrollPanel: React.FC = () => {
@@ -66,35 +67,26 @@ const HorizontalScrollPanel: React.FC = () => {
       </div>
 
 
-      {/* Left panel - Blockchain/Web3 Hero (Cinematic Pink) */}
+      {/* Left panel - Blockchain/Web3 Hero (Cinematic Pink, Themed) */}
       <div className="hs-panel horizontal-scroll-panel hs-left flex items-center justify-center">
-        <div className="max-w-3xl text-center px-6 text-black" style={{fontFamily:'Inter, Arial, sans-serif'}}>
-          <h2 className="text-5xl sm:text-7xl font-semibold mb-4 tracking-widest">BLOCKCHAIN & WEB3</h2>
-          <p className="text-xl mb-6 font-normal">Resilient, decentralized systems for a world where the internet may not always exist.<br/>On-chain identity, privacy, unstoppable code.</p>
-          <svg width="120" height="120" viewBox="0 0 120 120" fill="none" className="mx-auto mb-4">
-            <circle cx="60" cy="60" r="54" stroke="#ff4fa3" strokeWidth="4" fill="#111" />
-            <rect x="35" y="35" width="50" height="50" rx="10" fill="#ff4fa3" fillOpacity="0.1" stroke="#ff4fa3" strokeWidth="2" />
-            <path d="M60 35V85" stroke="#ff4fa3" strokeWidth="2" />
-            <path d="M35 60H85" stroke="#ff4fa3" strokeWidth="2" />
-            <circle cx="60" cy="60" r="6" fill="#ff4fa3" />
-          </svg>
+        <div className="max-w-4xl w-full text-center px-6 pink-hero-panel">
+          <h2 className="pink-hero-title">BLOCKCHAIN & WEB3</h2>
+          <div className="pink-hero-sub">
+            <p>Resilient, decentralized systems for a world where the internet may not always exist.</p>
+            <p>On-chain identity, privacy, unstoppable code.</p>
+          </div>
         </div>
       </div>
 
 
-      {/* Right panel - AI/ML/Web2 Hero (Cinematic Blue) */}
+      {/* Right panel - AI/ML/Web2 Hero (Cinematic Blue, Themed) */}
       <div className="hs-panel horizontal-scroll-panel hs-right flex items-center justify-center">
-        <div className="max-w-3xl text-center px-6 text-black" style={{fontFamily:'Inter, Arial, sans-serif'}}>
-          <h2 className="text-5xl sm:text-7xl font-semibold mb-4 tracking-widest">AI / ML & WEB2</h2>
-          <p className="text-xl mb-6 font-normal">Pushing the boundaries of intelligence.<br/>Autonomous agents, generative models, and web2 systems for the edge and the unknown.</p>
-          <svg width="120" height="120" viewBox="0 0 120 120" fill="none" className="mx-auto mb-4">
-            <circle cx="60" cy="60" r="54" stroke="#4fa3ff" strokeWidth="4" fill="#111" />
-            <ellipse cx="60" cy="60" rx="30" ry="18" fill="#4fa3ff" fillOpacity="0.08" />
-            <ellipse cx="60" cy="60" rx="18" ry="30" fill="#4fa3ff" fillOpacity="0.08" />
-            <circle cx="60" cy="60" r="8" fill="#4fa3ff" />
-            <path d="M60 52V68" stroke="#4fa3ff" strokeWidth="2" />
-            <path d="M52 60H68" stroke="#4fa3ff" strokeWidth="2" />
-          </svg>
+        <div className="max-w-4xl w-full text-center px-6 blue-hero-panel">
+          <h2 className="blue-hero-title">AI / ML & WEB2</h2>
+          <div className="blue-hero-sub">
+            <p>Pushing the boundaries of intelligence.</p>
+            <p>Autonomous agents, generative models, and web2 systems for the edge and the unknown.</p>
+          </div>
         </div>
       </div>
 
