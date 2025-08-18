@@ -1,3 +1,98 @@
+/* Black Panel Entry Button and Animation */
+
+/* Responsive entry buttons for black panels, matching hero colors */
+.theme-enter-btn {
+  font-family: 'Segoe UI Light', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 300;
+  color: #000;
+  border: none;
+  border-radius: 2rem;
+  padding: 0.7em 2.2em;
+  margin-top: 2.5rem;
+  cursor: pointer;
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.10);
+  transition: transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s, background 0.18s;
+  outline: none;
+  letter-spacing: 0.08em;
+  min-width: 160px;
+  max-width: 90vw;
+  width: auto;
+  display: inline-block;
+}
+
+/* Pink for blockchain entry */
+.theme-enter-btn.pink {
+  background: #ff4fa3;
+}
+.theme-enter-btn.pink:hover, .theme-enter-btn.pink:focus {
+  background: #e13c8e;
+  color: #fff;
+}
+
+/* Blue for AI/ML entry */
+.theme-enter-btn.blue {
+  background: #4fa3ff;
+}
+.theme-enter-btn.blue:hover, .theme-enter-btn.blue:focus {
+  background: #2176c7;
+  color: #fff;
+}
+
+
+@media (max-width: 900px) {
+  .pink-hero-panel, .blue-hero-panel {
+    min-height: 48vh;
+    padding: 1.5rem 0.5rem;
+  }
+  .pink-hero-title, .blue-hero-title {
+    font-size: 2.2rem;
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.08em;
+  }
+  .pink-hero-sub, .blue-hero-sub {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .pink-hero-panel, .blue-hero-panel {
+    min-height: 38vh;
+    padding: 1rem 0.2rem;
+  }
+  .pink-hero-title, .blue-hero-title {
+    font-size: 1.3rem;
+    margin-bottom: 0.7rem;
+    letter-spacing: 0.06em;
+  }
+  .pink-hero-sub, .blue-hero-sub {
+    font-size: 0.98rem;
+    margin-bottom: 0.3rem;
+  }
+  .theme-enter-btn {
+    font-size: 0.95rem;
+    padding: 0.5em 0.8em;
+    min-width: 90px;
+    margin-top: 1rem;
+    border-radius: 1.2rem;
+  }
+}
+
+.zoom-out {
+  animation: zoomOutFade 0.6s cubic-bezier(.4,2,.6,1) forwards;
+}
+
+@keyframes zoomOutFade {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.5);
+  }
+}
 /* Pink and Blue Hero Panel Styles - matches main hero font and layout */
 .pink-hero-panel, .blue-hero-panel {
   color: #000;

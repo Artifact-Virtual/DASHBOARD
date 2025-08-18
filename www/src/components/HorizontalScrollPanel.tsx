@@ -58,11 +58,27 @@ const HorizontalScrollPanel: React.FC = () => {
 
   return (
     <div className="hs-container horizontal-scroll-container" ref={containerRef}>
-      {/* Far left black edge - intro for Blockchain/Web3 */}
+      {/* Far left black edge - Blockchain/Web3 entry */}
       <div className="hs-panel horizontal-scroll-panel hs-black hs-black-left flex items-center justify-center">
-        <div className="text-center w-full">
-          <span className="text-xs uppercase tracking-widest text-white/60">Entering</span>
-          <h3 className="text-2xl sm:text-3xl font-thin text-white mt-2">Blockchain & Web3</h3>
+        <div className="text-center w-full black-panel-entry">
+          <h3 className="text-2xl sm:text-3xl font-thin text-white mb-6">Blockchain & Web3</h3>
+          <button
+            className="theme-enter-btn pink"
+            onClick={() => {
+              const panel = document.querySelector('.black-panel-entry');
+              if (panel) {
+                panel.classList.add('zoom-out');
+                setTimeout(() => {
+                  window.location.href = '/swap';
+                }, 600);
+              } else {
+                window.location.href = '/swap';
+              }
+            }}
+            aria-label="Enter Blockchain & Web3"
+          >
+            Enter
+          </button>
         </div>
       </div>
 
@@ -90,11 +106,27 @@ const HorizontalScrollPanel: React.FC = () => {
         </div>
       </div>
 
-      {/* Far right black edge - intro for AI/ML/Web2 */}
+      {/* Far right black edge - AI/ML/Web2 entry */}
       <div className="hs-panel horizontal-scroll-panel hs-black hs-black-right flex items-center justify-center">
-        <div className="text-center w-full">
-          <span className="text-xs uppercase tracking-widest text-white/60">Entering</span>
-          <h3 className="text-2xl sm:text-3xl font-thin text-white mt-2">AI / ML & WEB2</h3>
+        <div className="text-center w-full black-panel-entry-ai">
+          <h3 className="text-2xl sm:text-3xl font-thin text-white mb-6">AI / ML & WEB2</h3>
+          <button
+            className="theme-enter-btn blue"
+            onClick={() => {
+              const panel = document.querySelector('.black-panel-entry-ai');
+              if (panel) {
+                panel.classList.add('zoom-out');
+                setTimeout(() => {
+                  window.location.href = 'https://github.com/Artifact-Virtual';
+                }, 600);
+              } else {
+                window.location.href = 'https://github.com/Artifact-Virtual';
+              }
+            }}
+            aria-label="Enter AI / ML & Web2"
+          >
+            Enter
+          </button>
         </div>
       </div>
     </div>
