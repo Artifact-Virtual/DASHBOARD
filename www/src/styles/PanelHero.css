@@ -1,3 +1,95 @@
+/* --- PINK HERO ANIMATION --- */
+.pink-hero-animated {
+  position: relative;
+  z-index: 1;
+}
+.pink-hero-glow {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 2.5rem;
+  box-shadow: 0 0 60px 10px #ff4fa3, 0 0 120px 30px #ff4fa3aa;
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 0;
+  animation: pinkGlowPulse 2.8s ease-in-out infinite alternate;
+}
+@keyframes pinkGlowPulse {
+  0% { opacity: 0.35; box-shadow: 0 0 40px 5px #ff4fa3, 0 0 80px 20px #ff4fa3aa; }
+  100% { opacity: 0.65; box-shadow: 0 0 80px 20px #ff4fa3, 0 0 160px 60px #ff4fa3cc; }
+}
+
+.pink-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.pink-particle {
+  position: absolute;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ff4fa3 60%, #fff0 100%);
+  opacity: 0.7;
+  animation: pinkParticleFloat 6s linear infinite;
+}
+/* Each particle gets a unique path and delay */
+.pink-particle-0 { left: 10%; top: 80%; animation-delay: 0s; }
+.pink-particle-1 { left: 25%; top: 90%; animation-delay: 1.2s; }
+.pink-particle-2 { left: 40%; top: 85%; animation-delay: 2.1s; }
+.pink-particle-3 { left: 60%; top: 88%; animation-delay: 0.7s; }
+.pink-particle-4 { left: 75%; top: 92%; animation-delay: 2.7s; }
+.pink-particle-5 { left: 85%; top: 80%; animation-delay: 1.7s; }
+.pink-particle-6 { left: 20%; top: 95%; animation-delay: 3.2s; }
+.pink-particle-7 { left: 50%; top: 93%; animation-delay: 2.9s; }
+.pink-particle-8 { left: 70%; top: 97%; animation-delay: 0.4s; }
+.pink-particle-9 { left: 90%; top: 89%; animation-delay: 1.9s; }
+@keyframes pinkParticleFloat {
+  0% { transform: translateY(0) scale(1); opacity: 0.7; }
+  60% { opacity: 1; }
+  100% { transform: translateY(-80vh) scale(0.7); opacity: 0; }
+}
+
+/* --- BLUE HERO ANIMATION --- */
+.blue-hero-animated {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+.blue-hero-waves {
+  position: absolute;
+  left: 0; right: 0; top: 0; bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: none;
+}
+.blue-hero-waves::before, .blue-hero-waves::after {
+  content: '';
+  position: absolute;
+  left: -10vw; right: -10vw;
+  height: 120px;
+  border-radius: 50%;
+  opacity: 0.22;
+  filter: blur(2px);
+  pointer-events: none;
+}
+.blue-hero-waves::before {
+  top: 20%;
+  background: linear-gradient(90deg, #4fa3ff 0%, #00c3ff 100%);
+  animation: blueWaveMove 7s linear infinite alternate;
+}
+.blue-hero-waves::after {
+  top: 60%;
+  background: linear-gradient(90deg, #00c3ff 0%, #4fa3ff 100%);
+  animation: blueWaveMove2 9s linear infinite alternate;
+}
+@keyframes blueWaveMove {
+  0% { transform: translateY(0) scaleX(1.1); opacity: 0.22; }
+  100% { transform: translateY(-30px) scaleX(1.25); opacity: 0.32; }
+}
+@keyframes blueWaveMove2 {
+  0% { transform: translateY(0) scaleX(1.05); opacity: 0.18; }
+  100% { transform: translateY(30px) scaleX(1.18); opacity: 0.28; }
+}
 /* Black Panel Entry Button and Animation */
 
 /* Responsive entry buttons for black panels, matching hero colors */
