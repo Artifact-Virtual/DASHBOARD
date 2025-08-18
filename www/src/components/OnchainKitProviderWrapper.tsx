@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-// Import OnchainKitProvider and base chain from the generated OnchainKit app
+// Import OnchainKitProvider and base chain from the generated OnchainKit app (may be shimed locally)
 import { OnchainKitProvider, base } from "artifactvirtual";
 
 interface OnchainKitProviderWrapperProps {
@@ -8,7 +8,8 @@ interface OnchainKitProviderWrapperProps {
 
 export const OnchainKitProviderWrapper = ({ children }: OnchainKitProviderWrapperProps) => (
   <OnchainKitProvider
-    apiKey={process.env.ONCHAINKIT_API_KEY}
+  // Prefer Vite runtime env var; fall back to Node env for SSR or server workflows
+  apiKey={(import.meta.env as any).VITE_ONCHAINKIT_API_KEY || process.env.ONCHAINKIT_API_KEY}
     chain={base}
     config={{
       appearance: {

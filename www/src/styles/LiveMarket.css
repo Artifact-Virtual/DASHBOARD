@@ -1,0 +1,19 @@
+/* Live Market Section Styles - matches provided image font and style */
+.live-market-section {
+  color: #000;
+  font-family: 'Segoe UI Light', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+.live-market-title {
+  font-family: 'Segoe UI Light', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 4rem;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  color: #000;
+}
+@media (min-width: 768px) {
+  .live-market-title {
+    font-size: 6rem;
+  }
+}

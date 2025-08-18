@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
+
 import NoiseLinesBackground from '../components/NoiseLinesBackground';
 import TradingViewWidget from '../components/TradingViewWidget';
 import HorizontalScrollPanel from '../components/HorizontalScrollPanel';
 import FloatingTopArrow from '../components/FloatingTopArrow';
+import WingsShowcase from '../components/WingsShowcase';
 import '../styles/Index.css';
+import '../styles/LiveMarket.css';
+import '../styles/LiveMarket.css';
 
 function getSystemTheme() {
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
@@ -56,19 +60,37 @@ const Index = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // apply CSS variable for welcome scale transform to avoid inline styles
+  // Enhanced scroll/zoom/doorway effect for welcome section
   useEffect(() => {
     const welcomeSection = welcomeRef.current as HTMLElement;
-    if (welcomeSection) {
-      const wrapper = welcomeSection.querySelector('.welcome-scale-wrapper') as HTMLElement;
-      if (wrapper) {
-        const scale = Math.max(0.5, 1 - scrollY / 1000);
-        const opacity = Math.max(0.3, 1 - scrollY / 800);
-        wrapper.style.setProperty('--scale', scale.toString());
-        wrapper.style.setProperty('--opacity', opacity.toString());
-      }
+    if (!welcomeSection) return;
+    const wrapper = welcomeSection.querySelector('.welcome-scale-wrapper') as HTMLElement;
+    if (!wrapper) return;
+
+    // Get section position relative to viewport
+    const rect = welcomeSection.getBoundingClientRect();
+    const windowH = window.innerHeight;
+    // How far into the section are we? 0 = top, 1 = bottom
+    const progress = Math.min(1, Math.max(0, (windowH - rect.top) / (rect.height + windowH * 0.5)));
+
+    // Zoom in as we enter, then zoom out and move down as we leave
+    let scale = 1;
+    let translateY = 0;
+    if (progress < 0.5) {
+      // Entering: zoom in from 0.8 to 1.1
+      scale = 0.8 + progress * 0.6;
+      translateY = 0;
+    } else {
+      // Exiting: zoom out from 1.1 to 0.7, move down up to 120px
+      scale = 1.1 - (progress - 0.5) * 0.8;
+      translateY = (progress - 0.5) * 240;
     }
-  }, [scrollY])
+    // Clamp
+    scale = Math.max(0.6, Math.min(1.1, scale));
+    translateY = Math.max(0, Math.min(120, translateY));
+    wrapper.style.setProperty('--scale', scale.toString());
+    wrapper.style.setProperty('--translateY', `${translateY}px`);
+  }, [scrollY]);
 
 
   const logoSrc = '/av-black-logo.png';
@@ -114,34 +136,34 @@ const Index = () => {
       </section>
 
       {/* Welcome Section - Scales down on scroll */}
-  <section ref={welcomeRef} className="w-full min-h-screen flex items-center justify-center relative bg-black welcome-section-footer">
-        <div 
-          ref={(el) => {
-            if (el) {
-              const scale = Math.max(0.5, 1 - scrollY / 1000);
-              const opacity = Math.max(0.3, 1 - scrollY / 800);
-              (el.style as any).setProperty('--scale', scale);
-              (el.style as any).setProperty('--opacity', opacity);
-            }
-          }}
-          className="text-center w-full welcome-scale-wrapper"
-        >
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-thin tracking-ultra-wide text-center select-none text-white brightness-110">
-            WELCOME TO ARC:0
-          </h1>
-        </div>
-        {/* Tagline pinned to the bottom of the welcome section */}
-        <div className="w-full">
-          <p className="page-foot-tagline text-sm text-muted-foreground">at the end of everything, there is a beginning.</p>
-        </div>
-      </section>
+
+
+  <section ref={welcomeRef} className="w-full min-h-screen flex items-center justify-center relative bg-black welcome-section-footer" style={{scrollSnapAlign:'start'}}>
+    <div
+      className="text-center w-full welcome-scale-wrapper"
+      style={{
+        transform: 'scale(var(--scale,1)) translateY(var(--translateY,0px))',
+        transition: 'transform 0.2s cubic-bezier(.4,2,.6,1)',
+        willChange: 'transform',
+        zIndex: 2,
+      }}
+    >
+      <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-thin tracking-ultra-wide text-center select-none text-white brightness-110">
+        WELCOME TO ARC:0
+      </h1>
+    </div>
+    {/* Tagline pinned to the bottom of the welcome section */}
+    <div className="w-full">
+      <p className="page-foot-tagline text-sm text-muted-foreground">at the end of everything, there is a beginning.</p>
+    </div>
+  </section>
 
       
 
       {/* Trading Section */}
-      <section className="w-full min-h-screen relative trading-section flex items-center justify-center">
-        <div className="text-center w-full max-w-6xl mx-auto px-4">
-          <h2 className="text-4xl md:text-6xl font-thin tracking-wide mb-8 text-white">Live Market Intelligence</h2>
+      <section className="w-full min-h-screen relative trading-section flex items-center justify-center bg-indigo-400">
+        <div className="text-center w-full max-w-6xl mx-auto px-4 live-market-section">
+          <h2 className="live-market-title">LIVE MARKET INTELLIGENCE</h2>
           <div className="w-full max-w-4xl mx-auto" id="tradingview-section">
             <TradingViewWidget symbol="BINANCE:BTCUSDT" />
           </div>
@@ -155,6 +177,15 @@ const Index = () => {
         </div>
         <HorizontalScrollPanel />
       </section>
+
+  {/* Holistic R/D Hero Section (Black, White Text) */}
+  <section className="w-full min-h-screen flex flex-col items-center justify-center bg-black relative rd-hero-section overflow-hidden">
+    <h2 className="text-5xl md:text-7xl font-thin tracking-widest text-center mb-8 text-white">HOLISTIC R/D</h2>
+    <p className="text-2xl md:text-3xl font-thin text-center mb-4 text-white">Radical research, rapid prototyping, and future shock.<br/>We explore, invent, and break the rules to build what comes next.</p>
+  </section>
+
+  {/* Blank space after R/D hero section */}
+  <section className="w-full min-h-[40vh] bg-black"></section>
     </div>
   );
 };

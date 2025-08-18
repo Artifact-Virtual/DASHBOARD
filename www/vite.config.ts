@@ -6,7 +6,9 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+  "@": path.resolve(__dirname, "./src"),
+  // Local shim for OnchainKit artifactvirtual package used while real package/keys are not available
+  "artifactvirtual": path.resolve(__dirname, "./src/shims/artifactvirtual.tsx"),
     },
   },
   server: {
