@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import FinalFooter from '../components/FinalFooter';
+import MouseRepelCanvas from '../components/MouseRepelCanvas';
 
 import NoiseLinesBackground from '../components/NoiseLinesBackground';
 import TradingViewWidget from '../components/TradingViewWidget';
@@ -137,25 +139,21 @@ const Index = () => {
 
 
       {/* Minimal Surreal Artifact Universe Section (Holistic R/D content) */}
-      <section className="artifact-ecosystem-section">
-        {/* Subtle surreal green radial gradient, woven in and out */}
-        <div className="artifact-ecosystem-bg" aria-hidden="true" />
-        <div className="artifact-ecosystem-content">
-          <h2 className="artifact-ecosystem-headline text-4xl md:text-6xl font-light text-center mb-6 select-none">ARTIFACT VIRTUAL UNIVERSE</h2>
+      {/* Minimal Surreal Artifact Universe Section with Mouse-Repel Animation */}
+      <section className="artifact-ecosystem-section relative min-h-[80vh] flex flex-col items-center justify-center bg-black overflow-hidden">
+        <MouseRepelCanvas />
+        <div className="artifact-ecosystem-content relative z-10 flex flex-col items-center justify-center w-full px-4 py-24">
+          <h2 className="artifact-ecosystem-headline text-4xl md:text-6xl font-light text-center mb-6 select-none text-neutral-100 tracking-widest" style={{letterSpacing:'0.18em'}}>ARTIFACT VIRTUAL UNIVERSE</h2>
           <p className="artifact-ecosystem-subheadline text-lg md:text-2xl font-light text-center mb-2 text-neutral-300 max-w-2xl mx-auto">A FRAMEWORK FOR HOLISTIC R/D</p>
-          <p className="artifact-ecosystem-subheadline text-base md:text-xl font-light text-center mb-2 text-neutral-300 max-w-2xl mx-auto">Radical research, rapid prototyping, and future shock.</p>
-          <p className="artifact-ecosystem-subheadline text-base md:text-xl font-light text-center mb-10 text-neutral-300 max-w-2xl mx-auto">We explore, invent, and break the rules to build what comes next.</p>
-          <button className="artifact-ecosystem-btn">EXPLORE THE ECOSYSTEM</button>
+          <p className="artifact-ecosystem-subheadline text-base md:text-xl font-light text-center mb-2 text-neutral-400 max-w-2xl mx-auto">Radical research, rapid prototyping, and future shock.</p>
+          <p className="artifact-ecosystem-subheadline text-base md:text-xl font-light text-center mb-10 text-neutral-500 max-w-2xl mx-auto">We explore, invent, and break the rules to build what comes next.</p>
+          <button className="artifact-ecosystem-btn bg-neutral-950 border border-neutral-700 text-neutral-200 hover:bg-neutral-900/80 hover:border-neutral-500 transition-all duration-300 mt-2 px-8 py-3 rounded-md tracking-widest font-light shadow-none outline-none focus:outline-none">EXPLORE THE ECOSYSTEM</button>
         </div>
       </section>
 
-  {/* Minimal Footer */}
-  <footer className="arcx-footer w-full text-black font-light text-center py-8 px-4 mt-0">
-    <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-      <span className="text-base md:text-lg tracking-wide">© {new Date().getFullYear()} Artifact Virtual</span>
-      <span className="text-sm md:text-base opacity-80">Decentralized Intelligence. Trustless Computation. Surreal Autonomy.</span>
-    </div>
-  </footer>
+      {/* Final surreal footer */}
+
+      <FinalFooter />
     </div>
   );
 };
