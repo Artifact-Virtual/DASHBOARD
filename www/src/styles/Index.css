@@ -1,3 +1,148 @@
+/* Minimal Surreal Artifact Ecosystem Section */
+.artifact-ecosystem-section {
+  position: relative;
+  min-height: 80vh;
+  background: #000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.artifact-ecosystem-bg {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  height: 60vh;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0,255,136,0.10) 0%, rgba(0,0,0,0.0) 80%);
+  filter: blur(32px);
+  z-index: 1;
+  pointer-events: none;
+}
+.artifact-ecosystem-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 6rem 1rem;
+}
+.artifact-ecosystem-headline {
+  letter-spacing: 0.18em;
+  color: #e6ffe6;
+  text-shadow: 0 2px 32px #00ff8899;
+}
+.artifact-ecosystem-subheadline {
+  text-shadow: 0 1px 12px #00ff8822;
+}
+.artifact-ecosystem-btn {
+  margin-top: 0.5rem;
+  padding: 0.75rem 2rem;
+  border: 1px solid #00ff88;
+  border-radius: 0.375rem;
+  color: #00ff88;
+  background: transparent;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  box-shadow: none;
+  outline: none;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  font-size: 1rem;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.artifact-ecosystem-btn:hover, .artifact-ecosystem-btn:focus {
+  background: rgba(0,255,136,0.08);
+  color: #00ff88;
+  box-shadow: 0 0 0 2px #00ff8833;
+}
+/* ARCx Landing Page: Custom Gradient and Parallax Sections */
+.arcx-gradient-section {
+  background: linear-gradient(120deg, #000 0%, #00ff88 60%, #000 100%);
+  background-size: 200% 200%;
+  animation: gradientMove 12s ease-in-out infinite;
+}
+.arcx-gradient-section-2 {
+  background: linear-gradient(120deg, #000 0%, #00ff88 40%, #000 100%);
+  background-size: 200% 200%;
+  animation: gradientMove 16s ease-in-out infinite;
+}
+.arcx-z1 { z-index: 1; }
+.arcx-z2 { z-index: 2; }
+.arcx-z10 { z-index: 10; }
+.arcx-glow-1 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 120vw;
+  height: 60vh;
+  border-radius: 9999px;
+  background: #00ff88;
+  opacity: 0.10;
+  filter: blur(48px);
+  animation: pulseGlow 4s cubic-bezier(0.4,0,0.2,1) infinite alternate;
+}
+.arcx-glow-2 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  height: 30vh;
+  border-radius: 9999px;
+  background: #00ff88;
+  opacity: 0.20;
+  filter: blur(32px);
+  animation: pulseGlow 8s cubic-bezier(0.4,0,0.2,1) infinite alternate;
+}
+.arcx-glow-3 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 40vh;
+  border-radius: 9999px;
+  background: #00ff88;
+  opacity: 0.10;
+  filter: blur(48px);
+  animation: pulseGlow 4s cubic-bezier(0.4,0,0.2,1) infinite alternate;
+}
+.arcx-moveline-1 {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, transparent, #00ff88 40%, transparent);
+  opacity: 0.7;
+  animation: moveLine 6s linear infinite alternate;
+  z-index: 1;
+}
+.arcx-moveline-2 {
+  position: absolute;
+  left: 0;
+  top: 66%;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, transparent, #00ff88 20%, transparent);
+  opacity: 0.4;
+  animation: moveLine 6s linear infinite alternate;
+  animation-delay: 0.5s;
+  z-index: 2;
+}
+.arcx-footer {
+  background: rgba(38,38,38,0.90);
+  color: #111;
+  font-family: var(--font-sans, Inter, sans-serif);
+  border-top: 1px solid rgba(38,38,38,0.60);
+}
 .floating-arrow-animate {
   transition: opacity 0.5s cubic-bezier(.4,1.6,.6,1), transform 0.5s cubic-bezier(.4,1.6,.6,1);
 }

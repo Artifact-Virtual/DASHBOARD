@@ -93,7 +93,7 @@ const Index = () => {
   }, [scrollY]);
 
 
-  const logoSrc = '/av-black-logo-removebg-preview.png';
+  const logoSrc = '/av-black-logo.png';
 
   return (
     <div className="min-h-screen relative overflow-y-auto bg-black text-white">
@@ -135,16 +135,27 @@ const Index = () => {
         </div>
       </section>
 
-  {/* Welcome Section removed as requested */}
 
-  {/* Holistic R/D Hero Section (Black, White Text) */}
-  <section className="w-full min-h-screen flex flex-col items-center justify-center bg-black relative rd-hero-section overflow-hidden">
-    <h2 className="text-5xl md:text-7xl font-thin tracking-widest text-center mb-8 text-white">HOLISTIC R/D</h2>
-    <p className="text-2xl md:text-3xl font-thin text-center mb-4 text-white">Radical research, rapid prototyping, and future shock.<br/>We explore, invent, and break the rules to build what comes next.</p>
-  </section>
+      {/* Minimal Surreal Artifact Universe Section (Holistic R/D content) */}
+      <section className="artifact-ecosystem-section">
+        {/* Subtle surreal green radial gradient, woven in and out */}
+        <div className="artifact-ecosystem-bg" aria-hidden="true" />
+        <div className="artifact-ecosystem-content">
+          <h2 className="artifact-ecosystem-headline text-4xl md:text-6xl font-light text-center mb-6 select-none">ARTIFACT VIRTUAL UNIVERSE</h2>
+          <p className="artifact-ecosystem-subheadline text-lg md:text-2xl font-light text-center mb-2 text-neutral-300 max-w-2xl mx-auto">A FRAMEWORK FOR HOLISTIC R/D</p>
+          <p className="artifact-ecosystem-subheadline text-base md:text-xl font-light text-center mb-2 text-neutral-300 max-w-2xl mx-auto">Radical research, rapid prototyping, and future shock.</p>
+          <p className="artifact-ecosystem-subheadline text-base md:text-xl font-light text-center mb-10 text-neutral-300 max-w-2xl mx-auto">We explore, invent, and break the rules to build what comes next.</p>
+          <button className="artifact-ecosystem-btn">EXPLORE THE ECOSYSTEM</button>
+        </div>
+      </section>
 
-  {/* Blank space after R/D hero section */}
-  <section className="w-full min-h-[40vh] bg-black"></section>
+  {/* Minimal Footer */}
+  <footer className="arcx-footer w-full text-black font-light text-center py-8 px-4 mt-0">
+    <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <span className="text-base md:text-lg tracking-wide">© {new Date().getFullYear()} Artifact Virtual</span>
+      <span className="text-sm md:text-base opacity-80">Decentralized Intelligence. Trustless Computation. Surreal Autonomy.</span>
+    </div>
+  </footer>
     </div>
   );
 };
