@@ -101,13 +101,13 @@ const Index = () => {
   return (
   <div className="min-h-screen relative overflow-y-auto bg-black/50 backdrop-blur text-white text-lg">
 
+
       {/* Full-screen noise lines background (first section only) */}
       <NoiseLinesBackground />
 
-
       {/* Hero Section with Enhanced Animations */}
       <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-8 overflow-hidden">
-        <div className={`text-center relative z-10 transition-all duration-1000 ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className={`text-center relative z-10 transition-all duration-1000 ${showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}> 
           {/* Professional Logo */}
           <div className="mb-8 sm:mb-12 group">
             <div className="relative inline-block">
@@ -146,10 +146,16 @@ const Index = () => {
   <section id="vision" className="relative z-20 bg-black text-neutral-300 min-h-screen flex items-center py-16 sm:py-24 px-4 sm:px-8 overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-10">
           {/* Abstract background grid */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:36px_36px]"></div>
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:36px_36px]" />
+        </div>
+        {/* Animation fills section, centered and offset right */}
+        <div className="pointer-events-none absolute inset-0 w-full h-full flex items-center justify-end z-0">
+          <div className="relative" style={{ width: '80vw', height: '80vh', maxWidth: '1200px', maxHeight: '90vh', marginRight: '5vw' }}>
+            <GloriousParticleLoader />
+          </div>
         </div>
         <div className="relative z-10 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
-          <div className="md:col-span-3 relative z-20">
+          <div className="md:col-span-3 relative z-10">
             <h2 className="text-sm font-light uppercase tracking-[0.3em] text-[#ff0000] mb-4">The Thesis</h2>
             <h3 className="text-3xl sm:text-5xl font-light text-white leading-tight tracking-wider mb-6">
               A Framework for Holistic Innovation.
@@ -158,11 +164,8 @@ const Index = () => {
               Artifact Virtual is not just a company; it's a research organism. We operate at the intersection of radical theory and tangible application. Our mission is to explore the technological frontier, prototype the future, and deploy systems that redefine the boundaries of what's possible.
             </p>
           </div>
-          <div className="md:col-span-2 relative flex items-center justify-center min-h-[320px]">
-            {/* Loader fills the right side, absolutely positioned, immersive, z-10 */}
-            <div className="absolute inset-0 right-0 flex items-center justify-end pointer-events-none z-10 w-full h-full">
-              <GloriousParticleLoader size={0} className="w-full h-full" />
-            </div>
+          <div className="md:col-span-2 relative flex items-center justify-center min-h-[320px] z-10">
+            {/* Empty right column for layout spacing */}
           </div>
         </div>
       </section>
