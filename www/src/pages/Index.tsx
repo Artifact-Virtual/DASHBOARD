@@ -93,7 +93,7 @@ const Index = () => {
   }, [scrollY]);
 
 
-  const logoSrc = '/av-black-logo.png';
+  const logoSrc = '/av-black-logo-removebg-preview.png';
 
   return (
     <div className="min-h-screen relative overflow-y-auto bg-black text-white">
@@ -135,48 +135,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Welcome Section - Scales down on scroll */}
-
-
-  <section ref={welcomeRef} className="w-full min-h-screen flex items-center justify-center relative bg-black welcome-section-footer" style={{scrollSnapAlign:'start'}}>
-    <div
-      className="text-center w-full welcome-scale-wrapper"
-      style={{
-        transform: 'scale(var(--scale,1)) translateY(var(--translateY,0px))',
-        transition: 'transform 0.2s cubic-bezier(.4,2,.6,1)',
-        willChange: 'transform',
-        zIndex: 2,
-      }}
-    >
-      <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-thin tracking-ultra-wide text-center select-none text-white brightness-110">
-        WELCOME TO ARC:0
-      </h1>
-    </div>
-    {/* Tagline pinned to the bottom of the welcome section */}
-    <div className="w-full">
-      <p className="page-foot-tagline text-sm text-muted-foreground">at the end of everything, there is a beginning.</p>
-    </div>
-  </section>
-
-      
-
-      {/* Trading Section */}
-      <section className="w-full min-h-screen relative trading-section flex items-center justify-center bg-indigo-400">
-        <div className="text-center w-full max-w-6xl mx-auto px-4 live-market-section">
-          <h2 className="live-market-title">LIVE MARKET INTELLIGENCE</h2>
-          <div className="w-full max-w-4xl mx-auto" id="tradingview-section">
-            <TradingViewWidget symbol="BINANCE:BTCUSDT" />
-          </div>
-        </div>
-      </section>
-
-      {/* Horizontal scroll final section with animated floating arrow */}
-      <section ref={horizontalSectionRef} className="w-full min-h-screen relative overflow-hidden">
-        <div className={`fixed top-6 left-1/2 z-50 floating-arrow-animate ${showArrow ? 'floating-arrow-animate-show' : 'floating-arrow-animate-hide'}`}>
-          <FloatingTopArrow scrollTargetId="tradingview-section" />
-        </div>
-        <HorizontalScrollPanel />
-      </section>
+  {/* Welcome Section removed as requested */}
 
   {/* Holistic R/D Hero Section (Black, White Text) */}
   <section className="w-full min-h-screen flex flex-col items-center justify-center bg-black relative rd-hero-section overflow-hidden">

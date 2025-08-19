@@ -7,8 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import FloatingSidebar from "./components/FloatingSidebar";
 import TopRightConnect from './components/wallet/TopRightConnect';
-import { OnchainKitProviderWrapper } from './components/OnchainKitProviderWrapper';
-import OnchainKitPage from './pages/OnchainKit';
+// ...existing code...
 
 // Lazy-load route pages to reduce initial bundle size (code-splitting)
 const Index = lazy(() => import('./pages/Index'));
@@ -28,7 +27,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <OnchainKitProviderWrapper>
+  {/* Removed OnchainKitProviderWrapper */}
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -46,7 +45,7 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/systemmap" element={<SystemMap />} />
               <Route path="/swap" element={<Swap />} />
-              <Route path="/onchainkit" element={<OnchainKitPage />} />
+              {/* Removed OnchainKitPage route */}
               <Route path="/eth" element={<EthClient />} />
               <Route path="/design" element={<AsymmetricShowcase />} />
               <Route path="/profile" element={<ProfilePage />} />
@@ -56,7 +55,7 @@ const App = () => (
         </div>
       </BrowserRouter>
     </TooltipProvider>
-    </OnchainKitProviderWrapper>
+  {/* Removed OnchainKitProviderWrapper */}
   </QueryClientProvider>
 );
 

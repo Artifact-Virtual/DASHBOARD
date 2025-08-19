@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { parseUnits, formatUnits, isAddress } from 'viem'
 import { ChevronDownIcon, ArrowPathIcon, PlusIcon } from '@heroicons/react/24/outline'
 import { useSwap, Token, SwapQuote } from '../hooks/useSwap'
+import TradingViewWidget from './TradingViewWidget'
 
 export default function Swap() {
   const { tokens, getQuote, addToken, executeSwap, isLoading, error, isConnected } = useSwap()
@@ -117,12 +118,12 @@ export default function Swap() {
 
   if (!isConnected) {
     return (
-      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-8 overflow-hidden bg-background">
-        <div className="text-center relative z-10">
-          <h2 className="text-2xl font-precision font-light text-foreground tracking-precision mb-4">
+      <section className="flex min-h-screen items-center justify-center bg-background px-2 sm:px-4">
+        <div className="w-full max-w-md bg-card border border-border rounded-xl shadow-lg p-6 flex flex-col items-center">
+          <p className="text-lg font-light text-foreground mb-2 font-mono truncate w-full text-center">
             Connect Wallet to Access DEX
-          </h2>
-          <p className="text-muted-foreground font-precision">
+          </p>
+          <p className="text-muted-foreground font-mono text-center">
             Please connect your wallet to access decentralized trading
           </p>
         </div>
@@ -131,250 +132,209 @@ export default function Swap() {
   }
 
   return (
-    <section className="relative min-h-screen bg-background text-foreground">
-      {/* Asymmetric Layout: 1/3 Trading Interface, 2/3 Market Info */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          {/* Trading Interface - 1/3 */}
-          <div className="lg:col-span-1">
-            <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
-              <h2 className="text-2xl font-precision font-light text-card-foreground tracking-precision mb-6">
-                Token Exchange
-              </h2>
-              
-              {/* Sell Token */}
-              <div className="space-y-4 mb-6">
-                <TokenSelect
-                  selected={sellToken}
-                  onSelect={setSellToken}
-                  label="From"
-                />
-                
-                <input
-                  type="number"
-                  placeholder="0.0"
-                  value={sellAmount}
-                  onChange={(e) => setSellAmount(e.target.value)}
-                  className="w-full bg-input border border-border rounded-md px-4 py-3 text-foreground text-lg placeholder:text-muted-foreground focus:border-ring focus:outline-none font-mono-slim"
-                />
+    <section className="flex flex-col md:flex-row min-h-screen bg-background text-foreground px-2 py-4 md:px-8 md:py-12 gap-6">
+      {/* Trading Interface */}
+      <div className="w-full md:w-2/5 max-w-lg mx-auto md:mx-0 bg-card border border-border rounded-2xl shadow-xl p-4 md:p-8 flex flex-col justify-center">
+        {/* Sell Token */}
+        <div className="space-y-2 mb-4">
+          <TokenSelect
+            selected={sellToken}
+            onSelect={setSellToken}
+            label="From"
+          />
+          <input
+            type="number"
+            placeholder="0.0"
+            value={sellAmount}
+            onChange={(e) => setSellAmount(e.target.value)}
+            className="w-full bg-input border border-border rounded-lg px-4 py-3 text-foreground text-lg placeholder:text-muted-foreground focus:border-primary focus:outline-none font-mono truncate"
+          />
+        </div>
+        {/* Swap Direction Button */}
+        <div className="flex justify-center mb-4">
+          <button
+            onClick={swapTokens}
+            className="p-2 bg-secondary hover:bg-secondary/80 rounded-full border border-border transition-colors"
+            aria-label="Swap token positions"
+            title="Swap sell and buy tokens"
+          >
+            <ArrowPathIcon className="w-5 h-5 text-secondary-foreground" />
+          </button>
+        </div>
+        {/* Buy Token */}
+        <div className="space-y-2 mb-4">
+          <TokenSelect
+            selected={buyToken}
+            onSelect={setBuyToken}
+            label="To"
+          />
+          <input
+            type="text"
+            placeholder="0.0"
+            value={quote && buyToken ? formatUnits(BigInt(quote.buyAmount), buyToken.decimals) : ''}
+            readOnly
+            className="w-full bg-muted border border-border rounded-lg px-4 py-3 text-muted-foreground text-lg font-mono truncate"
+          />
+        </div>
+        {/* Quote Information */}
+        {quote && (
+          <div className="bg-muted rounded-lg p-4 mb-4 space-y-2 border border-border">
+            <div className="flex justify-between text-xs font-mono">
+              <span className="text-muted-foreground">Exchange Rate</span>
+              <span className="text-foreground font-mono">
+                1 {sellToken?.symbol} = {parseFloat(quote.price).toFixed(6)} {buyToken?.symbol}
+              </span>
+            </div>
+            <div className="flex justify-between text-xs font-mono">
+              <span className="text-muted-foreground">Estimated Gas</span>
+              <span className="text-foreground font-mono">{quote.estimatedGas} wei</span>
+            </div>
+            {quote.priceImpact && (
+              <div className="flex justify-between text-xs font-mono">
+                <span className="text-muted-foreground">Price Impact</span>
+                <span className={`font-mono ${parseFloat(quote.priceImpact) > 5 ? 'text-destructive' : 'text-green-500'}`}>
+                  {quote.priceImpact}%
+                </span>
               </div>
-
-              {/* Swap Direction Button */}
-              <div className="flex justify-center mb-6">
-                <button
-                  onClick={swapTokens}
-                  className="p-2 bg-secondary hover:bg-secondary/80 rounded-md border border-border transition-colors"
-                  aria-label="Swap token positions"
-                  title="Swap sell and buy tokens"
-                >
-                  <ArrowPathIcon className="w-5 h-5 text-secondary-foreground" />
-                </button>
-              </div>
-
-              {/* Buy Token */}
-              <div className="space-y-4 mb-6">
-                <TokenSelect
-                  selected={buyToken}
-                  onSelect={setBuyToken}
-                  label="To"
-                />
-                
-                <input
-                  type="text"
-                  placeholder="0.0"
-                  value={quote && buyToken ? formatUnits(BigInt(quote.buyAmount), buyToken.decimals) : ''}
-                  readOnly
-                  className="w-full bg-muted border border-border rounded-md px-4 py-3 text-muted-foreground text-lg font-mono-slim"
-                />
-              </div>
-
-              {/* Quote Information */}
-              {quote && (
-                <div className="bg-muted rounded-md p-4 mb-6 space-y-2 border border-border">
-                  <div className="flex justify-between text-sm font-precision">
-                    <span className="text-muted-foreground">Exchange Rate</span>
-                    <span className="text-foreground font-mono-slim">
-                      1 {sellToken?.symbol} = {parseFloat(quote.price).toFixed(6)} {buyToken?.symbol}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm font-precision">
-                    <span className="text-muted-foreground">Estimated Gas</span>
-                    <span className="text-foreground font-mono-slim">{quote.estimatedGas} wei</span>
-                  </div>
-                  {quote.priceImpact && (
-                    <div className="flex justify-between text-sm font-precision">
-                      <span className="text-muted-foreground">Price Impact</span>
-                      <span className={`font-mono-slim ${parseFloat(quote.priceImpact) > 5 ? 'text-destructive' : 'text-green-500'}`}>
-                        {quote.priceImpact}%
-                      </span>
-                    </div>
-                  )}
-                  <div className="flex justify-between text-sm font-precision">
-                    <span className="text-muted-foreground">Output Amount</span>
-                    <span className="font-mono-slim text-foreground">
-                      {buyToken ? formatUnits(BigInt(quote.buyAmount), buyToken.decimals) : '0'} {buyToken?.symbol}
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {/* Loading State */}
-              {isLoading && !quote && (
-                <div className="bg-muted rounded-md p-4 mb-6 border border-border">
-                  <div className="flex items-center space-x-3">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
-                    <span className="text-sm text-muted-foreground font-precision">
-                      Fetching optimal rates from aggregators...
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {/* Swap Button */}
-              <button
-                onClick={handleSwap}
-                disabled={!sellAmount || !quote || isLoading || isSwapping}
-                className="w-full bg-primary hover:bg-primary/90 disabled:bg-muted disabled:cursor-not-allowed text-primary-foreground font-precision font-medium py-3 px-6 rounded-md transition-colors tracking-precision"
-              >
-                {isSwapping ? 'Executing Exchange...' : isLoading ? 'Getting Quote...' : quote ? 'Execute Exchange' : 'Enter Amount'}
-              </button>
-
-              {/* Add Custom Token */}
-              <div className="mt-6 pt-6 border-t border-border">
-                {!showAddToken ? (
-                  <button
-                    onClick={() => setShowAddToken(true)}
-                    className="flex items-center space-x-2 text-primary hover:text-primary/80 text-sm font-precision"
-                  >
-                    <PlusIcon className="w-4 h-4" />
-                    <span>Add Custom Token</span>
-                  </button>
-                ) : (
-                  <div className="space-y-3">
-                    <input
-                      type="text"
-                      placeholder="0x... Token Address"
-                      value={customTokenAddress}
-                      onChange={(e) => setCustomTokenAddress(e.target.value)}
-                      className="w-full bg-input border border-border rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none font-mono-slim"
-                    />
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={handleAddCustomToken}
-                        className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground text-sm py-2 px-3 rounded-md transition-colors font-precision"
-                      >
-                        Add Token
-                      </button>
-                      <button
-                        onClick={() => setShowAddToken(false)}
-                        className="flex-1 bg-secondary hover:bg-secondary/80 text-secondary-foreground text-sm py-2 px-3 rounded-md transition-colors font-precision"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Error Display */}
-              {error && (
-                <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md text-destructive text-sm font-precision">
-                  {error}
-                </div>
-              )}
+            )}
+            <div className="flex justify-between text-xs font-mono">
+              <span className="text-muted-foreground">Output Amount</span>
+              <span className="font-mono text-foreground">
+                {buyToken ? formatUnits(BigInt(quote.buyAmount), buyToken.decimals) : '0'} {buyToken?.symbol}
+              </span>
             </div>
           </div>
-
-          {/* Market Information - 2/3 */}
-          <div className="lg:col-span-2">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              
-              {/* Price Chart Placeholder */}
-              <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
-                <h3 className="text-xl font-precision font-light text-card-foreground tracking-precision mb-4">
-                  Price Chart
-                </h3>
-                <div className="h-64 bg-muted rounded-md flex items-center justify-center border border-border">
-                  <div className="text-center text-muted-foreground">
-                    <div className="w-16 h-16 mx-auto mb-4 bg-secondary rounded-md flex items-center justify-center">
-                      <span className="text-2xl">📊</span>
-                    </div>
-                    <p className="font-precision">Chart integration coming soon</p>
-                    <p className="text-sm font-mono-slim tracking-precision">
-                      {sellToken?.symbol}/{buyToken?.symbol}
-                    </p>
-                  </div>
+        )}
+        {/* Loading State */}
+        {isLoading && !quote && (
+          <div className="bg-muted rounded-lg p-4 mb-4 border border-border flex items-center space-x-3">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+            <span className="text-xs text-muted-foreground font-mono">
+              Fetching optimal rates from aggregators...
+            </span>
+          </div>
+        )}
+        {/* Swap Button */}
+        <button
+          onClick={handleSwap}
+          disabled={!sellAmount || !quote || isLoading || isSwapping}
+          className="w-full bg-primary hover:bg-primary/90 disabled:bg-muted disabled:cursor-not-allowed text-primary-foreground font-mono font-semibold py-3 px-6 rounded-lg transition-colors tracking-wide mb-2"
+        >
+          {isSwapping ? 'Executing Exchange...' : isLoading ? 'Getting Quote...' : quote ? 'Execute Exchange' : 'Enter Amount'}
+        </button>
+        {/* Add Custom Token */}
+        <div className="mt-4 pt-4 border-t border-border">
+          {!showAddToken ? (
+            <button
+              onClick={() => setShowAddToken(true)}
+              className="flex items-center space-x-2 text-primary hover:text-primary/80 text-xs font-mono"
+            >
+              <PlusIcon className="w-4 h-4" />
+              <span>Add Custom Token</span>
+            </button>
+          ) : (
+            <div className="space-y-2">
+              <input
+                type="text"
+                placeholder="0x... Token Address"
+                value={customTokenAddress}
+                onChange={(e) => setCustomTokenAddress(e.target.value)}
+                className="w-full bg-input border border-border rounded-lg px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none font-mono truncate"
+              />
+              <div className="flex space-x-2">
+                <button
+                  onClick={handleAddCustomToken}
+                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground text-xs py-2 px-3 rounded-lg transition-colors font-mono"
+                >
+                  Add Token
+                </button>
+                <button
+                  onClick={() => setShowAddToken(false)}
+                  className="flex-1 bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs py-2 px-3 rounded-lg transition-colors font-mono"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+        {/* Error Display */}
+        {error && (
+          <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-xs font-mono">
+            {error}
+          </div>
+        )}
+      </div>
+      {/* Market Information */}
+      <div className="w-full md:w-3/5 flex flex-col gap-6">
+        {/* TradingView Chart Integration */}
+        <div className="bg-card border border-border rounded-2xl shadow-lg p-4 md:p-8 flex-1 min-h-[300px] flex flex-col">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-base font-mono text-card-foreground font-semibold">Price Chart</span>
+            <span className="text-xs font-mono text-muted-foreground">{sellToken?.symbol}/{buyToken?.symbol}</span>
+          </div>
+          <div className="w-full h-64 md:h-96 bg-muted rounded-lg flex items-center justify-center border border-border overflow-hidden">
+            <div className="w-full h-full">
+              <TradingViewWidget symbol={`BINANCE:${sellToken?.symbol || 'BTC'}${buyToken?.symbol || 'USDT'}`} autosize={true} />
+            </div>
+          </div>
+        </div>
+        {/* Order Book Placeholder */}
+        <div className="bg-card border border-border rounded-2xl shadow-lg p-4 md:p-8 flex-1 min-h-[200px] flex flex-col">
+          <span className="text-base font-mono text-card-foreground font-semibold mb-2">Liquidity Sources</span>
+          <div className="space-y-2 flex-1">
+            {quote?.sources && quote.sources.length > 0 ? (
+              quote.sources.slice(0, 5).map((source, index) => (
+                <div key={index} className="flex justify-between items-center py-2 px-3 bg-muted rounded-lg border border-border">
+                  <span className="text-xs font-mono font-medium text-foreground truncate max-w-[120px]">{source.name}</span>
+                  <span className="text-xs font-mono text-primary">{source.proportion}</span>
+                </div>
+              ))
+            ) : isLoading ? (
+              <div className="h-20 flex items-center justify-center text-muted-foreground">
+                <div className="flex items-center space-x-3">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+                  <span className="font-mono">Finding optimal liquidity sources...</span>
                 </div>
               </div>
-
-              {/* Order Book Placeholder */}
-              <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
-                <h3 className="text-xl font-precision font-light text-card-foreground tracking-precision mb-4">
-                  Liquidity Sources
-                </h3>
-                <div className="space-y-3">
-                  {quote?.sources && quote.sources.length > 0 ? (
-                    quote.sources.slice(0, 5).map((source, index) => (
-                      <div key={index} className="flex justify-between items-center py-2 px-3 bg-muted rounded-md border border-border">
-                        <span className="text-sm font-precision font-medium text-foreground">{source.name}</span>
-                        <span className="text-sm font-mono-slim text-primary">{source.proportion}</span>
-                      </div>
-                    ))
-                  ) : isLoading ? (
-                    <div className="h-32 flex items-center justify-center text-muted-foreground">
-                      <div className="flex items-center space-x-3">
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
-                        <span className="font-precision">Finding optimal liquidity sources...</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="h-32 flex items-center justify-center text-muted-foreground">
-                      <span className="font-precision">Enter trade amount to see liquidity sources</span>
-                    </div>
-                  )}
-                </div>
+            ) : (
+              <div className="h-20 flex items-center justify-center text-muted-foreground">
+                <span className="font-mono">Enter trade amount to see liquidity sources</span>
               </div>
-
-              {/* Token Information */}
-              <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
-                <h3 className="text-xl font-precision font-light text-card-foreground tracking-precision mb-4">
-                  Token Information
-                </h3>
-                <div className="space-y-4">
-                  <div className="p-3 bg-muted rounded-md border border-border">
-                    <h4 className="font-precision font-medium text-primary">{sellToken?.symbol}</h4>
-                    <p className="text-sm text-card-foreground font-precision">{sellToken?.name}</p>
-                    <p className="text-xs text-muted-foreground font-mono-slim tracking-precision">{sellToken?.address}</p>
-                  </div>
-                  <div className="p-3 bg-muted rounded-md border border-border">
-                    <h4 className="font-precision font-medium text-green-500">{buyToken?.symbol}</h4>
-                    <p className="text-sm text-card-foreground font-precision">{buyToken?.name}</p>
-                    <p className="text-xs text-muted-foreground font-mono-slim tracking-precision">{buyToken?.address}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Trading Statistics */}
-              <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
-                <h3 className="text-xl font-precision font-light text-card-foreground tracking-precision mb-4">
-                  Network Status
-                </h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground font-precision">Blockchain</span>
-                    <span className="text-primary font-precision">Base Network</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground font-precision">Protocol</span>
-                    <span className="text-green-500 font-precision">Multi-DEX Aggregator</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground font-precision">Available Tokens</span>
-                    <span className="text-foreground font-mono-slim">{allTokens.length}</span>
-                  </div>
-                </div>
-              </div>
+            )}
+          </div>
+        </div>
+        {/* Token Information */}
+        <div className="bg-card border border-border rounded-2xl shadow-lg p-4 md:p-8 flex-1 min-h-[200px] flex flex-col">
+          <span className="text-base font-mono text-card-foreground font-semibold mb-2">Token Information</span>
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 p-3 bg-muted rounded-lg border border-border">
+              <span className="font-mono font-semibold text-primary">{sellToken?.symbol}</span>
+              <p className="text-xs text-card-foreground font-mono truncate">{sellToken?.name}</p>
+              <p className="text-xs text-muted-foreground font-mono truncate max-w-[180px]">{sellToken?.address}</p>
+            </div>
+            <div className="flex-1 p-3 bg-muted rounded-lg border border-border">
+              <span className="font-mono font-semibold text-green-500">{buyToken?.symbol}</span>
+              <p className="text-xs text-card-foreground font-mono truncate">{buyToken?.name}</p>
+              <p className="text-xs text-muted-foreground font-mono truncate max-w-[180px]">{buyToken?.address}</p>
+            </div>
+          </div>
+        </div>
+        {/* Trading Statistics */}
+        <div className="bg-card border border-border rounded-2xl shadow-lg p-4 md:p-8 flex-1 min-h-[120px] flex flex-col">
+          <span className="text-base font-mono text-card-foreground font-semibold mb-2">Network Status</span>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground font-mono">Blockchain</span>
+              <span className="text-primary font-mono">Base Network</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground font-mono">Protocol</span>
+              <span className="text-green-500 font-mono">Multi-DEX Aggregator</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground font-mono">Available Tokens</span>
+              <span className="text-foreground font-mono">{allTokens.length}</span>
             </div>
           </div>
         </div>

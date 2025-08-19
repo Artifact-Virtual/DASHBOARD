@@ -8,6 +8,7 @@ import {
   Cpu,
   FlaskConical,
   MessageCircle,
+  ArrowLeftRight,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
@@ -102,6 +103,7 @@ const FloatingSidebar: React.FC = () => {
 
   const navItems: NavItem[] = [
     { id: 'home', icon: Home, label: 'Home', route: '/' },
+    { id: 'swap', icon: ArrowLeftRight, label: 'Swap', route: '/swap' },
     { id: 'blog', icon: BookOpen, label: 'Blog', route: '/blog' },
     { id: 'research', icon: FileText, label: 'Research', route: '/research' },
     { id: 'dashboard', icon: Cpu, label: 'Dashboard', route: '/dashboard' },
@@ -144,7 +146,7 @@ const FloatingSidebar: React.FC = () => {
   // Desktop sidebar
   const desktopSidebar = (
     <nav
-      className={`sidebar-float hidden md:flex flex-col items-center space-y-8
+      className={`fixed left-4 top-1/2 -translate-y-1/2 sidebar-float hidden md:flex flex-col items-center space-y-8
         ${theme === 'light' ? 'bg-white/90 border-black/20' : 'bg-black/90 border-white/10'}
         rounded-3xl py-8 px-3 shadow-2xl border backdrop-blur-lg transition-all duration-500
         min-w-[70px] max-w-[220px] z-[1000]
