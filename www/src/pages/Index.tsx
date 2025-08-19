@@ -1,9 +1,9 @@
   {/* Top Fade: Smooth blend above thesis section */}
   <div aria-hidden="true" className="absolute top-0 left-0 w-full h-24 z-30 pointer-events-none select-none" style={{background: "linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.0) 100%)"}} />
 import React, { useState, useEffect, useRef } from 'react';
+
 import FinalFooter from '../components/FinalFooter';
 import MouseRepelCanvas from '../components/MouseRepelCanvas';
-
 import NoiseLinesBackground from '../components/NoiseLinesBackground';
 import GloriousParticleLoader from '../components/GloriousParticleLoader';
 import TradingViewWidget from '../components/TradingViewWidget';
@@ -13,6 +13,9 @@ import WingsShowcase from '../components/WingsShowcase';
 import '../styles/Index.css';
 import '../styles/LiveMarket.css';
 import '../styles/LiveMarket.css';
+
+// Import the Entry (ARC:0) page from the horizontal app
+import Entry from '../components/horizontal/components/Entry';
 
 function getSystemTheme() {
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
@@ -101,9 +104,7 @@ const Index = () => {
   const logoSrc = '/av-black-logo.png';
 
   return (
-  <div className="min-h-screen relative overflow-y-auto bg-black/50 backdrop-blur text-white text-lg">
-
-
+    <div className="min-h-screen relative overflow-y-auto bg-black/50 backdrop-blur text-white text-lg">
       {/* Full-screen noise lines background (first section only) */}
       <NoiseLinesBackground />
 
@@ -142,10 +143,13 @@ const Index = () => {
         </div>
       </section>
 
+      {/* ARC:0 Diagonal Entry Page (from horizontal app) */}
+      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-8 overflow-hidden">
+        <Entry />
+      </section>
 
-
-  {/* Section 2: The Artifact Thesis */}
-  <section id="vision" className="relative z-20 bg-black text-neutral-300 min-h-screen flex items-center py-16 sm:py-24 px-4 sm:px-8 overflow-hidden">
+      {/* Section 2: The Artifact Thesis */}
+      <section id="vision" className="relative z-20 bg-black text-neutral-300 min-h-screen flex items-center py-16 sm:py-24 px-4 sm:px-8 overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-10">
           {/* Abstract background grid */}
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:36px_36px]" />

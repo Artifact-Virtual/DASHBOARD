@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARCX Protocol</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            'arcx-orange': '#ff4500',
+            'arcx-maroon': '#800000',
+            'arcx-dark': '#0a0a0a',
+            'arcx-black': '#000000',
+            'arcx-purple': '#7300FF',
+            'arcx-purple-dark': '#3a0080',
+            'uniswap-pink': '#FF007A',
+            'base-blue': '#0052FF',
+          },
+          boxShadow: {
+            'glow-orange': '0 0 25px 5px rgba(255, 69, 0, 0.4)',
+            'glow-purple': '0 0 25px 5px rgba(115, 0, 255, 0.5)',
+          },
+          keyframes: {
+            'fade-in-down': {
+              '0%': { opacity: '0', transform: 'translateY(-20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            'fade-in-up': {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+             'fade-in-left': {
+              '0%': { opacity: '0', transform: 'translateX(-20px)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' },
+            },
+             'fade-in-right': {
+              '0%': { opacity: '0', transform: 'translateX(20px)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' },
+            },
+            'pulse-slow': {
+              '0%, 100%': { opacity: '0.1' },
+              '50%': { opacity: '0.2' },
+            },
+            'spin-slow': {
+              'from': { transform: 'rotate(0deg)' },
+              'to': { transform: 'rotate(360deg)' },
+            },
+            'spin-slow-reverse': {
+              'from': { transform: 'rotate(360deg)' },
+              'to': { transform: 'rotate(0deg)' },
+            },
+            'node-drift': {
+              '0%': { transform: 'translate(0, 0)' },
+              '25%': { transform: 'translate(2px, 3px)' },
+              '50%': { transform: 'translate(-1px, -2px)' },
+              '75%': { transform: 'translate(-3px, 1px)' },
+              '100%': { transform: 'translate(0, 0)' },
+            },
+            'line-pulse': {
+              '0%, 100%': { strokeOpacity: 0.1 },
+              '50%': { strokeOpacity: 0.3 },
+            },
+            'heartbeat-glow': {
+              '0%, 100%': { 
+                transform: 'scale(1)', 
+                boxShadow: '0 0 25px 5px rgba(115, 0, 255, 0.4)',
+                borderColor: 'rgba(115, 0, 255, 0.4)'
+              },
+              '50%': { 
+                transform: 'scale(1.03)', 
+                boxShadow: '0 0 35px 10px rgba(115, 0, 255, 0.6)',
+                borderColor: 'rgba(115, 0, 255, 0.6)'
+              },
+            },
+            'pink-glow-pulse': {
+              '0%, 100%': { borderColor: 'rgba(255, 0, 122, 0.5)', boxShadow: '0 0 10px rgba(255, 0, 122, 0.2)' },
+              '50%': { borderColor: 'rgba(255, 0, 122, 1)', boxShadow: '0 0 20px 5px rgba(255, 0, 122, 0.5)' },
+            },
+            'liquid-drift': {
+                '0%': { transform: 'translateY(0)', opacity: '1' },
+                '100%': { transform: 'translateY(-150px)', opacity: '0' },
+            },
+            'fill-line': {
+                'from': { width: '0%' },
+                'to': { width: '100%' },
+            },
+            'milestone-pop': {
+                '0%': { transform: 'scale(0.5)', opacity: '0' },
+                '80%': { transform: 'scale(1.1)', opacity: '1' },
+                '100%': { transform: 'scale(1)', opacity: '1' },
+            },
+          },
+          animation: {
+            'fade-in-down': 'fade-in-down 0.8s ease-out forwards',
+            'fade-in-up': 'fade-in-up 0.8s ease-out 0.3s forwards',
+            'fade-in-left': 'fade-in-left 0.8s ease-out 0.3s forwards',
+            'fade-in-right': 'fade-in-right 0.8s ease-out 0.3s forwards',
+            'pulse-slow': 'pulse-slow 6s ease-in-out infinite',
+            'spin-slow': 'spin-slow 25s linear infinite',
+            'spin-slow-reverse': 'spin-slow-reverse 30s linear infinite',
+            'node-drift': 'node-drift 12s ease-in-out infinite alternate',
+            'line-pulse': 'line-pulse 4s ease-in-out infinite',
+            'heartbeat-glow': 'heartbeat-glow 3s ease-in-out infinite',
+            'pink-glow-pulse': 'pink-glow-pulse 4s ease-in-out infinite',
+            'liquid-drift': 'liquid-drift linear infinite',
+            'fill-line': 'fill-line 1.5s 0.5s ease-out forwards',
+            'milestone-pop': 'milestone-pop 0.5s ease-out forwards',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body, #root {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-y: auto; /* Allow vertical scroll */
+      overflow-x: hidden; /* Prevent horizontal scroll on body */
+      background-color: #000000;
+      scroll-snap-type: y mandatory;
+    }
+    .vertical-section {
+      width: 100vw;
+      height: 100vh;
+      scroll-snap-align: start;
+      position: relative; /* Contain absolute children */
+    }
+    .horizontal-container {
+      display: flex;
+      width: 100%;
+      height: 100%; /* Fill parent vertical section */
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .section {
+      width: 100vw;
+      height: 100%; /* Fill horizontal container */
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      position: relative;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      height: 3px;
+      width: 3px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a0a0a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4a4a4a;
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6a6a6a;
+    }
+    .writing-mode-vertical-rl {
+      writing-mode: vertical-rl;
+    }
+  </style>
+<script type="importmap">
+{
+  "imports": {
+    "recharts": "https://esm.sh/recharts@^3.1.2",
+    "react/": "https://esm.sh/react@^19.1.1/",
+    "react": "https://esm.sh/react@^19.1.1",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.1/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-arcx-dark text-gray-200 font-sans font-light">
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
