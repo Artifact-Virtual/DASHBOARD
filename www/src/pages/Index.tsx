@@ -1,3 +1,5 @@
+  {/* Top Fade: Smooth blend above thesis section */}
+  <div aria-hidden="true" className="absolute top-0 left-0 w-full h-24 z-30 pointer-events-none select-none" style={{background: "linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.0) 100%)"}} />
 import React, { useState, useEffect, useRef } from 'react';
 import FinalFooter from '../components/FinalFooter';
 import MouseRepelCanvas from '../components/MouseRepelCanvas';
@@ -243,6 +245,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+  {/* Gap Section: Spacer between Core Disciplines and Contact */}
+  <section aria-hidden="true" className="w-full min-h-[60vh] bg-transparent pointer-events-none select-none"></section>
 
       {/* Contact Section: Join The Frontier */}
   <section className="relative z-20 border-t border-neutral-900 text-neutral-500 py-12 px-4 sm:px-8 bg-black/40 backdrop-blur-md">
