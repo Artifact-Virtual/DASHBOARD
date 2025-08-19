@@ -3,6 +3,7 @@ import FinalFooter from '../components/FinalFooter';
 import MouseRepelCanvas from '../components/MouseRepelCanvas';
 
 import NoiseLinesBackground from '../components/NoiseLinesBackground';
+import GloriousParticleLoader from '../components/GloriousParticleLoader';
 import TradingViewWidget from '../components/TradingViewWidget';
 import HorizontalScrollPanel from '../components/HorizontalScrollPanel';
 import FloatingTopArrow from '../components/FloatingTopArrow';
@@ -98,7 +99,7 @@ const Index = () => {
   const logoSrc = '/av-black-logo.png';
 
   return (
-    <div className="min-h-screen relative overflow-y-auto bg-black text-white">
+  <div className="min-h-screen relative overflow-y-auto bg-black/50 backdrop-blur text-white text-lg">
 
       {/* Full-screen noise lines background (first section only) */}
       <NoiseLinesBackground />
@@ -148,8 +149,8 @@ const Index = () => {
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:36px_36px]"></div>
         </div>
         <div className="relative z-10 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
-          <div className="md:col-span-3">
-            <h2 className="text-sm font-light uppercase tracking-[0.3em] text-cyan-400 mb-4">The Thesis</h2>
+          <div className="md:col-span-3 relative z-20">
+            <h2 className="text-sm font-light uppercase tracking-[0.3em] text-[#ff0000] mb-4">The Thesis</h2>
             <h3 className="text-3xl sm:text-5xl font-light text-white leading-tight tracking-wider mb-6">
               A Framework for Holistic Innovation.
             </h3>
@@ -157,16 +158,10 @@ const Index = () => {
               Artifact Virtual is not just a company; it's a research organism. We operate at the intersection of radical theory and tangible application. Our mission is to explore the technological frontier, prototype the future, and deploy systems that redefine the boundaries of what's possible.
             </p>
           </div>
-          <div className="md:col-span-2 flex items-center justify-center">
-            <div className="relative w-48 h-48 sm:w-64 sm:h-64">
-              <div className="absolute inset-0 border-2 border-neutral-800 rounded-full animate-spin-slow"></div>
-              <div className="absolute inset-4 border border-neutral-700 rounded-full animate-spin-slow-reverse"></div>
-              <div className="absolute inset-8 bg-cyan-900/40 rounded-full blur-2xl animate-pulse"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-cyan-400 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={0.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.293 2.293a1 1 0 01-1.414 1.414L12 6.414l-2.293 2.293a1 1 0 01-1.414-1.414L10 4.293a1 1 0 012 0zm2.293 7.293a1 1 0 011.414 0L17.414 15l-2.293 2.293a1 1 0 01-1.414-1.414L15 14.414l-2.293-2.293a1 1 0 010-1.414z" />
-                </svg>
-              </div>
+          <div className="md:col-span-2 relative flex items-center justify-center min-h-[320px]">
+            {/* Loader fills the right side, absolutely positioned, immersive, z-10 */}
+            <div className="absolute inset-0 right-0 flex items-center justify-end pointer-events-none z-10 w-full h-full">
+              <GloriousParticleLoader size={0} className="w-full h-full" />
             </div>
           </div>
         </div>
