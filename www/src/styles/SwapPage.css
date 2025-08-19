@@ -1,3 +1,7 @@
+/* Responsive TradingView chart container */
+.swap-chart-responsive {
+  max-width: 100vw;
+}
 /* Font consistency for chart and liquidity sections */
 .swap-section-font {
   font-family: 'Segoe UI Light', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif !important;

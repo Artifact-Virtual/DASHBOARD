@@ -1,10 +1,27 @@
-import React, { useState, useEffect } from 'react'
-import '../styles/SwapPage.css'
-import { parseUnits, formatUnits, isAddress } from 'viem'
-import { ChevronDownIcon, ArrowPathIcon, PlusIcon } from '@heroicons/react/24/outline'
-import { useSwap, Token, SwapQuote } from '../hooks/useSwap'
-import TradingViewWidget from './TradingViewWidget'
-import TopRightConnect from './wallet/TopRightConnect'
+
+
+import React, { useState, useEffect } from 'react';
+import '../styles/SwapPage.css';
+import { parseUnits, formatUnits, isAddress } from 'viem';
+import { ChevronDownIcon, ArrowPathIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { useSwap, Token, SwapQuote } from '../hooks/useSwap';
+import TradingViewWidget from './TradingViewWidget';
+import TopRightConnect from './wallet/TopRightConnect';
+
+// Helper to map token pair to TradingView Uniswap v4 symbol
+function getTradingViewSymbol(sellToken: Token | null, buyToken: Token | null): string {
+  // ARCX/WETH on Uniswap v4 (Ethereum): 'UNISWAP4:ARCXWETH'
+  if (sellToken?.symbol === 'ARCX' && buyToken?.symbol === 'WETH') {
+    return 'UNISWAP4:ARCXWETH';
+  }
+  if (sellToken?.symbol === 'WETH' && buyToken?.symbol === 'ARCX') {
+    return 'UNISWAP4:WETHARCX';
+  }
+  // Add more pairs as needed
+  // Default fallback
+  return 'UNISWAP4:ARCXWETH';
+}
+
 
 export default function Swap() {
   const { tokens, getQuote, addToken, executeSwap, isLoading, error, isConnected } = useSwap()
@@ -146,21 +163,22 @@ export default function Swap() {
       </header>
       <section className="swap-page-root flex flex-col min-h-screen bg-background text-foreground px-2 py-4 md:px-8 md:py-12 gap-6 items-center justify-center">
         {/* Chart - always large and centered, font consistent */}
-        <div className="w-full max-w-2xl mx-auto flex flex-col items-center justify-center swap-section-font">
-          <div className="bg-card border border-border rounded-2xl shadow-lg p-4 md:p-8 w-full flex flex-col">
+        <div className="w-full mx-auto flex flex-col items-center justify-center swap-section-font">
+          <div className="bg-card border border-border rounded-2xl shadow-lg p-4 md:p-8 w-full flex flex-col swap-chart-responsive">
             <div className="flex items-center justify-between mb-2">
               <span className="text-base font-semibold swap-section-font">Price Chart</span>
               <span className="text-xs swap-section-font">{sellToken?.symbol}/{buyToken?.symbol}</span>
             </div>
             <div className="w-full h-64 md:h-96 bg-muted rounded-lg flex items-center justify-center border border-border overflow-hidden">
               <div className="w-full h-full">
-                <TradingViewWidget symbol={`BINANCE:ARCXETH`} autosize={true} />
+                {/* Use Uniswap DEX chart for ARCX/WETH, fallback to generic if not available */}
+                <TradingViewWidget symbol={getTradingViewSymbol(sellToken, buyToken)} autosize={true} />
               </div>
             </div>
           </div>
         </div>
         {/* Liquidity - compact, font consistent */}
-        <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center gap-4 swap-section-font">
+  <div className="w-full max-w-xl mx-auto flex flex-col items-center justify-center gap-4 swap-section-font">
           <div className="bg-card border border-border rounded-2xl shadow-lg p-4 md:p-6 w-full flex flex-col gap-2">
             <span className="text-base font-semibold mb-2 swap-section-font">Liquidity Sources</span>
             <div className="space-y-2 flex-1">
@@ -187,7 +205,7 @@ export default function Swap() {
           </div>
         </div>
         {/* Swap - centered below liquidity on mobile, to the right on desktop */}
-        <div className="w-full md:w-1/3 max-w-lg mx-auto flex flex-col items-center justify-center">
+  <div className="w-full max-w-xl mx-auto flex flex-col items-center justify-center">
           <div className="bg-card border border-border rounded-2xl shadow-xl p-4 md:p-8 w-full flex flex-col justify-center">
             {/* Sell Token */}
             <div className="space-y-2 mb-4">
