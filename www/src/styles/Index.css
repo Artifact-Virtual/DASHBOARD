@@ -1,3 +1,20 @@
+/* Subtle green blurred blob accent for Core Disciplines section */
+.green-blob-accent {
+  top: 18%;
+  left: auto;
+  right: -12vw;
+  width: 38vw;
+  height: 32vw;
+  min-width: 320px;
+  min-height: 220px;
+  max-width: 700px;
+  max-height: 400px;
+  filter: blur(64px);
+  opacity: 0.16;
+  background: radial-gradient(ellipse 60% 80% at 60% 40%, #00ff88 60%, transparent 100%);
+  transform: rotate(-18deg) skewY(-8deg);
+  z-index: 1;
+}
 /* Minimal Surreal Artifact Ecosystem Section */
 .artifact-ecosystem-section {
   position: relative;

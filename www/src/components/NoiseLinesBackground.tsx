@@ -51,100 +51,111 @@ const NoiseLinesBackground: React.FC = () => {
   const tRef = useRef(0)
   const mouseRef = useRef({ x: 0, y: 0 })
   const visibleRef = useRef(true)
-
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')!
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d')!;
 
-    let width = 0
-    let height = 0
-    let dpr = Math.max(1, window.devicePixelRatio || 1)
+    let width = 0;
+    let height = 0;
+    let dpr = Math.max(1, window.devicePixelRatio || 1);
 
     function resize() {
-      width = canvas.clientWidth || canvas.parentElement?.clientWidth || window.innerWidth
-      height = canvas.clientHeight || canvas.parentElement?.clientHeight || window.innerHeight
-      canvas.width = Math.max(1, Math.floor(width * dpr))
-      canvas.height = Math.max(1, Math.floor(height * dpr))
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      width = canvas.clientWidth || canvas.parentElement?.clientWidth || window.innerWidth;
+      height = canvas.clientHeight || canvas.parentElement?.clientHeight || window.innerHeight;
+      canvas.width = Math.max(1, Math.floor(width * dpr));
+      canvas.height = Math.max(1, Math.floor(height * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    resize()
+    resize();
 
     const handleMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect()
-      mouseRef.current.x = e.clientX - rect.left
-      mouseRef.current.y = e.clientY - rect.top
-    }
-    window.addEventListener('mousemove', handleMove)
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current.x = e.clientX - rect.left;
+      mouseRef.current.y = e.clientY - rect.top;
+    };
+    const handleTouch = (e: TouchEvent) => {
+      if (!e.touches || e.touches.length === 0) return;
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current.x = e.touches[0].clientX - rect.left;
+      mouseRef.current.y = e.touches[0].clientY - rect.top;
+    };
+    const onResize = () => {
+      dpr = Math.max(1, window.devicePixelRatio || 1);
+      resize();
+    };
+
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('touchstart', handleTouch);
+    window.addEventListener('touchmove', handleTouch);
+    window.addEventListener('resize', onResize);
 
     // pause when not visible (saves CPU)
     const obs = new IntersectionObserver((entries) => {
-      visibleRef.current = entries[0].isIntersecting
-    }, { threshold: 0.1 })
-    obs.observe(canvas)
+      visibleRef.current = entries[0].isIntersecting;
+    }, { threshold: 0.1 });
+    obs.observe(canvas);
 
-    let last = performance.now()
+    let last = performance.now();
 
     function frame(now: number) {
-      const dt = Math.min(40, now - last)
-      last = now
+      const dt = Math.min(40, now - last);
+      last = now;
       if (!visibleRef.current) {
-        rafRef.current = requestAnimationFrame(frame)
-        return
+        rafRef.current = requestAnimationFrame(frame);
+        return;
       }
 
       // time increment influenced by mouseX
-      const mappedTime = (mouseRef.current.x / (width || 1)) * 0.1
-      tRef.current += 0.001 + mappedTime * 0.002
+      const mappedTime = (mouseRef.current.x / (width || 1)) * 0.1;
+      tRef.current += 0.001 + mappedTime * 0.002;
 
-      const currentNoiseScale = 0.001 + (1 - (mouseRef.current.y / (height || 1))) * (0.008 - 0.001)
-      const currentLineSpacing = 10 + (1 - (mouseRef.current.y / (height || 1))) * (40 - 10)
-      const maxDisplacement = 50 + (1 - (mouseRef.current.y / (height || 1))) * (100 - 50)
+      const currentNoiseScale = 0.001 + (1 - (mouseRef.current.y / (height || 1))) * (0.008 - 0.001);
+      const currentLineSpacing = 10 + (1 - (mouseRef.current.y / (height || 1))) * (40 - 10);
+      const maxDisplacement = 50 + (1 - (mouseRef.current.y / (height || 1))) * (100 - 50);
 
-      ctx.clearRect(0, 0, width, height)
+      ctx.clearRect(0, 0, width, height);
       // AMOLED black background
-      ctx.fillStyle = '#000'
-      ctx.fillRect(0, 0, width, height)
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, width, height);
 
-      ctx.strokeStyle = 'rgba(255,255,255,0.06)'
-      ctx.lineWidth = 1
+      ctx.strokeStyle = 'rgba(255,255,255,0.066)';
+      ctx.lineWidth = 1;
 
       // draw lines
       for (let y = 0; y < height + currentLineSpacing; y += currentLineSpacing) {
-        ctx.beginPath()
+        ctx.beginPath();
         for (let x = 0; x <= width; x += 5) {
-          const nx = x * currentNoiseScale
-          const ny = y * currentNoiseScale
-          const nz = tRef.current
-          const n = noise(nx, ny, nz)
-          const displacement = (n * 2 - 1) * maxDisplacement
-          const px = x
-          const py = y + displacement
-          if (x === 0) ctx.moveTo(px, py)
-          else ctx.lineTo(px, py)
+          const nx = x * currentNoiseScale;
+          const ny = y * currentNoiseScale;
+          const nz = tRef.current;
+          const n = noise(nx, ny, nz);
+          const displacement = (n * 2 - 1) * maxDisplacement;
+          const px = x;
+          const py = y + displacement;
+          if (x === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
         }
-        ctx.stroke()
+        ctx.stroke();
       }
 
-      rafRef.current = requestAnimationFrame(frame)
+      rafRef.current = requestAnimationFrame(frame);
     }
 
-    rafRef.current = requestAnimationFrame(frame)
-
-    const onResize = () => {
-      dpr = Math.max(1, window.devicePixelRatio || 1)
-      resize()
-    }
-    window.addEventListener('resize', onResize)
+    rafRef.current = requestAnimationFrame(frame);
 
     return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current)
-      window.removeEventListener('resize', onResize)
-      window.removeEventListener('mousemove', handleMove)
-      obs.disconnect()
-    }
-  }, [])
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('touchstart', handleTouch);
+      window.removeEventListener('touchmove', handleTouch);
+      obs.disconnect();
+    };
+  }, []);
+
+
 
   // canvas is positioned via parent section; make it cover that region
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />

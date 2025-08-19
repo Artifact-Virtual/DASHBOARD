@@ -99,8 +99,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative overflow-y-auto bg-black text-white">
+
       {/* Full-screen noise lines background (first section only) */}
       <NoiseLinesBackground />
+
 
       {/* Hero Section with Enhanced Animations */}
       <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-8 overflow-hidden">
@@ -139,8 +141,8 @@ const Index = () => {
 
 
 
-      {/* Section 2: The Artifact Thesis */}
-      <section id="vision" className="relative bg-black text-neutral-300 py-24 sm:py-32 px-4 sm:px-8 overflow-hidden">
+  {/* Section 2: The Artifact Thesis */}
+  <section id="vision" className="relative z-20 bg-black text-neutral-300 min-h-screen flex items-center py-16 sm:py-24 px-4 sm:px-8 overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-10">
           {/* Abstract background grid */}
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:36px_36px]"></div>
@@ -171,7 +173,37 @@ const Index = () => {
       </section>
 
       {/* Section 3: Core Disciplines */}
-      <section id="disciplines" className="bg-black py-24 sm:py-32 px-4 sm:px-8">
+  <section id="disciplines" className="relative z-20 bg-black/50 backdrop-blur-md py-16 sm:py-24 px-4 sm:px-8 overflow-hidden min-h-[60vh] flex items-center">
+        {/* Modern immersive green accent effect (SVG, animated, layered) */}
+        <div
+          aria-hidden="true"
+          className="absolute left-1/2 top-0 -translate-x-1/3 -translate-y-1/4 w-[60vw] h-[40vw] max-w-[900px] max-h-[600px] z-10 pointer-events-none select-none"
+          style={{ filter: 'blur(32px)', opacity: 0.22 }}
+        >
+          <svg width="100%" height="100%" viewBox="0 0 900 600" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+            <defs>
+              <radialGradient id="greenGlow" cx="60%" cy="40%" r="80%" fx="60%" fy="40%">
+                <stop offset="0%" stopColor="#00ff88" stopOpacity="0.7" />
+                <stop offset="60%" stopColor="#00ff88" stopOpacity="0.18" />
+                <stop offset="100%" stopColor="#00ff88" stopOpacity="0" />
+              </radialGradient>
+              <linearGradient id="greenWave" x1="0" y1="0" x2="900" y2="600" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#00ff88" stopOpacity="0.18" />
+                <stop offset="1" stopColor="#00ff88" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <ellipse cx="540" cy="220" rx="320" ry="160" fill="url(#greenGlow)"/>
+            <path d="M0 500 Q 300 400 900 520" stroke="url(#greenWave)" strokeWidth="80" fill="none"/>
+            <ellipse cx="700" cy="420" rx="90" ry="60" fill="#00ff8899">
+              <animate attributeName="rx" values="90;120;90" dur="7s" repeatCount="indefinite"/>
+              <animate attributeName="ry" values="60;80;60" dur="7s" repeatCount="indefinite"/>
+            </ellipse>
+            <ellipse cx="300" cy="350" rx="60" ry="40" fill="#00ff8844">
+              <animate attributeName="cx" values="300;350;300" dur="9s" repeatCount="indefinite"/>
+              <animate attributeName="ry" values="40;60;40" dur="9s" repeatCount="indefinite"/>
+            </ellipse>
+          </svg>
+        </div>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-5xl font-light text-white tracking-wider">Core Disciplines</h2>
@@ -179,7 +211,7 @@ const Index = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Card 1: Autonomous Systems */}
-            <div className="border border-neutral-800 bg-neutral-950/50 p-8 rounded-lg transition-all duration-300 hover:border-neutral-700 hover:-translate-y-2">
+            <div className="bg-neutral-950/20 backdrop-blur-sm p-8 rounded-lg transition-all duration-300 hover:bg-neutral-950/30 hover:-translate-y-2">
               <div className="flex items-center justify-center w-12 h-12 mb-6 border border-neutral-800 rounded-lg bg-black">
                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
@@ -190,7 +222,7 @@ const Index = () => {
             </div>
 
             {/* Card 2: Decentralized Computation */}
-            <div className="border border-neutral-800 bg-neutral-950/50 p-8 rounded-lg transition-all duration-300 hover:border-neutral-700 hover:-translate-y-2">
+            <div className="bg-neutral-950/20 backdrop-blur-sm p-8 rounded-lg transition-all duration-300 hover:bg-neutral-950/30 hover:-translate-y-2">
               <div className="flex items-center justify-center w-12 h-12 mb-6 border border-neutral-800 rounded-lg bg-black">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2 1M4 7l2-1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1m2 1l-2 1m2-1V15M18 18l2-1m-2 1l2 1m-2 1V15" />
@@ -201,7 +233,7 @@ const Index = () => {
             </div>
 
             {/* Card 3: Verifiable Intelligence */}
-            <div className="border border-neutral-800 bg-neutral-950/50 p-8 rounded-lg transition-all duration-300 hover:border-neutral-700 hover:-translate-y-2">
+            <div className="bg-neutral-950/20 backdrop-blur-sm p-8 rounded-lg transition-all duration-300 hover:bg-neutral-950/30 hover:-translate-y-2">
               <div className="flex items-center justify-center w-12 h-12 mb-6 border border-neutral-800 rounded-lg bg-black">
                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -214,8 +246,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-black border-t border-neutral-900 text-neutral-500">
+      {/* Contact Section: Join The Frontier */}
+  <section className="relative z-20 border-t border-neutral-900 text-neutral-500 py-12 px-4 sm:px-8 bg-black/40 backdrop-blur-md">
         <div className="max-w-6xl mx-auto py-16 px-4 sm:px-8 text-center">
           <h2 className="text-2xl sm:text-4xl font-light text-white tracking-wider mb-4">Join The Frontier</h2>
           <p className="max-w-xl mx-auto mb-8 font-light leading-relaxed">We collaborate with ambitious researchers, engineers, and organizations. If you are building the future, we want to hear from you.</p>
@@ -225,16 +257,8 @@ const Index = () => {
           >
             CONTACT US
           </a>
-          <div className="mt-16 pt-8 border-t border-neutral-900 flex flex-col sm:flex-row justify-between items-center">
-            <p className="text-sm font-light tracking-widest">&copy; {new Date().getFullYear()} ARTIFACT VIRTUAL. ALL RIGHTS RESERVED.</p>
-            <div className="flex space-x-6 mt-4 sm:mt-0">
-              <a href="#" className="hover:text-white transition-colors duration-300">Twitter</a>
-              <a href="#" className="hover:text-white transition-colors duration-300">Github</a>
-              <a href="#" className="hover:text-white transition-colors duration-300">Mirror</a>
-            </div>
-          </div>
         </div>
-      </footer>
+      </section>
 
       {/* Final surreal footer */}
 
