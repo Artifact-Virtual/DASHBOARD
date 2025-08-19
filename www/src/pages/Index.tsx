@@ -138,18 +138,103 @@ const Index = () => {
       </section>
 
 
-      {/* Minimal Surreal Artifact Universe Section (Holistic R/D content) */}
-      {/* Minimal Surreal Artifact Universe Section with Mouse-Repel Animation */}
-      <section className="artifact-ecosystem-section relative min-h-[80vh] flex flex-col items-center justify-center bg-black overflow-hidden">
-        <MouseRepelCanvas />
-        <div className="artifact-ecosystem-content relative z-10 flex flex-col items-center justify-center w-full px-4 py-24">
-          <h2 className="artifact-ecosystem-headline text-4xl md:text-6xl font-light text-center mb-6 select-none text-neutral-100 tracking-widest" style={{letterSpacing:'0.18em'}}>ARTIFACT VIRTUAL UNIVERSE</h2>
-          <p className="artifact-ecosystem-subheadline text-lg md:text-2xl font-light text-center mb-2 text-neutral-300 max-w-2xl mx-auto">A FRAMEWORK FOR HOLISTIC R/D</p>
-          <p className="artifact-ecosystem-subheadline text-base md:text-xl font-light text-center mb-2 text-neutral-400 max-w-2xl mx-auto">Radical research, rapid prototyping, and future shock.</p>
-          <p className="artifact-ecosystem-subheadline text-base md:text-xl font-light text-center mb-10 text-neutral-500 max-w-2xl mx-auto">We explore, invent, and break the rules to build what comes next.</p>
-          <button className="artifact-ecosystem-btn bg-neutral-950 border border-neutral-700 text-neutral-200 hover:bg-neutral-900/80 hover:border-neutral-500 transition-all duration-300 mt-2 px-8 py-3 rounded-md tracking-widest font-light shadow-none outline-none focus:outline-none">EXPLORE THE ECOSYSTEM</button>
+
+      {/* Section 2: The Artifact Thesis */}
+      <section id="vision" className="relative bg-black text-neutral-300 py-24 sm:py-32 px-4 sm:px-8 overflow-hidden">
+        <div className="absolute inset-0 z-0 opacity-10">
+          {/* Abstract background grid */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:36px_36px]"></div>
+        </div>
+        <div className="relative z-10 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
+          <div className="md:col-span-3">
+            <h2 className="text-sm font-light uppercase tracking-[0.3em] text-cyan-400 mb-4">The Thesis</h2>
+            <h3 className="text-3xl sm:text-5xl font-light text-white leading-tight tracking-wider mb-6">
+              A Framework for Holistic Innovation.
+            </h3>
+            <p className="font-light text-lg text-neutral-400 max-w-2xl leading-relaxed">
+              Artifact Virtual is not just a company; it's a research organism. We operate at the intersection of radical theory and tangible application. Our mission is to explore the technological frontier, prototype the future, and deploy systems that redefine the boundaries of what's possible.
+            </p>
+          </div>
+          <div className="md:col-span-2 flex items-center justify-center">
+            <div className="relative w-48 h-48 sm:w-64 sm:h-64">
+              <div className="absolute inset-0 border-2 border-neutral-800 rounded-full animate-spin-slow"></div>
+              <div className="absolute inset-4 border border-neutral-700 rounded-full animate-spin-slow-reverse"></div>
+              <div className="absolute inset-8 bg-cyan-900/40 rounded-full blur-2xl animate-pulse"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-cyan-400 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={0.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.293 2.293a1 1 0 01-1.414 1.414L12 6.414l-2.293 2.293a1 1 0 01-1.414-1.414L10 4.293a1 1 0 012 0zm2.293 7.293a1 1 0 011.414 0L17.414 15l-2.293 2.293a1 1 0 01-1.414-1.414L15 14.414l-2.293-2.293a1 1 0 010-1.414z" />
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* Section 3: Core Disciplines */}
+      <section id="disciplines" className="bg-black py-24 sm:py-32 px-4 sm:px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-5xl font-light text-white tracking-wider">Core Disciplines</h2>
+            <p className="mt-4 text-lg text-neutral-500 font-light max-w-2xl mx-auto">Our research is focused on foundational technologies that will power the next generation of decentralized systems.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Card 1: Autonomous Systems */}
+            <div className="border border-neutral-800 bg-neutral-950/50 p-8 rounded-lg transition-all duration-300 hover:border-neutral-700 hover:-translate-y-2">
+              <div className="flex items-center justify-center w-12 h-12 mb-6 border border-neutral-800 rounded-lg bg-black">
+                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-light text-white tracking-widest mb-3">Autonomous Systems</h3>
+              <p className="text-neutral-500 font-light leading-relaxed">Developing intelligent, self-governing agents and networks capable of complex coordination and decision-making without human intervention.</p>
+            </div>
+
+            {/* Card 2: Decentralized Computation */}
+            <div className="border border-neutral-800 bg-neutral-950/50 p-8 rounded-lg transition-all duration-300 hover:border-neutral-700 hover:-translate-y-2">
+              <div className="flex items-center justify-center w-12 h-12 mb-6 border border-neutral-800 rounded-lg bg-black">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2 1M4 7l2-1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1m2 1l-2 1m2-1V15M18 18l2-1m-2 1l2 1m-2 1V15" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-light text-white tracking-widest mb-3">Decentralized Computation</h3>
+              <p className="text-neutral-500 font-light leading-relaxed">Building trustless, censorship-resistant infrastructure for scalable computing and data storage, ensuring resilience and open access.</p>
+            </div>
+
+            {/* Card 3: Verifiable Intelligence */}
+            <div className="border border-neutral-800 bg-neutral-950/50 p-8 rounded-lg transition-all duration-300 hover:border-neutral-700 hover:-translate-y-2">
+              <div className="flex items-center justify-center w-12 h-12 mb-6 border border-neutral-800 rounded-lg bg-black">
+                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-light text-white tracking-widest mb-3">Verifiable Intelligence</h3>
+              <p className="text-neutral-500 font-light leading-relaxed">Pioneering the use of Zero-Knowledge proofs and cryptography to create AI/ML systems whose operations can be proven correct without revealing underlying data.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-black border-t border-neutral-900 text-neutral-500">
+        <div className="max-w-6xl mx-auto py-16 px-4 sm:px-8 text-center">
+          <h2 className="text-2xl sm:text-4xl font-light text-white tracking-wider mb-4">Join The Frontier</h2>
+          <p className="max-w-xl mx-auto mb-8 font-light leading-relaxed">We collaborate with ambitious researchers, engineers, and organizations. If you are building the future, we want to hear from you.</p>
+          <a 
+            href="mailto:contact@artifact-virtual.com" 
+            className="inline-block bg-neutral-900 border border-neutral-700 text-neutral-200 hover:bg-neutral-800 hover:border-neutral-600 transition-all duration-300 px-8 py-3 rounded-md tracking-widest font-light"
+          >
+            CONTACT US
+          </a>
+          <div className="mt-16 pt-8 border-t border-neutral-900 flex flex-col sm:flex-row justify-between items-center">
+            <p className="text-sm font-light tracking-widest">&copy; {new Date().getFullYear()} ARTIFACT VIRTUAL. ALL RIGHTS RESERVED.</p>
+            <div className="flex space-x-6 mt-4 sm:mt-0">
+              <a href="#" className="hover:text-white transition-colors duration-300">Twitter</a>
+              <a href="#" className="hover:text-white transition-colors duration-300">Github</a>
+              <a href="#" className="hover:text-white transition-colors duration-300">Mirror</a>
+            </div>
+          </div>
+        </div>
+      </footer>
 
       {/* Final surreal footer */}
 
