@@ -3,6 +3,7 @@ import { parseUnits, formatUnits, isAddress } from 'viem'
 import { ChevronDownIcon, ArrowPathIcon, PlusIcon } from '@heroicons/react/24/outline'
 import { useSwap, Token, SwapQuote } from '../hooks/useSwap'
 import TradingViewWidget from './TradingViewWidget'
+import TopRightConnect from './wallet/TopRightConnect'
 
 export default function Swap() {
   const { tokens, getQuote, addToken, executeSwap, isLoading, error, isConnected } = useSwap()
@@ -18,12 +19,15 @@ export default function Swap() {
 
   // Initialize tokens when they load
   useEffect(() => {
-    if (tokens.length > 0 && !sellToken && !buyToken) {
-      setSellToken(tokens[0]) // WETH
-      setBuyToken(tokens[1])  // USDC
-    }
-    setAllTokens(tokens)
-  }, [tokens, sellToken, buyToken])
+      if (tokens.length > 0 && !sellToken && !buyToken) {
+        // Set default: sellToken = 0xA409...f44, buyToken = WETH
+        const defaultSell = tokens.find(t => t.address.toLowerCase() === '0xa4093669dafbd123e37d52e0939b3ab3c2272f44');
+        const defaultBuy = tokens.find(t => t.symbol === 'WETH');
+        setSellToken(defaultSell || tokens[0]);
+        setBuyToken(defaultBuy || tokens[1]);
+      }
+      setAllTokens(tokens)
+    }, [tokens, sellToken, buyToken])
 
   // Update quote when inputs change
   useEffect(() => {
@@ -132,7 +136,14 @@ export default function Swap() {
   }
 
   return (
-    <section className="flex flex-col md:flex-row min-h-screen bg-background text-foreground px-2 py-4 md:px-8 md:py-12 gap-6">
+    <>
+      {/* Invisible header with wallet button */}
+      <header className="w-full h-16 flex items-center justify-end px-4 md:px-8" style={{background:'transparent',border:'none',boxShadow:'none',position:'relative',zIndex:10}}>
+        <div className="ml-auto">
+          <TopRightConnect />
+        </div>
+      </header>
+      <section className="flex flex-col md:flex-row min-h-screen bg-background text-foreground px-2 py-4 md:px-8 md:py-12 gap-6">
       {/* Trading Interface */}
       <div className="w-full md:w-2/5 max-w-lg mx-auto md:mx-0 bg-card border border-border rounded-2xl shadow-xl p-4 md:p-8 flex flex-col justify-center">
         {/* Sell Token */}
@@ -339,6 +350,7 @@ export default function Swap() {
           </div>
         </div>
       </div>
-    </section>
+      </section>
+    </>
   )
 }
