@@ -1,10 +1,12 @@
 import { createPublicClient, createWalletClient, http, webSocket } from 'viem'
 import { mainnet, polygon, arbitrum } from 'viem/chains'
+import { BASE_CHAIN } from './baseChain'
 import { WalletClient } from 'viem'
 
 const RPC_MAINNET = String(import.meta.env.VITE_RPC_MAINNET || import.meta.env.VITE_RPC_URL || 'https://cloudflare-eth.com')
 const RPC_POLYGON = String(import.meta.env.VITE_RPC_POLYGON || '')
 const RPC_ARBITRUM = String(import.meta.env.VITE_RPC_ARBITRUM || '')
+const RPC_BASE = String(import.meta.env.VITE_RPC_BASE || 'https://mainnet.base.org')
 
 // create a default public client for mainnet (used for reads)
 export const publicClient = createPublicClient({
@@ -13,12 +15,14 @@ export const publicClient = createPublicClient({
 })
 
 // helpers to get public clients per chain (fallback to mainnet)
-export function getPublicClient(chainName?: 'mainnet' | 'polygon' | 'arbitrum') {
+export function getPublicClient(chainName?: 'mainnet' | 'polygon' | 'arbitrum' | 'base') {
   switch (chainName) {
     case 'polygon':
       return RPC_POLYGON ? createPublicClient({ chain: polygon, transport: http(RPC_POLYGON) }) : publicClient
     case 'arbitrum':
       return RPC_ARBITRUM ? createPublicClient({ chain: arbitrum, transport: http(RPC_ARBITRUM) }) : publicClient
+    case 'base':
+      return RPC_BASE ? createPublicClient({ chain: BASE_CHAIN, transport: http(RPC_BASE) }) : publicClient
     default:
       return publicClient
   }

@@ -1,0 +1,17 @@
+/* Font consistency for chart and liquidity sections */
+.swap-section-font {
+  font-family: 'Segoe UI Light', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif !important;
+  font-weight: 300;
+}
+/* Header style for invisible header on swap page */
+.swap-page-header {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  position: relative;
+  z-index: 10;
+}
+/* Swap Page Font Consistency */
+.swap-page-root {
+  font-family: 'Segoe UI Light', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}

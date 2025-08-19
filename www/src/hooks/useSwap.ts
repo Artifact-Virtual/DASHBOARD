@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { Address, parseUnits, formatUnits } from 'viem'
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi'
+import { getPublicClient } from '../lib/viemClient'
 
 // Base network token addresses (official)
 export const BASE_TOKENS = {
@@ -48,7 +49,8 @@ export const DEFAULT_TOKENS: Token[] = [
 
 export const useSwap = () => {
   const { address, chainId } = useAccount()
-  const publicClient = usePublicClient()
+  // Use correct public client for Base if on Base chain
+  const publicClient = chainId === 8453 ? getPublicClient('base') : usePublicClient()
   const { data: walletClient } = useWalletClient()
   
   const [isLoading, setIsLoading] = useState(false)
