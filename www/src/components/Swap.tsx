@@ -172,15 +172,17 @@ export default function Swap() {
       </header>
       <section className="swap-page-root flex flex-col min-h-screen bg-background text-foreground px-2 py-4 md:px-8 md:py-12 gap-6 items-center justify-center">
         {/* Chart - always large and centered, font consistent */}
-        <div className="w-full mx-auto flex flex-col items-center justify-center swap-section-font">
+        <div className="w-full max-w-4xl mx-auto flex flex-col items-center justify-center swap-section-font">
           <div className="bg-card border border-border rounded-2xl shadow-lg p-4 md:p-8 w-full flex flex-col swap-chart-responsive">
             <div className="flex items-center justify-between mb-2">
               <span className="text-base font-semibold swap-section-font">Price Chart</span>
               <span className="text-xs swap-section-font">{sellToken?.symbol}/{buyToken?.symbol}</span>
             </div>
-            <div className="w-full h-[40vw] max-h-[700px] bg-muted rounded-lg border border-border overflow-hidden transition-all duration-300">
+            <div className="w-full h-[24vw] max-h-[360px] aspect-video bg-muted rounded-lg border border-border overflow-hidden transition-all duration-300">
               {/* Use Uniswap DEX chart for ARCX/WETH, fallback to generic if not available */}
-              <TradingViewWidget symbol={getTradingViewSymbol(sellToken, buyToken)} autosize={true} />
+              <div className="w-full h-full">
+                <TradingViewWidget symbol={getTradingViewSymbol(sellToken, buyToken)} autosize={true} />
+              </div>
             </div>
           </div>
         </div>
