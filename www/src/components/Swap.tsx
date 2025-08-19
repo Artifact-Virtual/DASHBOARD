@@ -10,16 +10,23 @@ import TopRightConnect from './wallet/TopRightConnect';
 
 // Helper to map token pair to TradingView Uniswap v4 symbol
 function getTradingViewSymbol(sellToken: Token | null, buyToken: Token | null): string {
-  // ARCX/WETH on Uniswap v4 (Ethereum): 'UNISWAP4:ARCXWETH'
-  if (sellToken?.symbol === 'ARCX' && buyToken?.symbol === 'WETH') {
-    return 'UNISWAP4:ARCXWETH';
+  // BTC/USDT on Binance
+  if ((sellToken?.symbol === 'BTC' && buyToken?.symbol === 'USDT') || (sellToken?.symbol === 'USDT' && buyToken?.symbol === 'BTC')) {
+    return 'BINANCE:BTCUSDT';
   }
-  if (sellToken?.symbol === 'WETH' && buyToken?.symbol === 'ARCX') {
-    return 'UNISWAP4:WETHARCX';
+  // ETH/USDT on Binance
+  if ((sellToken?.symbol === 'ETH' && buyToken?.symbol === 'USDT') || (sellToken?.symbol === 'USDT' && buyToken?.symbol === 'ETH')) {
+    return 'BINANCE:ETHUSDT';
   }
-  // Add more pairs as needed
-  // Default fallback
-  return 'UNISWAP4:ARCXWETH';
+  // Only show ARCX/WETH chart if both tokens are exactly ARCX and WETH
+  if ((sellToken?.symbol === 'ARCX' && buyToken?.symbol === 'WETH') || (sellToken?.symbol === 'WETH' && buyToken?.symbol === 'ARCX')) {
+    // Only if both are selected, otherwise fallback
+    if ((sellToken?.symbol === 'ARCX' && buyToken?.symbol === 'WETH') || (sellToken?.symbol === 'WETH' && buyToken?.symbol === 'ARCX')) {
+      return 'UNISWAP4:ARCXWETH';
+    }
+  }
+  // Fallback to ETH/USD on Coinbase
+  return 'COINBASE:ETHUSD';
 }
 
 
@@ -32,6 +39,7 @@ export default function Swap() {
   const [quote, setQuote] = useState<SwapQuote | null>(null)
   const [customTokenAddress, setCustomTokenAddress] = useState('')
   const [showAddToken, setShowAddToken] = useState(false)
+  const [selectedNetwork, setSelectedNetwork] = useState<'base' | 'mainnet' | 'polygon' | 'arbitrum'>('base')
   const [allTokens, setAllTokens] = useState<Token[]>(tokens)
   const [isSwapping, setIsSwapping] = useState(false)
 
@@ -87,7 +95,8 @@ export default function Swap() {
       return
     }
 
-    const newToken = await addToken(customTokenAddress as any)
+    // Pass selected network to addToken
+    const newToken = await addToken(customTokenAddress as any, selectedNetwork)
     if (newToken) {
       setAllTokens(prev => [...prev, newToken])
       setCustomTokenAddress('')
@@ -169,11 +178,9 @@ export default function Swap() {
               <span className="text-base font-semibold swap-section-font">Price Chart</span>
               <span className="text-xs swap-section-font">{sellToken?.symbol}/{buyToken?.symbol}</span>
             </div>
-            <div className="w-full h-64 md:h-96 bg-muted rounded-lg flex items-center justify-center border border-border overflow-hidden">
-              <div className="w-full h-full">
-                {/* Use Uniswap DEX chart for ARCX/WETH, fallback to generic if not available */}
-                <TradingViewWidget symbol={getTradingViewSymbol(sellToken, buyToken)} autosize={true} />
-              </div>
+            <div className="w-full h-[40vw] max-h-[700px] bg-muted rounded-lg border border-border overflow-hidden transition-all duration-300">
+              {/* Use Uniswap DEX chart for ARCX/WETH, fallback to generic if not available */}
+              <TradingViewWidget symbol={getTradingViewSymbol(sellToken, buyToken)} autosize={true} />
             </div>
           </div>
         </div>
@@ -306,13 +313,26 @@ export default function Swap() {
                 </button>
               ) : (
                 <div className="space-y-2">
-                  <input
-                    type="text"
-                    placeholder="0x... Token Address"
-                    value={customTokenAddress}
-                    onChange={(e) => setCustomTokenAddress(e.target.value)}
-                    className="w-full bg-input border border-border rounded-lg px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none font-mono truncate"
-                  />
+                  <div className="flex flex-col md:flex-row gap-2">
+                    <input
+                      type="text"
+                      placeholder="0x... Token Address"
+                      value={customTokenAddress}
+                      onChange={(e) => setCustomTokenAddress(e.target.value)}
+                      className="flex-1 bg-input border border-border rounded-lg px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none font-mono truncate"
+                    />
+                    <select
+                      value={selectedNetwork}
+                      onChange={e => setSelectedNetwork(e.target.value as any)}
+                      className="bg-input border border-border rounded-lg px-3 py-2 text-xs text-foreground focus:border-primary focus:outline-none font-mono"
+                      aria-label="Select network for token lookup"
+                    >
+                      <option value="base">Base</option>
+                      <option value="mainnet">Ethereum Mainnet</option>
+                      <option value="polygon">Polygon</option>
+                      <option value="arbitrum">Arbitrum</option>
+                    </select>
+                  </div>
                   <div className="flex space-x-2">
                     <button
                       onClick={handleAddCustomToken}

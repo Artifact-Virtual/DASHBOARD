@@ -3,12 +3,13 @@ import { Address, parseUnits, formatUnits } from 'viem'
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi'
 import { getPublicClient } from '../lib/viemClient'
 
-// Base network token addresses (official)
+// Base network token addresses (official + your token)
 export const BASE_TOKENS = {
   WETH: '0x4200000000000000000000000000000000000006' as Address,
   USDC: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' as Address,
   USDT: '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2' as Address,
   DAI: '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb' as Address,
+  ARCX: '0xa4093669dafbd123e37d52e0939b3ab3c2272f44' as Address, // Your token on Base
 }
 
 export interface Token {
@@ -37,8 +38,9 @@ export const DEFAULT_TOKENS: Token[] = [
   { address: BASE_TOKENS.USDC, symbol: 'USDC', name: 'USD Coin', decimals: 6 },
   { address: BASE_TOKENS.USDT, symbol: 'USDT', name: 'Tether USD', decimals: 6 },
   { address: BASE_TOKENS.DAI, symbol: 'DAI', name: 'Dai Stablecoin', decimals: 18 },
+  { address: BASE_TOKENS.ARCX, symbol: 'ARCX', name: 'ARCx Token', decimals: 18 }, // Your token
   { address: '0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed' as Address, symbol: 'DEGEN', name: 'Degen', decimals: 18 },
-  { address: '0x532f27101965dd16442E59d40670FaF5eBB142E4' as Address, symbol: 'BRETT', name: 'Brett', decimals: 18 },
+  { address: '0x532f27101965dd16442E59d40670FaF5EBB142E4' as Address, symbol: 'BRETT', name: 'Brett', decimals: 18 },
   { address: '0x0578d8A44db98B23BF096A382e016e29a5Ce0ffe' as Address, symbol: 'HIGHER', name: 'Higher', decimals: 18 },
   { address: '0x7c6b91D9Be155A6Db01f749217d76fF02A7227F2' as Address, symbol: 'TAO', name: 'Wrapped TAO', decimals: 9 },
   { address: '0x27D2DECb4bFC9C76F0309b8E88dec3a601Fe25a8' as Address, symbol: 'BALD', name: 'Bald', decimals: 18 },
@@ -222,30 +224,35 @@ export const useSwap = () => {
     }
   }, [address, walletClient])
 
-  // Add custom token by address
-  const addToken = useCallback(async (tokenAddress: Address): Promise<Token | null> => {
-    if (!publicClient) return null
-    
+
+  // Add custom token by address and network
+  const addToken = useCallback(async (tokenAddress: Address, network: 'base' | 'mainnet' | 'polygon' | 'arbitrum' = 'base'): Promise<Token | null> => {
+    let client = publicClient;
+    if (network && typeof network === 'string') {
+      // Use correct public client for selected network
+      // @ts-ignore
+      client = getPublicClient(network);
+    }
+    if (!client) return null;
     try {
       // Fetch token metadata from contract
       const [name, symbol, decimals] = await Promise.all([
-        publicClient.readContract({
+        client.readContract({
           address: tokenAddress,
           abi: [{ name: 'name', outputs: [{ type: 'string' }], type: 'function' }],
           functionName: 'name',
         }),
-        publicClient.readContract({
+        client.readContract({
           address: tokenAddress,
           abi: [{ name: 'symbol', outputs: [{ type: 'string' }], type: 'function' }],
           functionName: 'symbol',
         }),
-        publicClient.readContract({
+        client.readContract({
           address: tokenAddress,
           abi: [{ name: 'decimals', outputs: [{ type: 'uint8' }], type: 'function' }],
           functionName: 'decimals',
         }),
       ])
-
       return {
         address: tokenAddress,
         name: name as string,
