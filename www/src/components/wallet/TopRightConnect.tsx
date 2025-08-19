@@ -1,14 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
-import useWalletWagmi from '@/hooks/useWalletWagmi'
-// Try to import OnchainKit components from the generated package. Keep optional so site still builds if package isn't present.
-let OnchainKitConnect: React.FC | null = null
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const ok = require('artifactvirtual')
-  OnchainKitConnect = ok?.ConnectWallet || null
-} catch (e) {
-  OnchainKitConnect = null
-}
+
 import { EthBalance } from './EthBalance';
 import { Name } from './Name';
 
@@ -117,12 +107,6 @@ const TopRightConnect: React.FC = () => {
               </div>
             ) : (
               <div className="flex flex-col gap-2">
-                {OnchainKitConnect && (
-                  <div className="px-1">
-                    {/* Render OnchainKit's connect if available */}
-                    <OnchainKitConnect />
-                  </div>
-                )}
                 <button aria-label="Connect MetaMask" onClick={() => handleConnect(connectMetaMask)} className="flex justify-between items-center px-3 py-2 rounded hover:bg-white/5">
                   <span>MetaMask</span>
                   {installed?.metamask && <span className="text-xs text-green-300">Installed</span>}
