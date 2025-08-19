@@ -1,4 +1,6 @@
 
+import React, { useEffect, useState, useRef } from 'react';
+import useWalletWagmi from '@/hooks/useWalletWagmi';
 import { EthBalance } from './EthBalance';
 import { Name } from './Name';
 
