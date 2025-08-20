@@ -26,7 +26,11 @@ function getSystemTheme() {
   return 'dark';
 }
 
-const Index = () => {
+interface IndexProps {
+  onHorizontalInViewChange?: (inView: boolean) => void;
+}
+
+const Index: React.FC<IndexProps> = ({ onHorizontalInViewChange }) => {
   const [theme, setTheme] = useState(getSystemTheme());
   const [showCursor, setShowCursor] = useState(true);
   const [showContent, setShowContent] = useState(false);
@@ -37,6 +41,7 @@ const Index = () => {
   // Ref for the horizontal app's main container
   const horizontalAppContainerRef = useRef<HTMLDivElement | null>(null);
   const [showHorizontalHeader, setShowHorizontalHeader] = useState(false);
+  const [forceCloseSidebar, setForceCloseSidebar] = useState(false);
   const [horizontalActiveSection, setHorizontalActiveSection] = useState('entry');
   // const [showHorizontalHeader, setShowHorizontalHeader] = useState(false);
   // Show floating arrow and header only when horizontal section is in view
@@ -48,6 +53,8 @@ const Index = () => {
       ([entry]) => {
         setShowArrow(entry.isIntersecting);
         setShowHorizontalHeader(entry.isIntersecting);
+        if (onHorizontalInViewChange) onHorizontalInViewChange(entry.isIntersecting);
+        setForceCloseSidebar(entry.isIntersecting);
         if (!entry.isIntersecting) {
           // Reset horizontal scroll to the entry (center) section when leaving
           const mainContainer = document.getElementById('main-container');
@@ -61,7 +68,7 @@ const Index = () => {
     );
     observer.observe(section);
     return () => observer.disconnect();
-  }, []);
+  }, [onHorizontalInViewChange]);
 
   useEffect(() => {
     const listener = (e) => setTheme(e.matches ? 'light' : 'dark');
@@ -124,6 +131,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative overflow-y-auto bg-black/50 backdrop-blur text-white text-lg">
+      {/* Force-close sidebar overlay when horizontal section is in view */}
+      {forceCloseSidebar && (
+        <style>{`#floating-sidebar { display: none !important; }`}</style>
+      )}
       {/* Full-screen noise lines background (first section only) */}
       <NoiseLinesBackground />
 

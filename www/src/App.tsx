@@ -25,23 +25,21 @@ const Swap = lazy(() => import('./pages/Swap'));
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-  {/* Removed OnchainKitProviderWrapper */}
+
+const App = () => {
+  const [sidebarVisible, setSidebarVisible] = React.useState(true);
+  return (
+    <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
           <div className="relative w-full min-h-screen overflow-x-hidden">
             <TopRightConnect />
-            {/* FloatingSidebar will be hidden when horizontal app is in view */}
-            <FloatingSidebar id="floating-sidebar" />
+            {sidebarVisible && <FloatingSidebar id="floating-sidebar" />}
             <Suspense fallback={<div className="min-h-screen" /> }>
               <Routes>
-                <Route path="/" element={<Index onHorizontalInViewChange={(inView) => {
-                  const sidebar = document.getElementById('floating-sidebar');
-                  if (sidebar) sidebar.style.display = inView ? 'none' : '';
-                }} />} />
+                <Route path="/" element={<Index onHorizontalInViewChange={(inView) => setSidebarVisible(!inView)} />} />
                 <Route path="/articles" element={<Articles />} />
                 <Route path="/articles/:slug" element={<ArticlePost />} />
                 <Route path="/research" element={<Research />} />
@@ -49,7 +47,6 @@ const App = () => (
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/systemmap" element={<SystemMap />} />
                 <Route path="/swap" element={<Swap />} />
-                {/* Removed OnchainKitPage route */}
                 <Route path="/eth" element={<EthClient />} />
                 <Route path="/design" element={<AsymmetricShowcase />} />
                 <Route path="/profile" element={<ProfilePage />} />
@@ -59,8 +56,8 @@ const App = () => (
           </div>
         </BrowserRouter>
       </TooltipProvider>
-    {/* Removed OnchainKitProviderWrapper */}
     </QueryClientProvider>
-);
+  );
+};
 
 export default App;

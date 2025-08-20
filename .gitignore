@@ -21,6 +21,9 @@ Thumbs.db
 .env
 .env.local
 
+# Project secrets
+.env.master
+
 # SSL certificates and private keys
 ssl/certs/
 *.key
