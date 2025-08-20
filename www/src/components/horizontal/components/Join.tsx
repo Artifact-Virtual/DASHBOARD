@@ -28,10 +28,22 @@ const Join: React.FC = () => {
         <p className="mt-4 text-gray-400 font-light max-w-xl mx-auto">
           Become a part of our growing community. Connect with the team, contribute to the protocol, and shape the future of ARCX.
         </p>
-        <div className="mt-10">
+        <div className="mt-10 flex flex-col items-center space-y-4">
             <a href="#" className="border border-arcx-orange text-arcx-orange font-light py-4 px-12 rounded-sm text-md uppercase tracking-[0.2em] hover:bg-arcx-orange hover:text-black hover:shadow-glow-orange transition-all duration-300">
                 Launch Discord
             </a>
+            <button
+                onClick={() => {
+                  const container = document.getElementById('main-container');
+                  const entry = document.getElementById('entry');
+                  if (container && entry) {
+                    container.scrollTo({ left: entry.offsetLeft, behavior: 'smooth' });
+                  }
+                }}
+                className="mt-2 border border-white/20 text-white/80 font-light py-2 px-6 rounded-sm text-xs uppercase tracking-widest hover:bg-white/10 hover:text-arcx-orange transition-all duration-300"
+            >
+                Back to Centre
+            </button>
         </div>
       </div>
        <footer className="absolute bottom-8 text-center text-xs text-gray-700 font-light tracking-widest w-full">

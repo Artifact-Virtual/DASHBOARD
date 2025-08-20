@@ -25,8 +25,10 @@ interface AppProps {
   onActiveSectionChange?: (section: string) => void;
 }
 
+
 const App: React.FC<AppProps> = ({ onActiveSectionChange }) => {
   const [activeSection, setActiveSection] = useState('entry');
+  const [isMouseInside, setIsMouseInside] = useState(true);
   const observer = useRef<IntersectionObserver | null>(null);
   const mainContainerRef = useRef<HTMLElement | null>(null);
 
@@ -72,8 +74,13 @@ const App: React.FC<AppProps> = ({ onActiveSectionChange }) => {
 
   return (
     <>
-  {/* Header will be rendered by parent (Index.tsx) when horizontal section is in view */}
-      <main id="main-container" className="horizontal-container">
+      <Header activeSection={activeSection} />
+      <main
+        id="main-container"
+        className={`horizontal-container${!isMouseInside ? ' amoled-blackout' : ''}`}
+        onMouseEnter={() => setIsMouseInside(true)}
+        onMouseLeave={() => setIsMouseInside(false)}
+      >
         {/* AI & ML Universe (Left Side) - Journey starts at Hero, next to Entry */}
         <section id="ai-join" className="section"><AiJoin /></section>
         <section id="ai-sentinel" className="section"><SentinelPage /></section>
@@ -81,7 +88,7 @@ const App: React.FC<AppProps> = ({ onActiveSectionChange }) => {
         <section id="ai-legion" className="section"><LegionPage /></section>
         <section id="ai-home" className="section"><AiHero /></section>
         {/* Central Entry Hub */}
-        <section id="entry" className="section"><Entry /></section>
+        <section id="entry" className="section"><Entry isDim={!isMouseInside} /></section>
         {/* ARCX Ecosystem (Right Side) */}
         <section id="arcx-home" className="section"><ArcxHero /></section>
         <section id="arcx-about" className="section"><ArcxAbout /></section>

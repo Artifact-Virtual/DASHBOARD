@@ -12,55 +12,82 @@ const ChevronLeftIcon: React.FC<{className?: string}> = ({className}) => (
     </svg>
 );
 
-const Entry: React.FC = () => {
-  return (
-    <div className="w-full h-full bg-arcx-black relative overflow-hidden group">
-        {/* Subtle background glows */}
-        <div className="absolute top-0 left-0 h-full w-2/3 bg-[radial-gradient(ellipse_at_left,_rgba(115,0,255,0.2),_transparent_70%)] animate-pulse-slow pointer-events-none z-0"></div>
-        <div className="absolute top-0 right-0 h-full w-2/3 bg-[radial-gradient(ellipse_at_right,_rgba(255,69,0,0.15),_transparent_70%)] animate-pulse-slow pointer-events-none z-0"></div>
-        
-        {/* Base Layer - Common Elements */}
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center p-8 pointer-events-none">
-            <h1 className="text-xl md:text-2xl font-thin text-gray-500 tracking-[0.4em] uppercase">
-                Welcome to
-            </h1>
-             <p className="text-5xl md:text-8xl font-thin text-gray-200 mt-4 tracking-[0.2em] uppercase">
-                ARC : 0
-            </p>
-        </div>
+interface EntryProps {
+    isDim?: boolean;
+}
 
-        {/* Diagonal Split Layers */}
-        {/* AI/ML Side (Left) */}
-        <div 
-            className="absolute inset-0 z-20" 
-            style={{clipPath: 'polygon(0 0, 100% 0, 0 100%)'}}
+const Entry: React.FC<EntryProps> = ({ isDim }) => {
+    // Check for AMOLED blackout by traversing up the DOM for the class
+    const [isBlackout, setIsBlackout] = React.useState(false);
+    const [hovered, setHovered] = React.useState<'left' | 'right' | null>(null);
+    const ref = React.useRef<HTMLDivElement>(null);
+    React.useEffect(() => {
+        const checkBlackout = () => {
+            let el = ref.current as HTMLElement | null;
+            while (el) {
+                if (el.classList && el.classList.contains('amoled-blackout')) {
+                    setIsBlackout(true);
+                    return;
+                }
+                el = el.parentElement;
+            }
+            setIsBlackout(false);
+        };
+        checkBlackout();
+        const interval = setInterval(checkBlackout, 200);
+        return () => clearInterval(interval);
+    }, []);
+    return (
+        <div
+            ref={ref}
+            className={`w-full h-full bg-arcx-black relative overflow-hidden group${isBlackout ? ' amoled-blackout-entry' : ''}${isDim && !isBlackout ? ' entry-dim' : ''}`}
+            onMouseLeave={() => setHovered(null)}
         >
-            <div className="w-full h-full relative flex items-start justify-start p-16 transition-all duration-700 opacity-0 group-hover:opacity-100 bg-gradient-to-br from-arcx-purple/10 to-transparent">
-                <div className="absolute inset-y-0 left-0 w-1/3 bg-[radial-gradient(ellipse_50%_100%_at_left,_rgba(115,0,255,0.2),_transparent_60%)]"></div>
-                 <div className="text-gray-600 font-thin tracking-[0.2em] uppercase text-sm flex items-center animate-pulse">
-                    <ChevronLeftIcon className="w-6 h-6 -mr-3" />
-                    <ChevronLeftIcon className="w-6 h-6 mr-4" />
-                    Scroll for AI/ML
+            {/* Subtle background glows */}
+            {/* No bottom blend-to-black overlay or gradient, and no white animation/glow overlays */}
+            {/* Remove any bottom white shadow or gradient overlay */}
+            {/* Base Layer - Common Elements */}
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center p-8 pointer-events-none">
+                <h1 className="text-xl md:text-2xl font-thin text-gray-500 tracking-[0.4em] uppercase">
+                    Welcome to
+                </h1>
+                <p className="text-5xl md:text-8xl font-thin text-gray-200 mt-4 tracking-[0.2em] uppercase">
+                    ARC : 0
+                </p>
+            </div>
+            {/* Diagonal Split Layers */}
+            {/* AI/ML Side (Left) */}
+            <div
+                className={`absolute inset-0 z-20 entry-fade ${isBlackout ? 'amoled-fadeout' : ''}`}
+                style={{clipPath: 'polygon(0 0, 100% 0, 0 100%)'}}
+                onMouseEnter={() => setHovered('left')}
+            >
+                <div className={`w-full h-full relative flex items-start justify-start p-16 transition-all duration-700 opacity-0 group-hover:opacity-100 bg-gradient-to-br from-arcx-purple/10 to-transparent diagonal-half${hovered === 'left' ? ' diagonal-lift diagonal-bright' : ''}`}>
+                    <div className="absolute inset-y-0 left-0 w-1/3 bg-[radial-gradient(ellipse_50%_100%_at_left,_rgba(115,0,255,0.2),_transparent_60%)]"></div>
+                    <div className="text-gray-600 font-thin tracking-[0.2em] uppercase text-sm flex items-center animate-pulse">
+                        <ChevronLeftIcon className="w-6 h-6 -mr-3" />
+                        <ChevronLeftIcon className="w-6 h-6 mr-4" />
+                        Scroll for AI/ML
+                    </div>
+                </div>
+            </div>
+            {/* ARCX Side (Right) */}
+            <div
+                className={`absolute inset-0 z-20 entry-fade ${isBlackout ? 'amoled-fadeout' : ''}`}
+                style={{clipPath: 'polygon(100% 0, 100% 100%, 0 100%)'}}
+                onMouseEnter={() => setHovered('right')}
+            >
+                <div className={`w-full h-full relative flex items-end justify-end p-16 transition-all duration-700 opacity-0 group-hover:opacity-100 bg-gradient-to-tl from-arcx-orange/10 to-transparent diagonal-half${hovered === 'right' ? ' diagonal-lift diagonal-bright' : ''}`}>
+                    <div className="absolute inset-y-0 right-0 w-1/3 bg-[radial-gradient(ellipse_50%_100%_at_right,_rgba(255,69,0,0.15),_transparent_60%)]"></div>
+                    <div className="text-gray-600 font-thin tracking-[0.2em] uppercase text-sm flex items-center animate-pulse">
+                        Scroll for ARCX
+                        <ChevronRightIcon className="w-6 h-6 ml-4" />
+                        <ChevronRightIcon className="w-6 h-6 -ml-3" />
+                    </div>
                 </div>
             </div>
         </div>
-
-        {/* ARCX Side (Right) */}
-        <div 
-            className="absolute inset-0 z-20"
-            style={{clipPath: 'polygon(100% 0, 100% 100%, 0 100%)'}}
-        >
-             <div className="w-full h-full relative flex items-end justify-end p-16 transition-all duration-700 opacity-0 group-hover:opacity-100 bg-gradient-to-tl from-arcx-orange/10 to-transparent">
-                <div className="absolute inset-y-0 right-0 w-1/3 bg-[radial-gradient(ellipse_50%_100%_at_right,_rgba(255,69,0,0.15),_transparent_60%)]"></div>
-                <div className="text-gray-600 font-thin tracking-[0.2em] uppercase text-sm flex items-center animate-pulse">
-                    Scroll for ARCX
-                    <ChevronRightIcon className="w-6 h-6 ml-4" />
-                    <ChevronRightIcon className="w-6 h-6 -ml-3" />
-                </div>
-             </div>
-        </div>
-    </div>
-  );
+    );
 };
 
 export default Entry;

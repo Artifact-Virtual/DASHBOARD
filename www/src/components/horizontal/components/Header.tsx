@@ -51,11 +51,11 @@ const Header: React.FC<HeaderProps> = ({ activeSection }) => {
 
   const navLinks = currentSide === 'left' ? arcxLinks : aiLinks;
   const themeColor = currentSide === 'left' ? 'text-arcx-orange' : 'text-arcx-purple';
-  const hoverThemeColor = currentSide === 'left' ? 'hover:text-arcx-orange' : 'hover:text-arcx-purple';
-  const buyBgColor = currentSide === 'left' ? 'bg-arcx-orange/80 hover:bg-arcx-orange' : 'bg-arcx-purple/80 hover:bg-arcx-purple';
+  const hoverThemeColor = currentSide === 'left' ? 'hover:text-arcx-orange/90 hover:scale-110' : 'hover:text-arcx-purple/90 hover:scale-110';
+  const buyBgColor = currentSide === 'left' ? 'bg-arcx-orange/80 hover:bg-arcx-orange/90' : 'bg-arcx-purple/80 hover:bg-arcx-purple/90';
   const title = currentSide === 'left' ? 'ARCX' : 'AI/ML';
   const buttonText = currentSide === 'left' ? 'Buy' : 'Support';
-  const textOrientationClass = currentSide === 'left' ? 'transform rotate-180' : '';
+  const textOrientationClass = '';
   
   const positionClass = currentSide === 'left' 
     ? 'left-0 border-r border-white/5' 
@@ -86,7 +86,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection }) => {
   return (
     <header className={headerClasses}>
       <div 
-        className={`${themeColor} font-light text-2xl tracking-[0.3em] writing-mode-vertical-rl cursor-pointer ${textOrientationClass}`} 
+        className={`${themeColor} font-light text-2xl tracking-[0.3em] writing-mode-vertical-rl cursor-pointer`} 
         onClick={(e) => scrollToSection(e, '#entry')}>
         {title}
       </div>
@@ -96,16 +96,16 @@ const Header: React.FC<HeaderProps> = ({ activeSection }) => {
             key={link.name} 
             href={link.href} 
             onClick={(e) => scrollToSection(e, link.href)} 
-            className={`text-gray-600 ${hoverThemeColor} transition-colors duration-300 group`}
+            className={`text-gray-400 ${hoverThemeColor} transition-all duration-300 group`}
             aria-label={`Go to ${link.name} section`}
-            >
-            <span className={`writing-mode-vertical-rl tracking-[0.2em] uppercase text-xs font-light ${textOrientationClass}`}>{link.name}</span>
+          >
+            <span className={`writing-mode-vertical-rl tracking-[0.2em] uppercase text-xs font-light`}>{link.name}</span>
           </a>
         ))}
       </nav>
-       <a href={buyLink} target="_blank" rel="noopener noreferrer" className={`${buyBgColor} text-white font-semibold py-3 px-2 rounded-sm text-xs transition-all duration-300 writing-mode-vertical-rl tracking-widest uppercase ${textOrientationClass}`}>
-            {buttonText}
-       </a>
+      <a href={buyLink} target="_blank" rel="noopener noreferrer" className={`${buyBgColor} text-white font-semibold py-3 px-2 rounded-sm text-xs transition-all duration-300 writing-mode-vertical-rl tracking-widest uppercase`}>
+        {buttonText}
+      </a>
     </header>
   );
 };

@@ -1,3 +1,16 @@
+.entry-dim {
+  filter: brightness(0.7) grayscale(0.15) contrast(0.95);
+  transition: filter 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.entry-fade {
+  transition: opacity 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.amoled-fadeout {
+  opacity: 0 !important;
+}
+.amoled-blackout-entry {
+  background: #000 !important;
+}
 /* Horizontal Website Integration Styles */
 .horizontal-section-wrapper {
   width: 100vw;
@@ -9,6 +22,7 @@
   position: relative;
   z-index: 10;
 }
+
 .horizontal-container {
   display: flex;
   width: 100%;
@@ -17,6 +31,39 @@
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
+  scrollbar-color: transparent transparent;
+  scrollbar-width: thin;
+}
+
+/* Hide default bottom scrollbar, show custom at top */
+.horizontal-container::-webkit-scrollbar {
+  height: 0 !important;
+  display: none;
+}
+
+/* Custom top scrollbar container */
+
+.diagonal-half {
+  transition: transform 0.5s cubic-bezier(0.4,0,0.2,1), filter 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.diagonal-lift {
+  transform: translateY(-18px) scale(1.04);
+}
+.diagonal-bright {
+  filter: none;
+  z-index: 30;
+}
+
+.amoled-blackout {
+  background: #000 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  transition: background 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.amoled-blackout .section {
+  background: #000 !important;
+  box-shadow: none !important;
+  filter: none !important;
 }
 .section {
   width: 100vw;
