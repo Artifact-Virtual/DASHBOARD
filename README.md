@@ -1,103 +1,119 @@
-## ARTIFACT VIRTUAL DASHBOARD
+## ARTIFACT VIRTUAL — MONOREPO OVERVIEW
 
 <p align="center">
-  <img src="https://img.shields.io/badge/React-18.2.0-61DAFB?logo=react&logoColor=white" alt="React" />
-  <img src="https://img.shields.io/badge/TypeScript-5.4.5-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Vite-5.2.10-646CFF?logo=vite&logoColor=white" alt="Vite" />
-  <img src="https://img.shields.io/badge/TailwindCSS-3.4.1-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/React-18.x-61DAFB?logo=react&logoColor=white" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite-6.x-646CFF?logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/TailwindCSS-3.x-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
   <img src="https://img.shields.io/badge/Node.js-20.x-339933?logo=node.js&logoColor=white" alt="Node.js" />
-      <img src="https://img.shields.io/badge/Systemd-252-0078D6?logo=linux&logoColor=white" alt="Systemd" />
-  <img src="https://img.shields.io/badge/Linux-Ubuntu-FF8800?logo=ubuntu&logoColor=white" alt="Linux" />
+  <img src="https://img.shields.io/badge/Solidity-0.8.x-black" alt="Solidity" />
+  <img src="https://img.shields.io/badge/Hardhat-2.x-yellow" alt="Hardhat" />
+  <img src="https://img.shields.io/badge/Express-4.x-black" alt="Express" />
+  <img src="https://img.shields.io/badge/Systemd-252-0078D6?logo=linux&logoColor=white" alt="Systemd" />
+  <img src="https://img.shields.io/badge/Nginx-1.2x-009639?logo=nginx&logoColor=white" alt="Nginx" />
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Build-Passing-brightgreen?logo=githubactions&logoColor=white" alt="Build Status" />
-  <img src="https://img.shields.io/badge/Network-Cloudflare-orange?logo=cloudflare&logoColor=white" alt="Network" />
-  <img src="https://img.shields.io/badge/Nginx-1.24.0-009639?logo=nginx&logoColor=white" alt="Nginx" />
-  <img src="https://img.shields.io/badge/Status-Live-brightgreen?logo=vercel&logoColor=white" alt="Status" />
-</p>
+Welcome to the Artifact Virtual monorepo. This repository is the central hub for all core infrastructure, including:
 
-Welcome to the main dashboard for Artifact Virtual. This foundation is designed to evolve and expand as new systems and capabilities are introduced and interconnected. This project is more than a landing page: it is the central hub for Artifact Virtual’s growing ecosystem, built to support future integrations, research, and advanced features.
+- **Smart contracts** (Solidity, Hardhat)
+- **Backend API** (Node.js, Express)
+- **Frontend webapp** (`/www`, React 18, TypeScript, Vite, Tailwind)
+- **Configuration** (Nginx, scripts)
+- **Documentation** (Markdown, diagrams)
+- **Data & research** (AI/ML, research DB)
 
-Currently, the dashboard is accessible worldwide via a secure Cloudflare tunnel. The long-term vision is to transition to a  production-grade deployment using SSL certificates and direct hosting on port 80, ensuring robust, secure, and seamless access. ISP limitations are being aggressively addressed to enable this transition.
+---
 
-Whether you’re contributing, deploying, or exploring, this repository is the starting point for Artifact Virtual’s journey toward a unified, extensible platform.
+## Monorepo Structure
 
-## Service Management & Resilience
-
-This project uses a systemd service (`artifactvirtual.service`) for robust management. Services started via systemd will continue running even if you log out, disconnect your terminal, or close your SSH session. 
-
-**Note:** If your computer goes to sleep or hibernates (e.g., lid closed), all processes—including systemd services—will pause until the system wakes up. On wake, systemd will resume services automatically if configured with restart policies.
-
-
-
-### Managing the Service
-
-Use the provided `service.sh` script for easy management:
-
-```bash
-./service.sh start      # Start the service
-./service.sh stop       # Stop the service
-./service.sh restart    # Restart the service
-./service.sh status     # Show service status
-./service.sh logs       # Show live service logs
-./service.sh enable     # Enable auto-start on boot
-./service.sh disable    # Disable auto-start on boot
-./service.sh test       # Test if site is accessible
+```
+contracts/   # Solidity smart contracts, deployment, tests
+server/      # Node.js backend API, aggregator, integration
+www/         # Main frontend webapp (React, TypeScript, Vite)
+config/      # Nginx config, automation scripts
+docs/        # API, DEX, auction, and technical docs
+data/        # Deep technical/business docs, research DB
 ```
 
-For direct systemd commands:
-
-```bash
-sudo systemctl start artifactvirtual.service
-sudo systemctl stop artifactvirtual.service
-sudo systemctl status artifactvirtual.service
-```
+---
 
 ## Quick Start
 
 ```bash
-# Start everything (nginx + cloudflare tunnel)
-./start.sh
+# Install dependencies for all packages
+cd contracts && npm install
+cd ../server && npm install
+cd ../www && npm install
 
-# Stop everything
-./stop.sh
+# Start backend API
+cd ../server && npm run start
+
+# Start frontend (in another terminal)
+cd ../www && npm run dev
 ```
 
-## Structure
+---
 
-```
-cert-nginx/
-├── start.sh              # Main startup script
-├── stop.sh               # Stop script  
-├── config/
-│   ├── nginx.conf         # Minimal nginx config
-│   └── mime.types         # File type mappings
-├── ssl/
-│   └── certs/            # SSL certificates (kept for future use)
-│       ├── server.crt
-│       └── server.key
-└── www/
-    ├── README.md         # React app documentation
-    └── dist/             # Built React application
-        ├── index.html    # Main HTML file
-        ├── assets/       # JS/CSS bundles
-        └── *.png         # Logo assets
-```
+## Service Management
 
-## What the start script does
+Systemd service (`artifactvirtual.service`) and shell scripts (`service.sh`, `start-systemd.sh`, `stop-systemd.sh`) are provided for robust deployment and management. See `project_overview.md` for full details.
 
-1. 🔍 Kills any processes using port 8080
-2. 🌐 Starts nginx on port 8080 serving the React landing page
-3. ☁️ Starts Cloudflare tunnel connecting to localhost:8080
-4. ✅ Verifies everything is working
+---
 
-## Access
+## Key Features
 
-- **Global**: <https://www.artifactvirtual.com>
-- **Local**: <http://localhost:8080>
+- **Smart Contracts**: ProfileRegistry, SimpleSwap, OpenZeppelin, multi-chain ready, tested with Hardhat.
+- **Backend API**: Express, aggregator endpoints for DEX/quotes, rate limiting, CORS, health checks, in-memory caching, OKX/other integrations.
+- **Frontend Webapp**: `/www` — see below for full details.
+- **DevOps**: Automated scripts, systemd, multi-environment support, Nginx reverse proxy, Cloudflare tunnel.
+- **Security**: Audited contracts, rate limiting, CORS, compliance frameworks, audit logging.
+- **AI/ML & Research**: Research pipelines, semantic search, quantum research support.
 
-## Features
+---
+
+## /www — Main Webpage (Frontend)
+
+**Tech Stack:** React 18, TypeScript, Vite, Tailwind CSS, Radix UI, Shadcn/ui, Lucide icons, React Query, React Router, ethers, wagmi, viem, three.js, recharts, and more.
+
+**Component Architecture:** Highly modular, with feature-specific folders (`components/`, `pages/`, `hooks/`, `lib/`, `contracts/`).
+
+**Routing:** SPA with lazy-loaded routes for performance. Main routes: `/`, `/articles`, `/research`, `/dashboard`, `/systemmap`, `/swap`, `/profile`, `/eth`, `/design`, and fallback for 404.
+
+**UI/UX:** Modern, animated, mobile-first, with custom backgrounds, interactive hero, horizontal scroll panels, and advanced visualizations.
+
+**State Management:** React Query for data fetching/caching, Context for global state, custom hooks for wallet and swap logic.
+
+**Web3 Integration:** Wallet connection (wagmi, ethers, viem), on-chain profile publishing, contract interaction.
+
+**Research & Blog:** Markdown-driven blog and research sections, dynamic routing, and content loading.
+
+**System Architecture:** Visualized in `SystemArchitecture.tsx`—shows integration of FastAPI backend, React IDE, AROS (AI/automation), templates, real-time sync, and plugin ecosystem.
+
+**Real-Time & Plugins:** Designed for live collaboration, plugin/extension management, and hot-reload development.
+
+**Assets:** Logos, images, and public assets in `/public`.
+
+**Notable Features:**
+- HorizontalApp: Unique horizontal scroll experience for ecosystem navigation.
+- GloriousParticleLoader, NoiseLinesBackground, MouseRepelCanvas: Advanced visual/interactive components.
+- FloatingSidebar, TopRightConnect: Persistent navigation and wallet connection.
+- System Map, Dashboard, Swap, Profile: Rich, interactive, and data-driven pages.
+- AI/ML & Research: Integration with research pipelines, semantic search, and future quantum features.
+
+---
+
+## Documentation & Further Reading
+
+- `project_overview.md`: Authoritative, exhaustive context and insights for the entire workspace.
+- `ROADMAP.md`: Technical roadmap, tasks, and status.
+- `data/information-sheet.md`: Deep technical/business documentation.
+- `docs/`: API, DEX, and secure auction docs.
+
+---
+
+## License
+
+MIT License. See `LICENSE` for details.
 
 - **Modern React App**: Built with TypeScript, Vite, and Tailwind CSS
 - **Blog System**: Integrated markdown blog functionality
