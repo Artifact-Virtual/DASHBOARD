@@ -105,6 +105,13 @@ const TopRightConnect: React.FC = () => {
                 <div className="flex items-center gap-2 w-full">
                   <EthBalance className="text-xs text-white/80" />
                 </div>
+                <a
+                  href="/profile"
+                  className="px-3 py-2 rounded bg-cyan-700/80 hover:bg-cyan-700/90 text-white text-center mt-1 w-full block transition"
+                  style={{ textDecoration: 'none' }}
+                >
+                  View Profile
+                </a>
                 <button onClick={() => disconnect()} className="px-3 py-2 rounded bg-white/5 mt-1 w-full">Disconnect</button>
               </div>
             ) : (
