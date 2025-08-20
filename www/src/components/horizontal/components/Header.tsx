@@ -50,7 +50,8 @@ const Header: React.FC<HeaderProps> = ({ activeSection }) => {
   const currentSide = isArcx ? 'left' : isAi ? 'right' : lastPosition;
 
   const navLinks = currentSide === 'left' ? arcxLinks : aiLinks;
-  const themeColor = currentSide === 'left' ? 'text-arcx-orange' : 'text-arcx-purple';
+  // Title text should always be black
+  const themeColor = 'text-black';
   const hoverThemeColor = currentSide === 'left' ? 'hover:text-arcx-orange/90 hover:scale-110' : 'hover:text-arcx-purple/90 hover:scale-110';
   const buyBgColor = currentSide === 'left' ? 'bg-arcx-orange/80 hover:bg-arcx-orange/90' : 'bg-arcx-purple/80 hover:bg-arcx-purple/90';
   const title = currentSide === 'left' ? 'ARCX' : 'AI/ML';
@@ -65,11 +66,11 @@ const Header: React.FC<HeaderProps> = ({ activeSection }) => {
   if (!isVisible) return null;
 
   const headerClasses = [
-    'fixed', 'top-0', 'h-screen', 'w-16',
+    'absolute', 'top-0', 'h-screen', 'w-16', 'md:w-20', 'xl:w-24',
     'bg-gradient-to-b',
     currentSide === 'left'
-      ? 'from-arcx-orange/90 via-black/90 to-black/80'
-      : 'from-arcx-purple/90 via-black/90 to-black/80',
+      ? 'from-arcx-orange/90 via-black/95 to-black/95'
+      : 'from-arcx-purple/90 via-black/95 to-black/95',
     'backdrop-blur-lg', 'z-50',
     'flex', 'flex-col', 'items-center', 'justify-between', 'py-8',
     'shadow-2xl', 'border-white/10',
