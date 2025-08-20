@@ -2,7 +2,7 @@
 
 # ARCx Token
 
-> Enterprise-Grade Genesis Token for Constitutional Intelligence Infrastructure  
+> Enterprise-Grade Genesis Token for Explainable Artificial Infrastructure  
 ![Live](https://img.shields.io/badge/Status-Live-00FF88?style=for-the-badge) 
 ![Base](https://img.shields.io/badge/Network-Base%20L2-0052FF?style=for-the-badge) 
 ![V4](https://img.shields.io/badge/DEX-Uniswap%20V4-FF0080?style=for-the-badge) 
