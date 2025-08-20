@@ -20,6 +20,7 @@ interface NavItem {
   href?: string;
   route?: string;
   action?: () => void;
+  disabled?: boolean;
 }
 
 function getSystemTheme() {
@@ -105,8 +106,8 @@ const FloatingSidebar: React.FC = () => {
     { id: 'home', icon: Home, label: 'Home', route: '/' },
     { id: 'articles', icon: BookOpen, label: 'Articles', route: '/articles' },
     { id: 'research', icon: FileText, label: 'Research', route: '/research' },
-    { id: 'dashboard', icon: Cpu, label: 'Dashboard', route: '/dashboard' },
-    { id: 'alpha', icon: FlaskConical, label: 'Alpha', href: '#alpha' },
+    { id: 'dashboard', icon: Cpu, label: 'Dashboard', route: '/dashboard', disabled: true },
+    { id: 'alpha', icon: FlaskConical, label: 'Alpha', href: '#alpha', disabled: true },
     { id: 'exchange', icon: ArrowLeftRight, label: 'Exchange', route: '/swap' },
     {
       id: 'github',
@@ -181,12 +182,14 @@ const FloatingSidebar: React.FC = () => {
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeItem === item.id;
+          const isDisabled = (item as any).disabled;
           return (
             <div
               key={item.id}
-              onClick={() => handleItemClick(item)}
-              className={`relative flex items-center cursor-pointer group transition-all duration-200 mb-1 last:mb-0 rounded-xl px-3 py-2
-                ${isActive
+              onClick={() => { if (!isDisabled) handleItemClick(item); }}
+              className={`relative flex items-center group transition-all duration-200 mb-1 last:mb-0 rounded-xl px-3 py-2
+                ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                ${isActive && !isDisabled
                   ? theme === 'light'
                     ? 'bg-black/10'
                     : 'bg-white/10'
@@ -195,10 +198,12 @@ const FloatingSidebar: React.FC = () => {
                   : 'hover:bg-white/5'
                 }`}
               style={{ minHeight: 40 }}
+              tabIndex={isDisabled ? -1 : 0}
+              aria-disabled={isDisabled ? 'true' : undefined}
             >
               <div
                 className={`flex-shrink-0 transition-all duration-200
-                  ${isActive
+                  ${isActive && !isDisabled
                     ? theme === 'light'
                       ? 'text-black'
                       : 'text-white'
@@ -212,7 +217,7 @@ const FloatingSidebar: React.FC = () => {
               <div
                 className={`ml-3 text-base font-light tracking-wide transition-all duration-200 whitespace-nowrap overflow-hidden
                   ${isExpanded ? 'opacity-100 max-w-xs' : 'opacity-0 max-w-0'}
-                  ${isActive
+                  ${isActive && !isDisabled
                     ? theme === 'light'
                       ? 'text-black'
                       : 'text-white'
@@ -224,7 +229,7 @@ const FloatingSidebar: React.FC = () => {
               >
                 {item.label}
               </div>
-              {isActive && (
+              {isActive && !isDisabled && (
                 <div
                   className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full
                     ${theme === 'light' ? 'bg-black' : 'bg-white'}`}
@@ -232,7 +237,7 @@ const FloatingSidebar: React.FC = () => {
               )}
               <div
                 className={`absolute inset-0 rounded-xl transition-all duration-200 pointer-events-none
-                  ${isActive
+                  ${isActive && !isDisabled
                     ? theme === 'light'
                       ? 'shadow-lg shadow-black/10'
                       : 'shadow-lg shadow-white/10'
