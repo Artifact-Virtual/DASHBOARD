@@ -21,7 +21,11 @@ import SentinelPage from './components/ai/SentinelPage';
 import AiJoin from './components/ai/AiJoin';
 
 
-const App: React.FC = () => {
+interface AppProps {
+  onActiveSectionChange?: (section: string) => void;
+}
+
+const App: React.FC<AppProps> = ({ onActiveSectionChange }) => {
   const [activeSection, setActiveSection] = useState('entry');
   const observer = useRef<IntersectionObserver | null>(null);
   const mainContainerRef = useRef<HTMLElement | null>(null);
@@ -51,6 +55,7 @@ const App: React.FC = () => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           setActiveSection(entry.target.id);
+          if (onActiveSectionChange) onActiveSectionChange(entry.target.id);
         }
       });
     };
@@ -63,17 +68,15 @@ const App: React.FC = () => {
     return () => {
       sections.forEach(section => observer.current?.unobserve(section));
     };
-  }, []);
+  }, [onActiveSectionChange]);
 
   return (
     <>
+  {/* Header will be rendered by parent (Index.tsx) when horizontal section is in view */}
       <main id="main-container" className="horizontal-container">
         {/* AI & ML Universe (Left Side) - Journey starts at Hero, next to Entry */}
         <section id="ai-join" className="section"><AiJoin /></section>
-        <section id="ai-sentinel" className="section">
-          <Header activeSection={activeSection} />
-          <SentinelPage />
-        </section>
+        <section id="ai-sentinel" className="section"><SentinelPage /></section>
         <section id="ai-reason" className="section"><ReasonPage /></section>
         <section id="ai-legion" className="section"><LegionPage /></section>
         <section id="ai-home" className="section"><AiHero /></section>

@@ -61,17 +61,24 @@ const Header: React.FC<HeaderProps> = ({ activeSection }) => {
     ? 'left-0 border-r border-white/5' 
     : 'right-0 border-l border-white/5';
 
-  // Only render header if in the ai-sentinel section
-  // (activeSection === 'ai-sentinel' is not strictly needed, since it's only rendered there)
+  // If not visible, do not render the header at all
+  if (!isVisible) return null;
 
   const headerClasses = [
-    'absolute', 'top-0', 'left-0', 'h-full', 'w-16',
+    'fixed', 'top-0', 'h-screen', 'w-16',
     'bg-gradient-to-b',
-    'from-arcx-purple/90', 'via-black/90', 'to-black/80',
-    'backdrop-blur-lg', 'z-10',
+    currentSide === 'left'
+      ? 'from-arcx-orange/90 via-black/90 to-black/80'
+      : 'from-arcx-purple/90 via-black/90 to-black/80',
+    'backdrop-blur-lg', 'z-50',
     'flex', 'flex-col', 'items-center', 'justify-between', 'py-8',
     'shadow-2xl', 'border-white/10',
     'transition-transform', 'duration-500', 'ease-in-out',
+    positionClass,
+    // Slide in from left or right
+    currentSide === 'left'
+      ? 'translate-x-0 -translate-y-0'
+      : 'translate-x-0 -translate-y-0',
   ].join(' ');
   
   const buyLink = currentSide === 'left' ? "https://app.uniswap.org/swap?outputCurrency=0x25aB350b5575510B52705657f9552a9263914f44" : "#";

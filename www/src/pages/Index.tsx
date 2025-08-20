@@ -16,6 +16,8 @@ import '../styles/LiveMarket.css';
 
 // Import the Entry (ARC:0) page from the horizontal app
 import HorizontalApp from '../components/horizontal/App';
+import Header from '../components/horizontal/components/Header';
+// import Header from '../components/horizontal/components/Header';
 
 function getSystemTheme() {
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
@@ -34,7 +36,10 @@ const Index = () => {
   const horizontalSectionRef = useRef<HTMLDivElement | null>(null);
   // Ref for the horizontal app's main container
   const horizontalAppContainerRef = useRef<HTMLDivElement | null>(null);
-  // Show floating arrow only when horizontal section is in view
+  const [showHorizontalHeader, setShowHorizontalHeader] = useState(false);
+  const [horizontalActiveSection, setHorizontalActiveSection] = useState('entry');
+  // const [showHorizontalHeader, setShowHorizontalHeader] = useState(false);
+  // Show floating arrow and header only when horizontal section is in view
   // Also reset horizontal scroll when leaving the section
   useEffect(() => {
     const section = horizontalSectionRef.current;
@@ -42,6 +47,7 @@ const Index = () => {
     const observer = new window.IntersectionObserver(
       ([entry]) => {
         setShowArrow(entry.isIntersecting);
+        setShowHorizontalHeader(entry.isIntersecting);
         if (!entry.isIntersecting) {
           // Reset horizontal scroll to the entry (center) section when leaving
           const mainContainer = document.getElementById('main-container');
@@ -157,8 +163,9 @@ const Index = () => {
       </section>
 
       {/* Horizontal Website Section (native, not iframe) */}
+      {showHorizontalHeader && <Header activeSection={horizontalActiveSection} />}
       <section className="horizontal-section-wrapper" ref={horizontalSectionRef}>
-        <HorizontalApp />
+        <HorizontalApp onActiveSectionChange={setHorizontalActiveSection} />
       </section>
 
       {/* Section 2: The Artifact Thesis */}
