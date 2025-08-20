@@ -197,43 +197,50 @@ const Index = () => {
       </section>
 
       {/* Section 3: Core Disciplines */}
-  <section id="disciplines" className="relative z-20 bg-black/50 backdrop-blur-md py-16 sm:py-24 px-4 sm:px-8 overflow-hidden min-h-[60vh] flex items-center">
-        {/* Modern immersive green accent effect (SVG, animated, layered) */}
-        <div
-          aria-hidden="true"
-          className="absolute left-1/2 top-0 -translate-x-1/3 -translate-y-1/4 w-[60vw] h-[40vw] max-w-[900px] max-h-[600px] z-10 pointer-events-none select-none"
-          style={{ filter: 'blur(32px)', opacity: 0.22 }}
-        >
-          <svg width="100%" height="100%" viewBox="0 0 900 600" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-            <defs>
-              <radialGradient id="greenGlow" cx="60%" cy="40%" r="80%" fx="60%" fy="40%">
-                <stop offset="0%" stopColor="#00ff88" stopOpacity="0.7" />
-                <stop offset="60%" stopColor="#00ff88" stopOpacity="0.18" />
-                <stop offset="100%" stopColor="#00ff88" stopOpacity="0" />
-              </radialGradient>
-              <linearGradient id="greenWave" x1="0" y1="0" x2="900" y2="600" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#00ff88" stopOpacity="0.18" />
-                <stop offset="1" stopColor="#00ff88" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            <ellipse cx="540" cy="220" rx="320" ry="160" fill="url(#greenGlow)"/>
-            <path d="M0 500 Q 300 400 900 520" stroke="url(#greenWave)" strokeWidth="80" fill="none"/>
-            <ellipse cx="700" cy="420" rx="90" ry="60" fill="#00ff8899">
-              <animate attributeName="rx" values="90;120;90" dur="7s" repeatCount="indefinite"/>
-              <animate attributeName="ry" values="60;80;60" dur="7s" repeatCount="indefinite"/>
-            </ellipse>
-            <ellipse cx="300" cy="350" rx="60" ry="40" fill="#00ff8844">
-              <animate attributeName="cx" values="300;350;300" dur="9s" repeatCount="indefinite"/>
-              <animate attributeName="ry" values="40;60;40" dur="9s" repeatCount="indefinite"/>
-            </ellipse>
-          </svg>
-        </div>
+  <section
+    id="disciplines"
+    className="relative z-20 bg-black/50 backdrop-blur-md py-16 sm:py-24 px-4 sm:px-8 overflow-hidden min-h-[60vh] flex items-center group disciplines-isolate"
+  >
+    {/* Modern immersive green accent effect (SVG, animated, layered) */}
+    <div
+      aria-hidden="true"
+      className="absolute left-1/2 top-0 -translate-x-1/3 -translate-y-1/4 w-[60vw] h-[40vw] max-w-[900px] max-h-[600px] z-10 pointer-events-none select-none disciplines-greenblob"
+    >
+      <svg width="100%" height="100%" viewBox="0 0 900 600" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        <defs>
+          <radialGradient id="greenGlow" cx="60%" cy="40%" r="80%" fx="60%" fy="40%">
+            <stop offset="0%" stopColor="#00ff88" stopOpacity="0.7" />
+            <stop offset="60%" stopColor="#00ff88" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="#00ff88" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="greenWave" x1="0" y1="0" x2="900" y2="600" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#00ff88" stopOpacity="0.18" />
+            <stop offset="1" stopColor="#00ff88" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <ellipse cx="540" cy="220" rx="320" ry="160" fill="url(#greenGlow)"/>
+        <path d="M0 500 Q 300 400 900 520" stroke="url(#greenWave)" strokeWidth="80" fill="none"/>
+        <ellipse cx="700" cy="420" rx="90" ry="60" fill="#00ff8899">
+          <animate attributeName="rx" values="90;120;90" dur="7s" repeatCount="indefinite"/>
+          <animate attributeName="ry" values="60;80;60" dur="7s" repeatCount="indefinite"/>
+        </ellipse>
+        <ellipse cx="300" cy="350" rx="60" ry="40" fill="#00ff8844">
+          <animate attributeName="cx" values="300;350;300" dur="9s" repeatCount="indefinite"/>
+          <animate attributeName="ry" values="40;60;40" dur="9s" repeatCount="indefinite"/>
+        </ellipse>
+      </svg>
+    </div>
+    {/* Black overlay that fades out on hover, now between SVG and text */}
+    <div
+      className="absolute inset-0 z-20 pointer-events-none transition-opacity duration-700 bg-black group-hover:opacity-0 opacity-100"
+      aria-hidden="true"
+    />
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 z-30 relative">
             <h2 className="text-3xl sm:text-5xl font-light text-white tracking-wider">Core Disciplines</h2>
             <p className="mt-4 text-lg text-neutral-500 font-light max-w-2xl mx-auto">Our research is focused on foundational technologies that will power the next generation of decentralized systems.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 z-30 relative">
             {/* Card 1: Autonomous Systems */}
             <div className="bg-neutral-950/20 backdrop-blur-sm p-8 rounded-lg transition-all duration-300 hover:bg-neutral-950/30 hover:-translate-y-2">
               <div className="flex items-center justify-center w-12 h-12 mb-6 border border-neutral-800 rounded-lg bg-black">

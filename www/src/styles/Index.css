@@ -1,3 +1,13 @@
+/* Ensure isolation for overlay stacking context in Core Disciplines section */
+.disciplines-isolate {
+  isolation: isolate;
+}
+
+/* Green blob SVG blur and opacity for Core Disciplines */
+.disciplines-greenblob {
+  filter: blur(32px);
+  opacity: 0.22;
+}
 .entry-dim {
   filter: brightness(0.7) grayscale(0.15) contrast(0.95);
   transition: filter 0.4s cubic-bezier(0.4,0,0.2,1);
