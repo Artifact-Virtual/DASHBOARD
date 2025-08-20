@@ -104,7 +104,7 @@ const FloatingSidebar: React.FC = () => {
   const navItems: NavItem[] = [
     { id: 'home', icon: Home, label: 'Home', route: '/' },
     { id: 'swap', icon: ArrowLeftRight, label: 'Swap', route: '/swap' },
-    { id: 'blog', icon: BookOpen, label: 'Blog', route: '/blog' },
+  { id: 'articles', icon: BookOpen, label: 'Articles', route: '/articles' },
     { id: 'research', icon: FileText, label: 'Research', route: '/research' },
     { id: 'dashboard', icon: Cpu, label: 'Dashboard', route: '/dashboard' },
     { id: 'alpha', icon: FlaskConical, label: 'Alpha', href: '#alpha' },

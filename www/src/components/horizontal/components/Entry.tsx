@@ -14,7 +14,7 @@ const ChevronLeftIcon: React.FC<{className?: string}> = ({className}) => (
 
 const Entry: React.FC = () => {
   return (
-    <div className="w-full h-full bg-arcx-black relative overflow-hidden">
+    <div className="w-full h-full bg-arcx-black relative overflow-hidden group">
         {/* Subtle background glows */}
         <div className="absolute top-0 left-0 h-full w-2/3 bg-[radial-gradient(ellipse_at_left,_rgba(115,0,255,0.2),_transparent_70%)] animate-pulse-slow pointer-events-none z-0"></div>
         <div className="absolute top-0 right-0 h-full w-2/3 bg-[radial-gradient(ellipse_at_right,_rgba(255,69,0,0.15),_transparent_70%)] animate-pulse-slow pointer-events-none z-0"></div>
@@ -32,7 +32,7 @@ const Entry: React.FC = () => {
         {/* Diagonal Split Layers */}
         {/* AI/ML Side (Left) */}
         <div 
-            className="absolute inset-0 z-20 group" 
+            className="absolute inset-0 z-20" 
             style={{clipPath: 'polygon(0 0, 100% 0, 0 100%)'}}
         >
             <div className="w-full h-full relative flex items-start justify-start p-16 transition-all duration-700 opacity-0 group-hover:opacity-100 bg-gradient-to-br from-arcx-purple/10 to-transparent">
@@ -47,7 +47,7 @@ const Entry: React.FC = () => {
 
         {/* ARCX Side (Right) */}
         <div 
-            className="absolute inset-0 z-20 group"
+            className="absolute inset-0 z-20"
             style={{clipPath: 'polygon(100% 0, 100% 100%, 0 100%)'}}
         >
              <div className="w-full h-full relative flex items-end justify-end p-16 transition-all duration-700 opacity-0 group-hover:opacity-100 bg-gradient-to-tl from-arcx-orange/10 to-transparent">

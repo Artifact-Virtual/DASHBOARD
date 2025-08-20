@@ -18,6 +18,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection }) => {
   
   const isArcx = activeSection.startsWith('arcx');
   const isAi = activeSection.startsWith('ai');
+  // Only show header if in an ARCX or AI section
   const isVisible = isArcx || isAi;
   
   useEffect(() => {
@@ -60,13 +61,17 @@ const Header: React.FC<HeaderProps> = ({ activeSection }) => {
     ? 'left-0 border-r border-white/5' 
     : 'right-0 border-l border-white/5';
 
+  // Only render header if in the ai-sentinel section
+  // (activeSection === 'ai-sentinel' is not strictly needed, since it's only rendered there)
+
   const headerClasses = [
-    'absolute', 'top-0', 'h-screen', 'w-16', // Changed 'fixed' to 'absolute'
-    'bg-black/30', 'backdrop-blur-sm', 'z-50',
+    'absolute', 'top-0', 'left-0', 'h-full', 'w-16',
+    'bg-gradient-to-b',
+    'from-arcx-purple/90', 'via-black/90', 'to-black/80',
+    'backdrop-blur-lg', 'z-10',
     'flex', 'flex-col', 'items-center', 'justify-between', 'py-8',
-    'transition-all', 'duration-300', 'ease-in-out',
-    !isVisible && 'transform -translate-y-full opacity-0 pointer-events-none', 
-    positionClass,
+    'shadow-2xl', 'border-white/10',
+    'transition-transform', 'duration-500', 'ease-in-out',
   ].join(' ');
   
   const buyLink = currentSide === 'left' ? "https://app.uniswap.org/swap?outputCurrency=0x25aB350b5575510B52705657f9552a9263914f44" : "#";

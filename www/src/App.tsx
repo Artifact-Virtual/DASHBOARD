@@ -11,8 +11,8 @@ import TopRightConnect from './components/wallet/TopRightConnect';
 
 // Lazy-load route pages to reduce initial bundle size (code-splitting)
 const Index = lazy(() => import('./pages/Index'));
-const Blog = lazy(() => import('./pages/Blog'));
-const BlogPost = lazy(() => import('./pages/BlogPost'));
+const Articles = lazy(() => import('./pages/Articles'));
+const ArticlePost = lazy(() => import('./pages/ArticlePost'));
 const Research = lazy(() => import('./pages/Research'));
 const ResearchPost = lazy(() => import('./pages/ResearchPost'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -38,8 +38,8 @@ const App = () => (
             <Suspense fallback={<div className="min-h-screen" /> }>
               <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/articles" element={<Articles />} />
+              <Route path="/articles/:slug" element={<ArticlePost />} />
               <Route path="/research" element={<Research />} />
               <Route path="/research/:slug" element={<ResearchPost />} />
               <Route path="/dashboard" element={<Dashboard />} />

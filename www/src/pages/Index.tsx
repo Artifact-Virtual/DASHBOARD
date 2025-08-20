@@ -15,7 +15,7 @@ import '../styles/LiveMarket.css';
 import '../styles/LiveMarket.css';
 
 // Import the Entry (ARC:0) page from the horizontal app
-import Entry from '../components/horizontal/components/Entry';
+import HorizontalApp from '../components/horizontal/App';
 
 function getSystemTheme() {
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
@@ -32,12 +32,25 @@ const Index = () => {
   const [showArrow, setShowArrow] = useState(false);
   const welcomeRef = useRef(null);
   const horizontalSectionRef = useRef<HTMLDivElement | null>(null);
+  // Ref for the horizontal app's main container
+  const horizontalAppContainerRef = useRef<HTMLDivElement | null>(null);
   // Show floating arrow only when horizontal section is in view
+  // Also reset horizontal scroll when leaving the section
   useEffect(() => {
     const section = horizontalSectionRef.current;
     if (!section) return;
     const observer = new window.IntersectionObserver(
-      ([entry]) => setShowArrow(entry.isIntersecting),
+      ([entry]) => {
+        setShowArrow(entry.isIntersecting);
+        if (!entry.isIntersecting) {
+          // Reset horizontal scroll to the entry (center) section when leaving
+          const mainContainer = document.getElementById('main-container');
+          const entrySection = document.getElementById('entry');
+          if (mainContainer && entrySection) {
+            mainContainer.scrollLeft = entrySection.offsetLeft;
+          }
+        }
+      },
       { threshold: 0.2 }
     );
     observer.observe(section);
@@ -143,9 +156,9 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ARC:0 Diagonal Entry Page (from horizontal app) */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-8 overflow-hidden">
-        <Entry />
+      {/* Horizontal Website Section (native, not iframe) */}
+      <section className="horizontal-section-wrapper" ref={horizontalSectionRef}>
+        <HorizontalApp />
       </section>
 
       {/* Section 2: The Artifact Thesis */}

@@ -125,21 +125,13 @@
       height: 100%;
       margin: 0;
       padding: 0;
-      overflow-y: auto; /* Allow vertical scroll */
-      overflow-x: hidden; /* Prevent horizontal scroll on body */
+      overflow: hidden; /* Prevent vertical scrollbar */
       background-color: #000000;
-      scroll-snap-type: y mandatory;
-    }
-    .vertical-section {
-      width: 100vw;
-      height: 100vh;
-      scroll-snap-align: start;
-      position: relative; /* Contain absolute children */
     }
     .horizontal-container {
       display: flex;
       width: 100%;
-      height: 100%; /* Fill parent vertical section */
+      height: 100vh;
       overflow-x: auto;
       overflow-y: hidden;
       scroll-snap-type: x mandatory;
@@ -147,7 +139,7 @@
     }
     .section {
       width: 100vw;
-      height: 100%; /* Fill horizontal container */
+      height: 100vh;
       flex-shrink: 0;
       scroll-snap-align: start;
       position: relative;
@@ -155,7 +147,6 @@
     /* Custom scrollbar */
     ::-webkit-scrollbar {
       height: 3px;
-      width: 3px;
     }
     ::-webkit-scrollbar-track {
       background: #0a0a0a;
