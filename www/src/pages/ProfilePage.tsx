@@ -56,8 +56,9 @@ const ProfilePage: React.FC = () => {
         status,
         updatedAt: new Date().toISOString(),
       };
-      const ipfs = await uploadJsonToIpfs(obj);
-      setCid(ipfs);
+  const ipfs = await uploadJsonToIpfs(obj);
+  setCid(ipfs);
+  window.localStorage.setItem('profile_cid', ipfs);
       if (walletClient) {
         const transport = (walletClient as any).transport || (window as any).ethereum;
         const tx = await setProfileOnchain(transport, ipfs);

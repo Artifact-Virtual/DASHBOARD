@@ -34,29 +34,33 @@ const App = () => (
         <BrowserRouter>
           <div className="relative w-full min-h-screen overflow-x-hidden">
             <TopRightConnect />
-            <FloatingSidebar />
+            {/* FloatingSidebar will be hidden when horizontal app is in view */}
+            <FloatingSidebar id="floating-sidebar" />
             <Suspense fallback={<div className="min-h-screen" /> }>
               <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/articles" element={<Articles />} />
-              <Route path="/articles/:slug" element={<ArticlePost />} />
-              <Route path="/research" element={<Research />} />
-              <Route path="/research/:slug" element={<ResearchPost />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/systemmap" element={<SystemMap />} />
-              <Route path="/swap" element={<Swap />} />
-              {/* Removed OnchainKitPage route */}
-              <Route path="/eth" element={<EthClient />} />
-              <Route path="/design" element={<AsymmetricShowcase />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </div>
-      </BrowserRouter>
-    </TooltipProvider>
-  {/* Removed OnchainKitProviderWrapper */}
-  </QueryClientProvider>
+                <Route path="/" element={<Index onHorizontalInViewChange={(inView) => {
+                  const sidebar = document.getElementById('floating-sidebar');
+                  if (sidebar) sidebar.style.display = inView ? 'none' : '';
+                }} />} />
+                <Route path="/articles" element={<Articles />} />
+                <Route path="/articles/:slug" element={<ArticlePost />} />
+                <Route path="/research" element={<Research />} />
+                <Route path="/research/:slug" element={<ResearchPost />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/systemmap" element={<SystemMap />} />
+                <Route path="/swap" element={<Swap />} />
+                {/* Removed OnchainKitPage route */}
+                <Route path="/eth" element={<EthClient />} />
+                <Route path="/design" element={<AsymmetricShowcase />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </div>
+        </BrowserRouter>
+      </TooltipProvider>
+    {/* Removed OnchainKitProviderWrapper */}
+    </QueryClientProvider>
 );
 
 export default App;

@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import useWalletWagmi from '@/hooks/useWalletWagmi';
 import { EthBalance } from './EthBalance';
 import { Name } from './Name';
+import { readProfileFromIpfs } from '@/lib/onchainProfile';
 
 const short = (addr?: string | null) => (addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : '')
 
@@ -10,7 +11,30 @@ const TopRightConnect: React.FC = () => {
   const { address, isConnected, connectMetaMask, connectInjected, connectWalletConnect, connectCoinbase, disconnect, detectInstalledWallets } = useWalletWagmi()
   const [open, setOpen] = useState(false)
   const [installed, setInstalled] = useState<Record<string, boolean>>({})
+  const [avatar, setAvatar] = useState<string | null>(null);
+  const [profileCid, setProfileCid] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement | null>(null)
+  // Fetch avatar from profile page (by CID in localStorage or window/global)
+  useEffect(() => {
+    // Try to get the latest profile CID from localStorage (set by ProfilePage)
+    const cid = window.localStorage.getItem('profile_cid');
+    if (cid && cid !== profileCid) setProfileCid(cid);
+  }, [profileCid]);
+
+  useEffect(() => {
+    // Fetch avatar from IPFS/Pinata if CID is present
+    const fetchAvatar = async () => {
+      if (!profileCid) return;
+      try {
+        const profile = await readProfileFromIpfs(profileCid);
+        if (profile && profile.avatar) setAvatar(profile.avatar);
+        else setAvatar(null);
+      } catch {
+        setAvatar(null);
+      }
+    };
+    fetchAvatar();
+  }, [profileCid]);
 
   useEffect(() => {
     // wallet detection
@@ -64,13 +88,17 @@ const TopRightConnect: React.FC = () => {
           {isConnected ? (
             <>
               <span className="inline-flex items-center gap-2">
-                {/* Unique monochrome Artifact Virtual SVG icon */}
-                <span className="w-6 h-6 rounded-full bg-gradient-to-br from-white/80 to-black/80 flex items-center justify-center mr-1">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="2" y="2" width="16" height="16" rx="5" fill="#fff" fillOpacity="0.12" />
-                    <path d="M6 14L10 6L14 14" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
-                    <circle cx="10" cy="10" r="9" stroke="#fff" strokeWidth="1.2" opacity="0.3"/>
-                  </svg>
+                {/* Profile Avatar (synced with ProfilePage) */}
+                <span className="w-6 h-6 rounded-full bg-gradient-to-br from-white/80 to-black/80 flex items-center justify-center mr-1 overflow-hidden">
+                  {avatar ? (
+                    <img src={avatar} alt="avatar" className="w-6 h-6 rounded-full object-cover" />
+                  ) : (
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="2" y="2" width="16" height="16" rx="5" fill="#fff" fillOpacity="0.12" />
+                      <path d="M6 14L10 6L14 14" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
+                      <circle cx="10" cy="10" r="9" stroke="#fff" strokeWidth="1.2" opacity="0.3"/>
+                    </svg>
+                  )}
                 </span>
                 <span className="font-mono text-sm max-w-[90px] truncate block" title={address}>{short(address)}</span>
               </span>
@@ -84,13 +112,17 @@ const TopRightConnect: React.FC = () => {
             {isConnected ? (
               <div className="flex flex-col gap-2 min-w-0 w-full max-w-xs sm:max-w-sm">
                 <div className="flex items-center gap-2 w-full">
-                  {/* Profile Icon */}
-                  <span className="w-9 h-9 rounded-full bg-gradient-to-br from-white/80 to-black/80 flex items-center justify-center flex-shrink-0">
-                    <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect x="2" y="2" width="16" height="16" rx="5" fill="#fff" fillOpacity="0.12" />
-                      <path d="M6 14L10 6L14 14" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
-                      <circle cx="10" cy="10" r="9" stroke="#fff" strokeWidth="1.2" opacity="0.3"/>
-                    </svg>
+                  {/* Profile Avatar (synced with ProfilePage) */}
+                  <span className="w-9 h-9 rounded-full bg-gradient-to-br from-white/80 to-black/80 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {avatar ? (
+                      <img src={avatar} alt="avatar" className="w-9 h-9 rounded-full object-cover" />
+                    ) : (
+                      <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="2" width="16" height="16" rx="5" fill="#fff" fillOpacity="0.12" />
+                        <path d="M6 14L10 6L14 14" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
+                        <circle cx="10" cy="10" r="9" stroke="#fff" strokeWidth="1.2" opacity="0.3"/>
+                      </svg>
+                    )}
                   </span>
                   <div className="flex flex-col min-w-0 flex-1">
                     <span className="font-semibold text-base text-white truncate leading-tight"><Name /></span>
