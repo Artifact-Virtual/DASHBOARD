@@ -1,3 +1,26 @@
+/* Hide horizontal scrollbar visually but allow scrolling */
+.horizontal-scrollbar-hide {
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+.horizontal-container {
+  height: 100vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none !important; /* Firefox */
+}
+.horizontal-container::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
+}
+/* Force hide horizontal scrollbar for horizontal app */
+.horizontal-container {
+  scrollbar-width: none !important; /* Firefox */
+}
+.horizontal-container::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
+}
 /* Ensure isolation for overlay stacking context in Core Disciplines section */
 .disciplines-isolate {
   isolation: isolate;

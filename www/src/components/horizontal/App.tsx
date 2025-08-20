@@ -73,30 +73,32 @@ const App: React.FC<AppProps> = ({ onActiveSectionChange }) => {
   }, [onActiveSectionChange]);
 
   return (
-    <main
-      id="main-container"
-      className={`horizontal-container${!isMouseInside ? ' amoled-blackout' : ''}`}
-      onMouseEnter={() => setIsMouseInside(true)}
-      onMouseLeave={() => setIsMouseInside(false)}
-    >
-      <Header activeSection={activeSection} />
-      {/* AI & ML Universe (Left Side) - Journey starts at Hero, next to Entry */}
-      <section id="ai-join" className="section"><AiJoin /></section>
-      <section id="ai-sentinel" className="section"><SentinelPage /></section>
-      <section id="ai-reason" className="section"><ReasonPage /></section>
-      <section id="ai-legion" className="section"><LegionPage /></section>
-      <section id="ai-home" className="section"><AiHero /></section>
-      {/* Central Entry Hub */}
-      <section id="entry" className="section"><Entry isDim={!isMouseInside} /></section>
-      {/* ARCX Ecosystem (Right Side) */}
-      <section id="arcx-home" className="section"><ArcxHero /></section>
-      <section id="arcx-about" className="section"><ArcxAbout /></section>
-      <section id="arcx-ecosystem" className="section"><ArcxEcosystem /></section>
-      <section id="arcx-security" className="section"><ArcxSecurity /></section>
-      <section id="arcx-tokenomics" className="section"><ArcxTokenomics /></section>
-      <section id="arcx-roadmap" className="section"><ArcxRoadmap /></section>
-      <section id="arcx-join" className="section"><ArcxJoin /></section>
-    </main>
+    <div className="horizontal-scrollbar-hide">
+      <main
+        id="main-container"
+        className={`horizontal-container${!isMouseInside ? ' amoled-blackout' : ''}`}
+        onMouseEnter={() => setIsMouseInside(true)}
+        onMouseLeave={() => setIsMouseInside(false)}
+      >
+        <Header activeSection={activeSection} />
+        {/* AI & ML Universe (Left Side) - Journey starts at Hero, next to Entry */}
+        <section id="ai-join" className="section"><AiJoin /></section>
+        <section id="ai-sentinel" className="section"><SentinelPage /></section>
+        <section id="ai-reason" className="section"><ReasonPage /></section>
+        <section id="ai-legion" className="section"><LegionPage /></section>
+        <section id="ai-home" className="section"><AiHero /></section>
+        {/* Central Entry Hub */}
+        <section id="entry" className="section"><Entry isDim={!isMouseInside} /></section>
+        {/* ARCX Ecosystem (Right Side) */}
+        <section id="arcx-home" className="section"><ArcxHero /></section>
+        <section id="arcx-about" className="section"><ArcxAbout /></section>
+        <section id="arcx-ecosystem" className="section"><ArcxEcosystem /></section>
+        <section id="arcx-security" className="section"><ArcxSecurity /></section>
+        <section id="arcx-tokenomics" className="section"><ArcxTokenomics /></section>
+        <section id="arcx-roadmap" className="section"><ArcxRoadmap /></section>
+        <section id="arcx-join" className="section"><ArcxJoin /></section>
+      </main>
+    </div>
   );
 };
 
