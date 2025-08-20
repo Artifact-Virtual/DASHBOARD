@@ -29,6 +29,8 @@ export default {
 				'precision': '0.05em',
 			},
 			colors: {
+				"arcx-orange": '#FF4500',
+				"arcx-purple": '#7300FF',
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

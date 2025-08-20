@@ -11,87 +11,30 @@ const DiscordIcon: React.FC<{ className?: string }> = ({ className }) => (
 
 
 const AiJoin: React.FC = () => {
-  const [hovered, setHovered] = React.useState<'left' | 'right' | null>(null);
   return (
     <div
       id="ai-join"
-      className="w-full h-full bg-arcx-black relative overflow-hidden group"
-      onMouseLeave={() => setHovered(null)}
+      className="w-full h-full bg-arcx-black relative flex flex-col items-center justify-center text-center p-8"
     >
-      {/* Subtle background glows */}
-      <div className="absolute top-0 left-0 h-full w-2/3 bg-[radial-gradient(ellipse_at_left,_rgba(115,0,255,0.18),_transparent_70%)] animate-pulse-slow pointer-events-none z-0"></div>
-      <div className="absolute top-0 right-0 h-full w-2/3 bg-[radial-gradient(ellipse_at_right,_rgba(255,69,0,0.10),_transparent_70%)] animate-pulse-slow pointer-events-none z-0"></div>
-      {/* Base Layer - Common Elements */}
-      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center p-8 pointer-events-none">
-        <h2 className="text-4xl md:text-6xl font-thin text-gray-200 tracking-[0.2em] uppercase">
-          Build The Future
-        </h2>
-        <p className="mt-4 text-gray-400 font-light max-w-xl mx-auto">
-          Join a network of innovators, researchers, and developers dedicated to building a transparent and decentralized future for AI.
-        </p>
+      <h2 className="text-4xl md:text-6xl font-thin text-gray-200 tracking-[0.2em] uppercase">
+        Build The Future
+      </h2>
+      <p className="mt-4 text-gray-400 font-light max-w-xl mx-auto">
+        Join a network of innovators, researchers, and developers dedicated to building a transparent and decentralized future for AI.
+      </p>
+      <div className="mt-8 flex flex-col items-center gap-4">
+        <a href="#entry" className="border border-arcx-purple text-arcx-purple px-8 py-3 rounded-md text-lg font-medium tracking-widest hover:bg-arcx-purple hover:text-white transition-colors duration-200">
+          Join the Network
+        </a>
+        <a href="#entry" className="border border-gray-500 text-gray-300 px-6 py-2 rounded-md text-base font-light tracking-widest hover:bg-gray-700 hover:text-white transition-colors duration-200">
+          Back to Centre
+        </a>
       </div>
-      {/* Diagonal Split Layers */}
-      {/* AI/ML Side (Left) */}
-      <div
-        className="absolute inset-0 z-20 entry-fade"
-        style={{clipPath: 'polygon(0 0, 100% 0, 0 100%)'}}
-        onMouseEnter={() => setHovered('left')}
-      >
-        <div className={`w-full h-full relative flex items-start justify-start p-16 transition-all duration-700 opacity-0 group-hover:opacity-100 bg-gradient-to-br from-arcx-purple/20 to-transparent diagonal-half${hovered === 'left' ? ' diagonal-lift diagonal-bright' : ''}`}>
-          <div className="absolute inset-y-0 left-0 w-1/3 bg-[radial-gradient(ellipse_50%_100%_at_left,_rgba(115,0,255,0.22),_transparent_60%)]"></div>
-          <div className="text-arcx-purple font-thin tracking-[0.2em] uppercase text-sm flex items-center animate-pulse">
-            {/* Left diagonal callout */}
-            <span className="mr-4">Explore AI/ML</span>
-          </div>
-        </div>
+      <div className="mt-8 flex gap-6 justify-center">
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" title="Twitter"><TwitterIcon className="w-6 h-6 text-gray-400 hover:text-arcx-purple transition-colors duration-200" /></a>
+        <a href="https://discord.com" target="_blank" rel="noopener noreferrer" title="Discord"><DiscordIcon className="w-6 h-6 text-gray-400 hover:text-arcx-purple transition-colors duration-200" /></a>
       </div>
-      {/* ARCX Side (Right) */}
-      <div
-        className="absolute inset-0 z-20 entry-fade"
-        style={{clipPath: 'polygon(100% 0, 100% 100%, 0 100%)'}}
-        onMouseEnter={() => setHovered('right')}
-      >
-        <div className={`w-full h-full relative flex items-end justify-end p-16 transition-all duration-700 opacity-0 group-hover:opacity-100 bg-gradient-to-tl from-arcx-orange/10 to-transparent diagonal-half${hovered === 'right' ? ' diagonal-lift diagonal-bright' : ''}`}>
-          <div className="absolute inset-y-0 right-0 w-1/3 bg-[radial-gradient(ellipse_50%_100%_at_right,_rgba(255,69,0,0.12),_transparent_60%)]"></div>
-          <div className="text-arcx-orange font-thin tracking-[0.2em] uppercase text-sm flex items-center animate-pulse">
-            {/* Right diagonal callout */}
-            <span className="ml-4">Scroll for ARCX</span>
-          </div>
-        </div>
-      </div>
-      {/* Buttons and Footer */}
-      <div className="absolute inset-0 z-30 flex flex-col items-center justify-end pb-24 pointer-events-auto">
-        <div className="flex flex-col items-center space-y-4">
-          <a href="#" className="border border-arcx-purple text-arcx-purple font-light py-4 px-12 rounded-sm text-md uppercase tracking-[0.2em] hover:bg-arcx-purple hover:text-white hover:shadow-glow-purple transition-all duration-300">
-            Join the Network
-          </a>
-          <button
-            onClick={() => {
-              const container = document.getElementById('main-container');
-              const entry = document.getElementById('entry');
-              if (container && entry) {
-                container.scrollTo({ left: entry.offsetLeft, behavior: 'smooth' });
-              }
-            }}
-            className="mt-2 border border-white/20 text-white/80 font-light py-2 px-6 rounded-sm text-xs uppercase tracking-widest hover:bg-white/10 hover:text-arcx-purple transition-all duration-300"
-          >
-            Back to Centre
-          </button>
-        </div>
-        <footer className="mt-10 text-center text-xs text-gray-700 font-light tracking-widest w-full">
-          <div className="flex justify-center space-x-6 mb-4">
-            <a href="#" className="text-gray-600 hover:text-arcx-purple transition-colors duration-300" aria-label="AI/ML Twitter">
-              <span className="sr-only">Twitter</span>
-              <TwitterIcon className="h-5 w-5" />
-            </a>
-            <a href="#" className="text-gray-600 hover:text-arcx-purple transition-colors duration-300" aria-label="AI/ML Discord">
-              <span className="sr-only">Discord</span>
-              <DiscordIcon className="h-5 w-5" />
-            </a>
-          </div>
-          <p>&copy; {new Date().getFullYear()} ARCX PROTOCOL. ALL RIGHTS RESERVED.</p>
-        </footer>
-      </div>
+      <footer className="mt-12 text-xs text-gray-500">© 2025 ARCX PROTOCOL. ALL RIGHTS RESERVED.</footer>
     </div>
   );
 };
