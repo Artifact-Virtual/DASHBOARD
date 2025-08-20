@@ -38,7 +38,7 @@ const getStatusColor = (status: RoadmapItem['status']) => {
 
 const Roadmap: React.FC = () => {
   return (
-    <div id="arcx-roadmap" className="w-full h-full flex flex-col items-center justify-center p-8 bg-arcx-dark pl-24 overflow-hidden">
+    <div id="arcx-roadmap" className="w-full h-full flex flex-col items-center justify-center p-6 sm:p-8 bg-arcx-dark pl-0 sm:pl-24 overflow-hidden max-w-full overflow-x-hidden">
         <div className="text-center w-full max-w-7xl mx-auto mb-10">
             <h2 className="text-4xl md:text-6xl font-thin text-gray-200 tracking-[0.2em] uppercase">
                 Roadmap

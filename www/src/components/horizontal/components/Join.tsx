@@ -15,7 +15,7 @@ const DiscordIcon: React.FC<{ className?: string }> = ({ className }) => (
 
 const Join: React.FC = () => {
   return (
-    <div id="arcx-join" className="w-full h-full flex flex-col items-center justify-center text-center p-8 bg-arcx-dark relative pl-16">
+  <div id="arcx-join" className="w-full h-full flex flex-col items-center justify-center text-center p-6 sm:p-8 bg-arcx-dark relative pl-0 sm:pl-16 max-w-full overflow-x-hidden">
          {/* Background Crystal Effect */}
          <div className="absolute inset-0 z-0">
             <div className="absolute top-1/2 left-1/2 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-arcx-maroon/10 rounded-full blur-3xl animate-pulse -translate-x-1/2 -translate-y-1/2"></div>

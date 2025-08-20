@@ -9,8 +9,8 @@ const DexCard: React.FC<{ name: string, description: string }> = ({ name, descri
 
 const ArcxEcosystem: React.FC = () => {
   return (
-    <div id="arcx-ecosystem" className="w-full h-full flex flex-col items-center justify-center p-8 md:p-16 bg-arcx-dark pl-24">
-       <div className="text-center w-full max-w-7xl mx-auto mb-12">
+    <div id="arcx-ecosystem" className="w-full h-full flex flex-col items-center justify-center p-6 sm:p-8 md:p-16 bg-arcx-dark pl-0 sm:pl-24 max-w-full overflow-x-hidden">
+    <div className="text-center w-full max-w-7xl mx-auto mb-8 sm:mb-12">
             <h2 className="text-4xl md:text-6xl font-thin text-gray-200 tracking-[0.2em] uppercase">
                 Ecosystem
             </h2>
@@ -19,8 +19,8 @@ const ArcxEcosystem: React.FC = () => {
             </p>
         </div>
 
-      <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-uniswap-pink/90 text-white p-8 rounded-sm flex flex-col justify-between border border-uniswap-pink relative overflow-hidden animate-pink-glow-pulse">
+    <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+            <div className="bg-uniswap-pink/90 text-white p-4 sm:p-8 rounded-sm flex flex-col justify-between border border-uniswap-pink relative overflow-hidden animate-pink-glow-pulse">
                 {/* Liquid Energy Particles */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden">
                     {Array.from({ length: 15 }).map((_, i) => (
@@ -50,7 +50,7 @@ const ArcxEcosystem: React.FC = () => {
                 </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-2 sm:space-y-4">
                 <div className="bg-white/5 p-4 rounded-sm border border-white/10">
                     <h4 className="font-light tracking-widest uppercase text-gray-200">Live Chart</h4>
                      <p className="text-xs text-gray-500 font-light mt-1">Real-time price action and token data.</p>

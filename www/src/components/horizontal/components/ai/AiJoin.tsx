@@ -14,7 +14,7 @@ const AiJoin: React.FC = () => {
   return (
     <div
       id="ai-join"
-      className="w-full h-full bg-arcx-black relative flex flex-col items-center justify-center text-center p-8"
+  className="w-full h-full bg-arcx-black relative flex flex-col items-center justify-center text-center p-6 sm:p-8 max-w-full overflow-x-hidden"
     >
       <h2 className="text-4xl md:text-6xl font-thin text-gray-200 tracking-[0.2em] uppercase">
         Build The Future

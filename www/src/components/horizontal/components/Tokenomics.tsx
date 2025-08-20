@@ -24,8 +24,8 @@ const CustomTooltip: React.FC<any> = ({ active, payload }) => {
 
 const Tokenomics: React.FC = () => {
   return (
-    <div id="arcx-tokenomics" className="w-full h-full flex items-center justify-center p-8 md:p-16 bg-arcx-dark pl-24">
-      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <div id="arcx-tokenomics" className="w-full h-full flex items-center justify-center p-6 sm:p-8 md:p-16 bg-arcx-dark pl-0 sm:pl-24 max-w-full overflow-x-hidden">
+      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16 items-center">
         <div className="w-full h-80 md:h-96">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 import FinalFooter from '../components/FinalFooter';
+import Navigation from '../components/Navigation';
 import MouseRepelCanvas from '../components/MouseRepelCanvas';
 import NoiseLinesBackground from '../components/NoiseLinesBackground';
 import GloriousParticleLoader from '../components/GloriousParticleLoader';
@@ -43,6 +44,7 @@ const Index: React.FC<IndexProps> = ({ onHorizontalInViewChange }) => {
   const [showHorizontalHeader, setShowHorizontalHeader] = useState(false);
   const [forceCloseSidebar, setForceCloseSidebar] = useState(false);
   const [horizontalActiveSection, setHorizontalActiveSection] = useState('entry');
+  const [hideHamburger, setHideHamburger] = useState(false);
   // const [showHorizontalHeader, setShowHorizontalHeader] = useState(false);
   // Show floating arrow and header only when horizontal section is in view
   // Also reset horizontal scroll when leaving the section
@@ -51,10 +53,11 @@ const Index: React.FC<IndexProps> = ({ onHorizontalInViewChange }) => {
     if (!section) return;
     const observer = new window.IntersectionObserver(
       ([entry]) => {
-        setShowArrow(entry.isIntersecting);
-        setShowHorizontalHeader(entry.isIntersecting);
-        if (onHorizontalInViewChange) onHorizontalInViewChange(entry.isIntersecting);
-        setForceCloseSidebar(entry.isIntersecting);
+  setShowArrow(entry.isIntersecting);
+  setShowHorizontalHeader(entry.isIntersecting);
+  if (onHorizontalInViewChange) onHorizontalInViewChange(entry.isIntersecting);
+  setForceCloseSidebar(entry.isIntersecting);
+  setHideHamburger(entry.isIntersecting);
         if (!entry.isIntersecting) {
           // Reset horizontal scroll to the entry (center) section when leaving
           const mainContainer = document.getElementById('main-container');
@@ -131,6 +134,7 @@ const Index: React.FC<IndexProps> = ({ onHorizontalInViewChange }) => {
 
   return (
     <div className="min-h-screen relative overflow-y-auto bg-black/50 backdrop-blur text-white text-lg">
+  {/* <Navigation hideHamburger={hideHamburger} /> */}
       {/* Force-close sidebar overlay when horizontal section is in view */}
       {forceCloseSidebar && (
         <style>{`#floating-sidebar { display: none !important; }`}</style>
@@ -174,7 +178,7 @@ const Index: React.FC<IndexProps> = ({ onHorizontalInViewChange }) => {
       </section>
 
       {/* Horizontal Website Section (native, not iframe) */}
-      {showHorizontalHeader && <Header activeSection={horizontalActiveSection} />}
+  {showHorizontalHeader && horizontalActiveSection !== 'entry' && <Header activeSection={horizontalActiveSection} />}
       <section className="horizontal-section-wrapper" ref={horizontalSectionRef}>
         <HorizontalApp onActiveSectionChange={setHorizontalActiveSection} />
       </section>

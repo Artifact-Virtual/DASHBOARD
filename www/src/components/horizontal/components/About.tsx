@@ -12,8 +12,8 @@ const FeatureCard: React.FC<{ title: string; description: string }> = ({ title, 
 
 const About: React.FC = () => {
   return (
-    <div id="arcx-about" className="w-full h-full flex items-center justify-center p-8 md:p-16 bg-arcx-dark pl-24">
-      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <div id="arcx-about" className="w-full h-full flex items-center justify-center p-6 sm:p-8 md:p-16 bg-arcx-dark pl-0 sm:pl-24 max-w-full overflow-x-hidden">
+      <div className="max-w-7xl w-full grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16 items-center">
         <div className="animate-fade-in-left">
           <h2 className="text-4xl md:text-6xl font-thin text-gray-200 tracking-[0.2em] uppercase leading-tight">
             What is <span className="text-arcx-orange">ARCX</span>?

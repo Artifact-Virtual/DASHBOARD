@@ -18,8 +18,8 @@ const Header: React.FC<HeaderProps> = ({ activeSection }) => {
   
   const isArcx = activeSection.startsWith('arcx');
   const isAi = activeSection.startsWith('ai');
-  // Only show header if in an ARCX or AI section
-  const isVisible = isArcx || isAi;
+  // Only show header if in an ARCX or AI section (never for entry or other sections)
+  const isVisible = (isArcx || isAi) && activeSection !== 'entry';
   
   useEffect(() => {
     if (isArcx) {

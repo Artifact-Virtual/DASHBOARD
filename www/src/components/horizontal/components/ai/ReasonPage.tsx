@@ -33,8 +33,8 @@ const StatusIndicator: React.FC<{ status: RoadmapItem['status'] }> = ({ status }
 
 const ReasonPage: React.FC = () => {
     return (
-        <div id="ai-reason" className="w-full h-full flex items-center justify-center p-8 md:p-16 bg-arcx-dark pr-24">
-            <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div id="ai-reason" className="w-full h-full flex items-center justify-center p-6 sm:p-8 md:p-16 bg-arcx-dark pr-0 sm:pr-24 max-w-full overflow-x-hidden">
+            <div className="max-w-7xl w-full grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16 items-center">
                 {/* Information Side */}
                  <div className="bg-white/5 backdrop-blur-md p-8 rounded-sm border border-white/10 animate-fade-in-left">
                     <h2 className="text-4xl font-thin tracking-[0.2em] uppercase text-arcx-purple">{project.name}</h2>

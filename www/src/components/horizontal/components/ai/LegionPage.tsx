@@ -33,8 +33,8 @@ const StatusIndicator: React.FC<{ status: RoadmapItem['status'] }> = ({ status }
 
 const LegionPage: React.FC = () => {
     return (
-        <div id="ai-legion" className="w-full h-full flex items-center justify-center p-8 md:p-16 bg-arcx-dark pr-24">
-            <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div id="ai-legion" className="w-full h-full flex items-center justify-center p-6 sm:p-8 md:p-16 bg-arcx-dark pr-0 sm:pr-24 max-w-full overflow-x-hidden">
+            <div className="max-w-7xl w-full grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16 items-center">
                 {/* Visual Side */}
                 <div className="w-full h-96 flex items-center justify-center relative animate-fade-in-left">
                     <div className="absolute w-full h-full bg-arcx-purple/5 rounded-full blur-3xl"></div>

@@ -2,7 +2,11 @@ import { Network, Terminal } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
-const Navigation = () => {
+interface NavigationProps {
+  hideHamburger?: boolean;
+}
+
+const Navigation: React.FC<NavigationProps> = ({ hideHamburger }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -51,19 +55,22 @@ const Navigation = () => {
         </div>
 
         {/* Mobile menu button */}
+        {!hideHamburger && (
         <div className="md:hidden">
           <button
-            className="text-white/80 hover:text-white"
-            aria-label="Toggle menu"
+            className="text-white/80 hover:text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-cyan-400"
+            aria-label="Open menu"
             onClick={toggleSidebar}
           >
-            <div className="w-6 h-6 flex flex-col justify-center space-y-1">
-              <div className="h-px bg-current w-full" />
-              <div className="h-px bg-current w-full" />
-              <div className="h-px bg-current w-full" />
-            </div>
+            {/* Modern hamburger SVG icon */}
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect y="6" width="28" height="2.5" rx="1.25" fill="currentColor" />
+              <rect y="13" width="28" height="2.5" rx="1.25" fill="currentColor" />
+              <rect y="20" width="28" height="2.5" rx="1.25" fill="currentColor" />
+            </svg>
           </button>
         </div>
+        )}
       </div>
 
       {/* Sidebar for mobile */}
